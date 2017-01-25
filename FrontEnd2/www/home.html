@@ -30,30 +30,12 @@
                 $("#title").html("Plan your visit in "+city);
 
 
-                var hotels  = JSON.parse(window.localStorage.getItem("hotels"));
-                var attractions  = JSON.parse(window.localStorage.getItem("attractions"));
-                var monuments  = JSON.parse(window.localStorage.getItem("monuments"));
-                var museums  = JSON.parse(window.localStorage.getItem("museums"));
-                var restaurants = JSON.parse(window.localStorage.getItem("restaurants"));
-                var parks = JSON.parse(window.localStorage.getItem("parks"));
-                var historical = JSON.parse(window.localStorage.getItem("historical"));
-                var religious = JSON.parse(window.localStorage.getItem("religious"));
 
 
-                var shotels  = JSON.parse(window.localStorage.getItem("shotels"));
-                var sattractions  = JSON.parse(window.localStorage.getItem("sattractions"));
-                var smonuments  = JSON.parse(window.localStorage.getItem("smonuments"));
-                var smuseums  = JSON.parse(window.localStorage.getItem("smuseums"));
-                var srestaurants = JSON.parse(window.localStorage.getItem("srestaurants"));
-                var sparks = JSON.parse(window.localStorage.getItem("sparks"));
-                var shistorical = JSON.parse(window.localStorage.getItem("shistorical"));
-                var sreligious = JSON.parse(window.localStorage.getItem("sreligious"));
+                var pois  = JSON.parse(window.localStorage.getItem("pois"));
+                var spois  = JSON.parse(window.localStorage.getItem("pois"));
 
-
-                console.log("sattractions = "+sattractions.length);
-
-
-                if(hotels.length == 0) {
+                if(pois.hotels.length == 0) {
 
                     console.log("get activities for city "+city+" from server");
 
@@ -63,47 +45,40 @@
                                 data.forEach(function (value) {
                                     switch (value.category) {
                                         case "attractions":
-                                            attractions.push(value);
+                                            pois.attractions.push(value);
                                             break;
                                         case "monuments" :
-                                            monuments.push(value);
+                                            pois.monuments.push(value);
                                             break;
                                         case "museums" :
-                                            museums.push(value);
+                                            pois.museums.push(value);
                                             break;
                                         case "eating" :
-                                            restaurants.push(value);
+                                            pois.restaurants.push(value);
                                             break;
                                         case "parks" :
-                                            parks.push(value);
+                                            pois.parks.push(value);
                                             break;
                                         case "resting" :
-                                            hotels.push(value);
+                                            pois.hotels.push(value);
                                             break;
                                         case "historical_sites" :
-                                            historical.push(value);
+                                            pois.historical.push(value);
                                             break;
                                         case "religious_sites" :
-                                            religious.push(value);
+                                            pois.religious.push(value);
                                             break;
                                         default :
                                             console.log("Invalid category:" + value.category);
                                     }
                                 });
 
-                                window.localStorage.setItem("hotels",JSON.stringify(hotels));
-                                window.localStorage.setItem("attractions",JSON.stringify(attractions));
-                                window.localStorage.setItem("monuments",JSON.stringify(monuments));
-                                window.localStorage.setItem("museums",JSON.stringify(museums));
-                                window.localStorage.setItem("restaurants",JSON.stringify(restaurants));
-                                window.localStorage.setItem("parks",JSON.stringify(parks));
-                                window.localStorage.setItem("historical",JSON.stringify(historical));
-                                window.localStorage.setItem("religious",JSON.stringify(religious));
+                                window.localStorage.setItem("pois",JSON.stringify(pois));
 
                                 var i;
-                                for (i = 0; i < hotels.length; i++) {
+                                for (i = 0; i < pois.hotels.length; i++) {
                                     //console.log(hotels[i])
-                                    var name = hotels[i].display_name.split(',')[0];
+                                    var name = pois.hotels[i].display_name.split(',')[0];
                                     $("#departure").append("<option value='" + name + "'>" + name + "</option>");
                                     $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
                                 }
@@ -115,9 +90,9 @@
 
 
                 var i;
-                for (i = 0; i < hotels.length; i++) {
+                for (i = 0; i < pois.hotels.length; i++) {
                     //console.log(hotels[i])
-                    var name = hotels[i].display_name.split(',')[0];
+                    var name = pois.hotels[i].display_name.split(',')[0];
                     $("#departure").append("<option value='" + name + "'>" + name + "</option>");
                     $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
                 }
