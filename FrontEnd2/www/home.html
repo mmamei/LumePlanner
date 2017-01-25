@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <title>LumePlanner</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/jquery.datetimepicker.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/global.js"></script>
+        <script src="js/jquery.datetimepicker.js"></script>
+
+        <style>
+            .bg-blue {
+                background-color: #084265;
+                color: #ffffff;
+            }
+            .big-icon {
+                font-size: 60px;
+                vertical-align:middle;
+                margin-bottom: 10px;
+            }
+
+        </style>
+
+        <script>
+            $(document).ready(function() {
+                var city = window.localStorage.getItem("city");
+                $("#title").html("Plan your visit in "+city);
+
+
+                var hotels  = JSON.parse(window.localStorage.getItem("hotels"));
+                var attractions  = JSON.parse(window.localStorage.getItem("attractions"));
+                var monuments  = JSON.parse(window.localStorage.getItem("monuments"));
+                var museums  = JSON.parse(window.localStorage.getItem("museums"));
+                var restaurants = JSON.parse(window.localStorage.getItem("restaurants"));
+                var parks = JSON.parse(window.localStorage.getItem("parks"));
+                var historical = JSON.parse(window.localStorage.getItem("historical"));
+                var religious = JSON.parse(window.localStorage.getItem("religious"));
+
+
+                var shotels  = JSON.parse(window.localStorage.getItem("shotels"));
+                var sattractions  = JSON.parse(window.localStorage.getItem("sattractions"));
+                var smonuments  = JSON.parse(window.localStorage.getItem("smonuments"));
+                var smuseums  = JSON.parse(window.localStorage.getItem("smuseums"));
+                var srestaurants = JSON.parse(window.localStorage.getItem("srestaurants"));
+                var sparks = JSON.parse(window.localStorage.getItem("sparks"));
+                var shistorical = JSON.parse(window.localStorage.getItem("shistorical"));
+                var sreligious = JSON.parse(window.localStorage.getItem("sreligious"));
+
+
+                console.log("sattractions = "+sattractions.length);
+
+
+                if(hotels.length == 0) {
+
+                    console.log("get activities for city "+city+" from server");
+
+                    $.getJSON(conf.dita_server + 'activities?city=' + city,
+                            function (data, status) {
+                                //console.log("Data: " + data + "\nStatus: " + status);
+                                data.forEach(function (value) {
+                                    switch (value.category) {
+                                        case "attractions":
+                                            attractions.push(value);
+                                            break;
+                                        case "monuments" :
+                                            monuments.push(value);
+                                            break;
+                                        case "museums" :
+                                            museums.push(value);
+                                            break;
+                                        case "eating" :
+                                            restaurants.push(value);
+                                            break;
+                                        case "parks" :
+                                            parks.push(value);
+                                            break;
+                                        case "resting" :
+                                            hotels.push(value);
+                                            break;
+                                        case "historical_sites" :
+                                            historical.push(value);
+                                            break;
+                                        case "religious_sites" :
+                                            religious.push(value);
+                                            break;
+                                        default :
+                                            console.log("Invalid category:" + value.category);
+                                    }
+                                });
+
+                                window.localStorage.setItem("hotels",JSON.stringify(hotels));
+                                window.localStorage.setItem("attractions",JSON.stringify(attractions));
+                                window.localStorage.setItem("monuments",JSON.stringify(monuments));
+                                window.localStorage.setItem("museums",JSON.stringify(museums));
+                                window.localStorage.setItem("restaurants",JSON.stringify(restaurants));
+                                window.localStorage.setItem("parks",JSON.stringify(parks));
+                                window.localStorage.setItem("historical",JSON.stringify(historical));
+                                window.localStorage.setItem("religious",JSON.stringify(religious));
+
+                                var i;
+                                for (i = 0; i < hotels.length; i++) {
+                                    //console.log(hotels[i])
+                                    var name = hotels[i].display_name.split(',')[0];
+                                    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
+                                    $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
+                                }
+                            });
+                }
+                else {
+                    console.log("get activties form cache")
+                }
+
+
+                var i;
+                for (i = 0; i < hotels.length; i++) {
+                    //console.log(hotels[i])
+                    var name = hotels[i].display_name.split(',')[0];
+                    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
+                    $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
+                }
+
+
+
+
+
+                $("#demo1-1").hide();
+                $('#demo1-1').datetimepicker({
+                    date: new Date(),
+                    viewMode: 'YMDHMS',
+                    onDateUpdate: function () {
+                        $('#date-value1-1').val(this.getValue().toString().split("GMT")[0]);
+                        $("#demo1-1").hide();
+                    }
+                });
+
+
+                $("#time").click(function() {
+                    $("#demo1-1").show()
+                });
+
+
+                $("#departure").change(function() {
+                    var v = $(this).val();
+                    //console.log(v)
+                    $("#arrival option[value='"+v+"']").attr('selected','selected');
+                });
+
+                $(".crowdb").click(function() {
+                    var id = $(this).attr("id");
+
+                    if(id === "crowd-fe"){
+                        $("#crowd-fe").css("background-color", "LightGreen");
+                        $("#crowd-me").css("background-color", "white");
+                        $("#crowd-mc").css("background-color", "white");
+                        $("#crowd-fc").css("background-color", "white");
+                    }
+                    else  if(id === "crowd-me") {
+                        $("#crowd-fe").css("background-color", "green");
+                        $("#crowd-me").css("background-color", "green");
+                        $("#crowd-mc").css("background-color", "white");
+                        $("#crowd-fc").css("background-color", "white");
+                    }
+                    else  if(id === "crowd-mc"){
+                        $("#crowd-fe").css("background-color", "orange");
+                        $("#crowd-me").css("background-color", "orange");
+                        $("#crowd-mc").css("background-color", "orange");
+                        $("#crowd-fc").css("background-color", "white");
+                    }
+                    else  if(id === "crowd-fc"){
+                        $("#crowd-fe").css("background-color", "DarkRed");
+                        $("#crowd-me").css("background-color", "DarkRed");
+                        $("#crowd-mc").css("background-color", "DarkRed");
+                        $("#crowd-fc").css("background-color", "DarkRed");
+                    }
+
+
+                });
+
+                $(".activities").click(function(){
+                    var id = $(this).attr("id");
+                    window.localStorage.setItem("sel", id);
+                    window.location.href = "visits.html";
+                });
+
+             });
+        </script>
+
+    </head>
+    <body class="bg-blue">
+
+        <div class="container-fluid text-center">
+        <p id="title"></p>
+        </div>
+
+
+
+
+        <div class="container-fluid">
+
+            <div class="form-group">
+                <label for="date-value1-1">Select Time:</label> <span id="time" class="glyphicon glyphicon-time big-icon"></span>
+                <input type="text" class="form-control" size="60"  id="date-value1-1">
+            </div>
+
+            <div id="demo1-1"></div>
+            <div class="form-group">
+                <label for="departure">Departure Location:</label>
+                <select class="form-control" id="departure">
+                    <option value=''></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="arrival">Arrival Location:</label>
+                <select class="form-control" id="arrival">
+                    <option value=''></option>
+                </select>
+            </div>
+
+            <label for="activities">What to do:</label><br>
+                <div id="activities" class="btn-group">
+                    <p class="btn btn-default activities" id="attractions">Attractions</p>
+                    <p class="btn btn-default activities" id="museums">Museums</p>
+                    <p class="btn btn-default activities" id="historical">Historical</p>
+                    <p class="btn btn-default activities" id="religious">Religious</p>
+                    <p class="btn btn-default activities" id="monuments">Monuments</p>
+                    <p class="btn btn-default activities" id="parks">Parks</p>
+                </div>
+
+
+            <div class="form-group">
+                <label>Crowding preference:</label><br>
+
+                <div id="crowd" class="btn-group btn-group-justified text-center">
+                    <p style="background-color: LightGreen" id="crowd-fe" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span></p>
+                    <p id="crowd-me" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
+                    <p id="crowd-mc" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
+                    <p id="crowd-fc" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
+                </div>
+            </div>
+
+
+            <a href="city.html" type="button" class="btn btn-primary btn-lg">Back</a>
+            <a href="plan.html" type="button" class="btn btn-success btn-lg">Get Visit Plan</a>
+
+        </div>
+
+
+    </body>
+</html>
