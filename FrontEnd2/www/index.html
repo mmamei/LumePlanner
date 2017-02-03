@@ -29,6 +29,8 @@
 
             $(document).ready(function(){
 
+
+
                 $("#signin").click(function(){
                     //console.log($("#email").val())
                     var hashed_user = {id: "", email: $("#email").val().toLowerCase(), password:$.md5($("#pwd").val())};
@@ -38,11 +40,11 @@
                                 console.log("Data: " + data + "\nStatus: " + status);
 
                                 if (data==='2' || data === 2) { //a visiting plan exists
-                                    window.localStorage.setItem("hashed_user", hashed_user);
+                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
                                     console.log("user logged: a visiting plan exists");
                                     window.location.href = "plan.html"
                                 } else if(data==='1' || data === 1) { //first login or a visiting plan doesn't exist
-                                    window.localStorage.setItem("hashed_user", hashed_user);
+                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
                                     console.log("user logged: first login or a visiting plan doesn't exist");
                                     window.location.href = "city.html"
                                 } else if (data==='0' || data === 0) { //wrong password

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <title>LumePlanner</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/global.js"></script>
+        <script src="js/jquery.md5.js"></script>
+
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+        <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+        <!--<script src="https://use.fontawesome.com/d9e0247a22.js"></script>-->
+        <!--
+        <link rel="stylesheet" href="css/leaflet-awesome/leaflet.awesome-markers.css">
+        <script src="css/leaflet-awesome/leaflet.awesome-markers.js"></script>
+        -->
+        <style>
+
+
+            body {
+                background-color: #084265;
+                color: #ffffff;
+            }
+
+
+            .title {
+                background-color:#031b26;
+                color:#82a4a6;
+                padding:20px;
+            }
+
+            .img-responsive {
+                margin: 0 auto;
+            }
+
+            #mapid {
+                height: 380px;
+                padding:10px;
+            }
+
+
+            .marker {
+                margin-left: -17px !important;
+                margin-top: -25px !important;
+                width: 0px !important;
+                height: 0px !important;
+            }
+
+            .fa-col-blue {
+                color: #084265;
+                opacity: 0.8;
+            }
+            .fa-col-green {
+                color: #008a53;
+                opacity: 0.8;
+            }
+            .fa-col-red {
+                color: #ff9600;
+                opacity: 0.8;
+            }
+        </style>
+
+        <script>
+
+
+            function format_name(name) {
+                var name_array = name.split(',');
+                if (!name_array[1]) {
+                    name_array[1] = "";
+                    name_array[2] = "";
+                }
+                return name_array[0]+"<br />"+name_array[1]+","+name_array[2];
+            }
+
+
+            function drawMapAndTable(mymap,items) {
+                var lat  = items.departure.geometry.coordinates[1];
+                var lng  = items.departure.geometry.coordinates[0];
+
+
+
+                var geojson = {
+                    data  : items.path.points,
+                    style : {
+                        weight: 2,
+                        opacity: 1,
+                        color: 'blue',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                };
+
+                var m = {};
+                if ((items.departure.place_id === "0" && items.arrival.place_id === "00")
+                        || items.departure.place_id === items.arrival.place_id ) {
+
+                    m[items.departure.place_id] = {
+                        lat : items.departure.geometry.coordinates[1],
+                        lng: items.departure.geometry.coordinates[0],
+                        message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Start:" + items.departure_time + "</b><br />" +
+                        "<b>Finish:" + items.arrival_time + "</b><br />" +
+                        format_name(items.arrival.display_name)+"</p>",
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                        })
+                    };
+
+                } else {
+
+                    m[items.arrival.place_id] = {
+                        lat : items.arrival.geometry.coordinates[1],
+                        lng: items.arrival.geometry.coordinates[0],
+                        message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Finish:" + items.arrival_time + "</b><br />" +
+                        format_name(items.arrival.display_name)+"</p>",
+                        icon: {
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
+                        }
+                    };
+
+                    m[items.departure.place_id] = {
+                        lat : items.departure.geometry.coordinates[1],
+                        lng: items.departure.geometry.coordinates[0],
+                        message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Departure:"+items.departure_time+"</b><br />" +
+                        format_name(items.departure.display_name)+"</p>",
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                        })
+                    };
+                }
+
+                var j;
+                for (j = 0; j < items.visited.length; j+=1) {
+                    m[items.visited[j].visit.place_id] = {
+                        lat : items.visited[j].visit.geometry.coordinates[1],
+                        lng: items.visited[j].visit.geometry.coordinates[0],
+                        message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrival:"+items.visited[j].arrival_time +
+                        "</b><br /><b>Departure:" + items.visited[j].departure_time
+                        +"</b><br />"+format_name(items.visited[j].visit.display_name)+"</p>",
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-red fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-inverse fa-stack-1x\">"+(j+1)+"</i></span>"
+                        })
+
+
+                    };
+
+                }
+                var i;
+                for (i = j+1; (i-j-1) < items.to_visit.length; i+=1) {
+                    m[items.to_visit[i-j-1].visit.place_id] = {
+                        lat : items.to_visit[i-j-1].visit.geometry.coordinates[1],
+                        lng: items.to_visit[i-j-1].visit.geometry.coordinates[0],
+                        message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrival:"+items.to_visit[i-j-1].arrival_time +
+                        "</b><br /><b>Departure:" + items.to_visit[i-j-1].departure_time
+                        +"</b><br />"+format_name(items.to_visit[i-j-1].visit.display_name)+"</p>",
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-inverse fa-stack-1x\">"+i+"</i></span>"
+
+                        })
+                    };
+                }
+
+
+
+
+                mymap.setView([lat, lng], 12);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    maxZoom: 18,
+                    attributionControl: false,
+                    scrollWheelZoom: 'center',
+                }).addTo(mymap);
+
+
+                console.log(m);
+                for(x in m) {
+                    console.log(m[x].lat);
+                    var marker = L.marker(m[x],{icon:m[x].icon}).addTo(mymap);
+                    marker.bindPopup(m[x].message);
+                }
+
+
+
+                L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
+
+                /*
+                 console.log(format_name(items.departure.display_name)+" start at: "+items.departure_time)
+                 console.log(format_name(items.arrival.display_name)+" arrive at: "+items.arrival_time)
+                 console.log(items.to_visit.length)
+                 for(var i=0; i<items.to_visit.length;i++) {
+                 console.log(format_name(items.to_visit[i].visit.display_name)+" arrive at: "+items.to_visit[i].arrival_time+" depart at: "+items.to_visit[i].departure_time )
+                 }
+                 */
+                //$("#table").append("<h3>Itinerary</h3>")
+                $("#table").append("<div class=\"alert alert-info\">"+format_name(items.departure.display_name)+"<br><strong> start at: </strong>"+items.departure_time+"</div>");
+                $("#table").append("<div class=\"alert alert-info\">"+format_name(items.arrival.display_name)+"<br><strong> arrive at: </strong>"+items.arrival_time+"</div>");
+                for(var i=0; i<items.to_visit.length;i++)
+                    $("#table").append("<div class=\"alert alert-info\">"+format_name(items.to_visit[i].visit.display_name)+"<br><strong> arrive at: </strong>"+items.to_visit[i].arrival_time+"<strong> depart at: </strong>"+items.to_visit[i].departure_time+"</div>")
+            }
+
+            $(document).ready(function(){
+                var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
+                //console.log(JSON.stringify(visitplan))
+                var mymap = L.map('mapid');
+                drawMapAndTable(mymap, visitplan.greedy);
+
+
+
+                $(".path").click(function(event) {
+                    console.log(event.target.id);
+                    drawMapAndTable(mymap, visitplan[event.target.id]);
+                });
+
+                $("#back").click(function(){
+                    window.location.href = "home.html"
+                });
+                $("#start").click(function(){
+                    window.location.href = "next_step.html"
+                });
+
+
+            });
+
+
+        </script>
+
+    </head>
+    <body class="bg-blue">
+        <div class="container-fluid text-center title">
+            <h2>Visiting Plan</h2>
+        </div>
+
+        <div class="container-fluid text-center">
+
+            <div class="btn-group">
+                <button id="crowd" type="button" class="btn btn-primary btn-lg path">Crowd Related</button>
+                <button id="greedy" type="button" class="btn btn-primary btn-lg path">Greedy</button>
+                <button id="shortest" type="button" class="btn btn-primary btn-lg path">Shortest</button>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div id="mapid" class="col-sm-9"></div>
+                <div id="table" class="col-sm-3"></div>
+            </div>
+
+        </div>
+
+
+        <div class="container-fluid text-center">
+            <button id="back" type="button" class="btn btn-primary btn-lg">Back</button>
+            <button id="start" type="button" class="btn btn-success btn-lg">Start</button>
+        </div>
+
+
+    </body>
+</html>

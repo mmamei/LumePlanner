@@ -52,3 +52,16 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
+
+function POIS() {
+    this.hotels = [];
+    this.attractions  = [];
+    this.monuments = [];
+    this.museums = [];
+    this.restaurants = [];
+    this.parks = [];
+    this.historical = [];
+    this.religious = []
+}
+
+

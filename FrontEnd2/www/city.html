@@ -25,38 +25,18 @@
 
         <script>
             $(document).ready(function(){
-                console.log("user: "+window.localStorage.getItem("hashed_user"));
+                //console.log("user: "+window.localStorage.getItem("hashed_user"));
                 $("img").click(function(event) {
 
                     console.log("the user selected "+event.target.id);
 
 
                     // update city
-                    if(window.localStorage.getItem("city") !== event.target.id) {
+                    if(window.sessionStorage.getItem("city") !== event.target.id) {
                         console.log("update city");
-
-                        window.localStorage.setItem("hotels",JSON.stringify([]));
-                        window.localStorage.setItem("attractions",JSON.stringify([]));
-                        window.localStorage.setItem("monuments",JSON.stringify([]));
-                        window.localStorage.setItem("museums",JSON.stringify([]));
-                        window.localStorage.setItem("restaurants",JSON.stringify([]));
-                        window.localStorage.setItem("parks",JSON.stringify([]));
-                        window.localStorage.setItem("historical",JSON.stringify([]));
-                        window.localStorage.setItem("religious",JSON.stringify([]));
-
-
-                        window.localStorage.setItem("shotels",JSON.stringify([]));
-                        window.localStorage.setItem("sattractions",JSON.stringify([]));
-                        window.localStorage.setItem("smonuments",JSON.stringify([]));
-                        window.localStorage.setItem("smuseums",JSON.stringify([]));
-                        window.localStorage.setItem("srestaurants",JSON.stringify([]));
-                        window.localStorage.setItem("sparks",JSON.stringify([]));
-                        window.localStorage.setItem("shistorical",JSON.stringify([]));
-                        window.localStorage.setItem("sreligious",JSON.stringify([]));
-
-                        // mettere dentro a POI in un costruttore GLOBAL
-
-                        window.localStorage.setItem("city", event.target.id);
+                        window.sessionStorage.setItem("pois",JSON.stringify(new POIS()));
+                        window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
+                        window.sessionStorage.setItem("city", event.target.id);
                     }
 
                     window.location.href = "home.html";

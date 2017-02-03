@@ -10,7 +10,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/global.js"></script>
         <script src="js/jquery.datetimepicker.js"></script>
-
+        <script src="js/jquery-dateFormat.min.js"></script>
         <style>
             .bg-blue {
                 background-color: #084265;
@@ -25,15 +25,42 @@
         </style>
 
         <script>
+
+
+
+            function poiName2Obj(name,array) {
+
+                for(var i=0; i<array.length;i++) {
+                    if(name == array[i].display_name.split(',')[0])
+                        return array[i];
+                }
+            }
+
+            function poiNames2Obj(sarray,oarray) {
+                var x = [];
+                for(var i=0; i<sarray.length;i++) {
+                    x.push(poiName2Obj(sarry[i]),oarray)
+                }
+            }
+
+
             $(document).ready(function() {
-                var city = window.localStorage.getItem("city");
+                var city = window.sessionStorage.getItem("city");
                 $("#title").html("Plan your visit in "+city);
 
 
 
+                var time = window.sessionStorage.getItem("time");
+                if(!time) time = new Date();
+                $("#date-value1-1").val($.format.date(time, 'yyyy/MM/dd HH:mm:ss'));
 
-                var pois  = JSON.parse(window.localStorage.getItem("pois"));
-                var spois  = JSON.parse(window.localStorage.getItem("pois"));
+
+                var pois  = JSON.parse(window.sessionStorage.getItem("pois"));
+                var spois  = JSON.parse(window.sessionStorage.getItem("spois"));
+
+
+                console.log("selected attractions = "+spois.attractions.length);
+
 
                 if(pois.hotels.length == 0) {
 
@@ -73,15 +100,15 @@
                                     }
                                 });
 
-                                window.localStorage.setItem("pois",JSON.stringify(pois));
+                                window.sessionStorage.setItem("pois",JSON.stringify(pois));
 
-                                var i;
-                                for (i = 0; i < pois.hotels.length; i++) {
-                                    //console.log(hotels[i])
-                                    var name = pois.hotels[i].display_name.split(',')[0];
-                                    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
-                                    $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
-                                }
+                                //var i;
+                                //for (i = 0; i < pois.hotels.length; i++) {
+                                //    //console.log(hotels[i])
+                                //    var name = pois.hotels[i].display_name.split(',')[0];
+                                //    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
+                                 //   $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
+                                // }
                             });
                 }
                 else {
@@ -93,8 +120,12 @@
                 for (i = 0; i < pois.hotels.length; i++) {
                     //console.log(hotels[i])
                     var name = pois.hotels[i].display_name.split(',')[0];
-                    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
-                    $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
+
+                    var departure = window.sessionStorage.getItem("departure");
+                    var arrival = window.sessionStorage.getItem("arrival");
+
+                    $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                    $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
                 }
 
 
@@ -108,6 +139,7 @@
                     onDateUpdate: function () {
                         $('#date-value1-1').val(this.getValue().toString().split("GMT")[0]);
                         $("#demo1-1").hide();
+                        window.sessionStorage.setItem("time",this.getValue().toString());
                     }
                 });
 
@@ -121,8 +153,16 @@
                     var v = $(this).val();
                     //console.log(v)
                     $("#arrival option[value='"+v+"']").attr('selected','selected');
+                    window.sessionStorage.setItem("departure",v);
+                    window.sessionStorage.setItem("arrival",v)
                 });
 
+                $("#arrival").change(function() {
+                    var v = $(this).val();
+                    window.sessionStorage.setItem("arrival",v)
+                });
+
+                var slid_val = 1.0;
                 $(".crowdb").click(function() {
                     var id = $(this).attr("id");
 
@@ -131,24 +171,28 @@
                         $("#crowd-me").css("background-color", "white");
                         $("#crowd-mc").css("background-color", "white");
                         $("#crowd-fc").css("background-color", "white");
+                        slid_val = 1.0
                     }
                     else  if(id === "crowd-me") {
                         $("#crowd-fe").css("background-color", "green");
                         $("#crowd-me").css("background-color", "green");
                         $("#crowd-mc").css("background-color", "white");
                         $("#crowd-fc").css("background-color", "white");
+                        slid_val = 0.5
                     }
                     else  if(id === "crowd-mc"){
                         $("#crowd-fe").css("background-color", "orange");
                         $("#crowd-me").css("background-color", "orange");
                         $("#crowd-mc").css("background-color", "orange");
                         $("#crowd-fc").css("background-color", "white");
+                        slid_val = -0.5
                     }
                     else  if(id === "crowd-fc"){
                         $("#crowd-fe").css("background-color", "DarkRed");
                         $("#crowd-me").css("background-color", "DarkRed");
                         $("#crowd-mc").css("background-color", "DarkRed");
                         $("#crowd-fc").css("background-color", "DarkRed");
+                        slid_val = -1.0
                     }
 
 
@@ -156,9 +200,65 @@
 
                 $(".activities").click(function(){
                     var id = $(this).attr("id");
-                    window.localStorage.setItem("sel", id);
+                    window.sessionStorage.setItem("sel", id);
                     window.location.href = "visits.html";
                 });
+
+                $("#go").click(function(){
+
+
+                    //console.log(JSON.parse(window.sessionStorage.getItem("hashed_user")).email)
+                    //console.log(city)
+                    //console.log(slid_val)
+                    //console.log(new Date($("#date-value1-1").val()).getHours())
+                    //console.log(JSON.stringify(spois))
+
+                    var start_obj = poiName2Obj(window.sessionStorage.getItem("departure"),pois.hotels);
+                    var end_obj = poiName2Obj(window.sessionStorage.getItem("departure"),pois.hotels);
+                    start_place = {
+                        display_name: start_obj.display_name,
+                        place_id : start_obj.place_id,
+                        lat : start_obj.geometry.coordinates[1],
+                        lon : start_obj.geometry.coordinates[0]
+                    };
+
+                    end_place = {
+                        display_name: end_obj.display_name,
+                        place_id : end_obj.place_id,
+                        lat : end_obj.geometry.coordinates[1],
+                        lon : end_obj.geometry.coordinates[0]
+                    };
+
+                    //console.log(JSON.stringify(start_place))
+                    //console.log(JSON.stringify(end_place))
+
+
+                    var visits = [];
+                    for(k in spois) {
+                        for(var i=0; i<spois[k].length;i++)
+                            visits.push(spois[k][i].place_id)
+                    }
+
+
+                    var request = {
+                        user :  JSON.parse(window.sessionStorage.getItem("hashed_user")).email,
+                        city: city,
+                        crowd_preference : slid_val,
+                        start_time : "09:00", //new Date($("#date-value1-1").val()).getHours(),
+                        visits : visits,
+                        start_place: start_place,
+                        end_place : end_place,
+                    };
+
+                    console.log(JSON.stringify(request));
+
+                    $.postJSON(conf.dita_server+"newplan",request,function(data, status){
+                        window.sessionStorage.setItem("visitplan",JSON.stringify(data));
+                        window.location.href = "plan.html"
+                    });
+
+                });
+
 
              });
         </script>
@@ -219,7 +319,7 @@
 
 
             <a href="city.html" type="button" class="btn btn-primary btn-lg">Back</a>
-            <a href="plan.html" type="button" class="btn btn-success btn-lg">Get Visit Plan</a>
+            <button id="go" class="btn btn-success btn-lg">Get Visit Plan</button>
 
         </div>
 
