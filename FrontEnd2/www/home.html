@@ -102,31 +102,36 @@
 
                                 window.sessionStorage.setItem("pois",JSON.stringify(pois));
 
-                                //var i;
-                                //for (i = 0; i < pois.hotels.length; i++) {
-                                //    //console.log(hotels[i])
-                                //    var name = pois.hotels[i].display_name.split(',')[0];
-                                //    $("#departure").append("<option value='" + name + "'>" + name + "</option>");
-                                 //   $("#arrival").append("<option value='" + name + "'>" + name + "</option>");
-                                // }
+                                var i;
+                                for (i = 0; i < pois.hotels.length; i++) {
+                                    //console.log(hotels[i])
+                                    var name = pois.hotels[i].display_name.split(',')[0];
+
+                                    var departure = window.sessionStorage.getItem("departure");
+                                    var arrival = window.sessionStorage.getItem("arrival");
+
+                                    $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                                    $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                                }
                             });
                 }
                 else {
-                    console.log("get activties form cache")
+                    console.log("get activties form cache");
+                    var i;
+                    for (i = 0; i < pois.hotels.length; i++) {
+                        //console.log(hotels[i])
+                        var name = pois.hotels[i].display_name.split(',')[0];
+
+                        var departure = window.sessionStorage.getItem("departure");
+                        var arrival = window.sessionStorage.getItem("arrival");
+
+                        $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                        $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                    }
                 }
 
 
-                var i;
-                for (i = 0; i < pois.hotels.length; i++) {
-                    //console.log(hotels[i])
-                    var name = pois.hotels[i].display_name.split(',')[0];
 
-                    var departure = window.sessionStorage.getItem("departure");
-                    var arrival = window.sessionStorage.getItem("arrival");
-
-                    $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                    $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                }
 
 
 

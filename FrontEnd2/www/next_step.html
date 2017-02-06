@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <title>LumePlanner</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/global.js"></script>
+        <script src="js/jquery.md5.js"></script>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+        <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+        <script src="js/LeafletPlayback.min.js"></script>
+        <style>
+
+            body {
+                background-color: #084265;
+                color: #ffffff;
+            }
+
+            .title {
+                background-color:#031b26;
+                color:#82a4a6;
+                padding:20px;
+            }
+
+            .img-responsive {
+                margin: 0 auto;
+            }
+
+            #mapid {
+                height: 480px;
+                padding:10px;
+            }
+
+
+            .marker {
+                margin-left: -17px !important;
+                margin-top: -25px !important;
+                width: 0px !important;
+                height: 0px !important;
+            }
+
+            .fa-col-blue {
+                color: #084265;
+                opacity: 0.8;
+            }
+            .fa-col-green {
+                color: #008a53;
+                opacity: 0.8;
+            }
+            .fa-col-red {
+                color: #ff9600;
+                opacity: 0.8;
+            }
+
+        </style>
+
+        <script>
+
+            function PlaceTime(place,time) {
+                this.place = place;
+                this.time = time;
+            }
+
+            function computeDistance(lat1, lng1, lat2, lng2) {
+                var earthRadius = 6371000; //meters
+                var dLat = (lat2-lat1) * Math.PI / 180;
+                var dLng = (lng2-lng1) * Math.PI / 180;
+                var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                        Math.cos(lat1 * Math.PI / 180) *
+                        Math.cos(lat2 * Math.PI / 180) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                var dist = (earthRadius * c);
+                return dist;
+            }
+
+
+
+
+            $(document).ready(function(){
+
+                var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
+                var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
+
+                console.log(JSON.stringify(visitplan));
+                console.log(type_of_plan);
+
+
+                var items = visitplan[type_of_plan];
+                console.log(items);
+
+                var start;
+                var end;
+
+
+                var currentDeparture = {};
+                var currentDestination = {};
+
+                if (items.visited === null || items.visited.length === 0) {
+                    start = items.departure.geometry.coordinates[1]+','+items.departure.geometry.coordinates[0];
+                    end = items.to_visit[0].visit.geometry.coordinates[1]+','+items.to_visit[0].visit.geometry.coordinates[0];
+                    currentDeparture = new PlaceTime(items.departure, items.departure_time);
+                    currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
+                } else if (items.to_visit.length > 0) {
+                    start = items.visited[items.visited.length-1].visit.geometry.coordinates[1]+','+items.visited[items.visited.length-1].visit.geometry.coordinates[0];
+                    end = items.to_visit[0].visit.geometry.coordinates[1]+','+items.to_visit[0].visit.geometry.coordinates[0];
+                    currentDeparture = new PlaceTime(items.visited[items.visited.length-1].visit, items.visited[items.visited.length-1].departure_time);
+                    currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
+                } else {
+                    start = items.visited[items.visited.length-1].visit.geometry.coordinates[1]+','+items.visited[items.visited.length-1].visit.geometry.coordinates[0];
+                    end = items.arrival.geometry.coordinates[1]+','+items.arrival.geometry.coordinates[0];
+                    currentDeparture = new PlaceTime(items.visited[items.visited.length-1].visit, items.visited[items.visited.length-1].departure_time);
+                    currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
+                }
+                console.log("start:"+start);
+                console.log("destination:"+end);
+
+
+                window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
+
+
+
+
+                var mymap = L.map('mapid',{
+                    attributionControl: false,
+                    scrollWheelZoom: false,
+                    doubleClickZoom: false,
+                    zoomControl: false,
+                    touchZoom: false,
+                    dragging: false,
+                });
+
+                mymap.setView([parseFloat(start.split(',')[0]), parseFloat(start.split(',')[1])], 18);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
+
+
+
+
+
+                var leafletData = mymap;
+
+                //GH alt_key: LijBPDQGfu7Iiq80w3HzwB4RUDJbMbhs6BU0dEnn
+                $.getJSON('https://graphhopper.com/api/1/route?'+
+                        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false'+
+                        '&point=' + start + '&point=' + end,function(data, status){
+
+                    //routing API
+                    console.log(data.paths[0]);
+                    var geoJsonPoints = data.paths[0].points.coordinates;
+                    var time_tot = data.paths[0].time;
+
+                    var distances = [];
+                    var d_tot = 0.0;
+                    var i, p_from, p_to, d;
+                    for (i=0; i<geoJsonPoints.length-1; i+=1) {
+                        p_from = geoJsonPoints[i];
+                        p_to = geoJsonPoints[i+1];
+                        d = computeDistance(p_from[1], p_from[0], p_to[1], p_to[0]);
+                        distances.push(d);
+                        d_tot += d;
+                    }
+
+                    var d_rates = [];
+                    for (i=0;i<distances.length;i+=1) {
+                        d_rates.push(distances[i]/d_tot);
+                    }
+
+                    var start_time = new Date().getTime();
+                    var timings = [];
+                    timings.push(start_time);
+                    for (i=0;i<d_rates.length;i+=1) {
+                        start_time +=  parseInt(d_rates[i]*time_tot, 10);
+                        timings.push(start_time);
+                    }
+
+
+                    var adaptedGeoJsonData = {
+                        type: "Feature",
+                        geometry: {
+                            type: "MultiPoint",
+                            coordinates: geoJsonPoints
+                        },
+                        properties: {
+                            time: timings
+                        }
+                    };
+
+                    console.log ({adaptedGeoJson : adaptedGeoJsonData});
+
+
+                    function playback(map) {
+
+
+
+                            var options = {
+                                //tickLen : '', //millis [def:250]
+                                speed : 10.0, //float multiplier [def:1]
+                                tracksLayer : false,
+                                marker: {
+                                    icon: L.divIcon({
+                                        type: 'div',
+                                        className: 'marker',
+                                        html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+                                    })
+                                }
+                            };
+                            var v = new L.Playback(map, adaptedGeoJsonData, null, options);
+                            v.start();
+
+
+                    }
+
+
+                    var timed_update;
+                    var old_position;
+                    function updateCenter(map) {
+                        //leafletData.getMap('map').then(function(map) {
+                        timed_update = setInterval(function() {
+                            var latlng = map.layerPointToLatLng(map.getPanes().markerPane.childNodes[0]._leaflet_pos);
+                            //console.log(latlng)
+                            if (old_position && old_position===latlng) {
+                                console.log("qui");
+                            }
+                            old_position = latlng;
+                            var dist =  computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
+                            console.log(dist);
+                            if ( dist < 50) {
+                                //changeView
+                                clearInterval(timed_update);
+                                if (items.to_visit.length > 0) {
+                                    window.location.href = "visit.html"
+                                } else {
+                                    window.location.href = "overview.html"
+                                }
+                            } else {
+                                //console.log("moving:"+computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng));
+                                map.panTo(L.latLng(latlng));
+                            }
+                        }, 100);
+                    }
+
+
+                    playback(mymap);
+                    updateCenter(mymap);
+
+
+
+                    var m = [];
+                    m[0] = {
+                        lat : parseFloat(start.split(',')[0]),
+                        lng: parseFloat(start.split(',')[1]),
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                        })
+                    };
+
+                    m[1] = {
+                        lat : parseFloat(end.split(',')[0]),
+                        lng: parseFloat(end.split(',')[1]),
+                        icon: L.divIcon({
+                            type: 'div',
+                            className: 'marker',
+                            html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
+                        })
+                    };
+
+
+                    for(var i=0; i<m.length;i++) {
+                        var marker = L.marker(m[i],{icon:m[i].icon}).addTo(mymap);
+                    }
+
+
+                    var geojson = {
+                        data  : data.paths[0].points,
+                        style : {
+                            fillColor: "green",
+                            weight: 2,
+                            opacity: 1,
+                            color: 'blue',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                        }
+                    };
+
+                    L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
+
+                });
+
+                $("#visit").click(function(){
+                    if (items.to_visit.length > 0) {
+                        window.location.href = "visit.html"
+                    } else {
+                        window.location.href = "overview.html"
+                    }
+                });
+
+
+
+
+
+            });
+        </script>
+
+    </head>
+    <body>
+
+    <div class="container-fluid text-center title">
+        <h2>Reach Your Next Stop</h2>
+    </div>
+
+    <div class="container-fluid">
+        <div id="mapid"></div>
+    </div>
+
+    <div class="container-fluid text-center">
+        <button id="visit" type="button" class="btn btn-primary btn-lg" style="margin-top:20px">Visit</button>
+    </div>
+    </body>
+</html>

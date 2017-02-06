@@ -213,22 +213,60 @@
             }
 
             $(document).ready(function(){
+                var hashed_user = JSON.parse(window.sessionStorage.getItem("hashed_user"));
                 var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-                //console.log(JSON.stringify(visitplan))
-                var mymap = L.map('mapid');
-                drawMapAndTable(mymap, visitplan.greedy);
+                var type_of_plan = "greedy";
+                var newplan = true;
+
+                if (visitplan==='2' || visitplan === 2) { // user comes from 'sign' view --> a visiting plan exists already
+
+                    newplan = false;
+
+                    $.postJSON(conf.dita_server+"plan",hashed_user,function(data, status){
+
+                        console.log(data);
+
+                        var city = data.city;
+                        window.sessionStorage.setItem("city",city);
+
+                        visitplan = {city:city, greedy: data.greedy, shortest: data.shortest, crowd_related:data.crowd_related, crowd_preference: data.crowd_preference};
+                        window.sessionStorage.setItem("visitplan",JSON.stringify(visitplan));
+                        //console.log(JSON.stringify(visitplan))
+                        var mymap = L.map('mapid');
+                        drawMapAndTable(mymap, visitplan[type_of_plan]);
+
+                    });
+
+                }
+                else {
+                    //console.log(JSON.stringify(visitplan))
+                    var mymap = L.map('mapid');
+                    drawMapAndTable(mymap, visitplan[type_of_plan]);
+                }
 
 
 
                 $(".path").click(function(event) {
                     console.log(event.target.id);
+                    type_of_plan = event.target.id;
                     drawMapAndTable(mymap, visitplan[event.target.id]);
                 });
 
                 $("#back").click(function(){
                     window.location.href = "home.html"
                 });
+
                 $("#start").click(function(){
+                    window.sessionStorage.setItem("type_of_plan",JSON.stringify(type_of_plan));
+
+                    if(newplan) {
+
+                        $.postJSON(conf.dita_server+"accept_plan",visitplan,function(data, status){
+
+                        });
+
+                    }
+
                     window.location.href = "next_step.html"
                 });
 

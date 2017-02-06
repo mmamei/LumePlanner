@@ -42,6 +42,8 @@
                                 if (data==='2' || data === 2) { //a visiting plan exists
                                     window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
                                     console.log("user logged: a visiting plan exists");
+                                    console.log(JSON.stringify(data));
+                                    window.sessionStorage.setItem("visitplan", JSON.stringify(data));
                                     window.location.href = "plan.html"
                                 } else if(data==='1' || data === 1) { //first login or a visiting plan doesn't exist
                                     window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
