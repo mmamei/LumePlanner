@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LUME</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/global.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<style>
+
+body {
+	background-color:#084465;
+	color:#ffffff;
+	font-weight:bold;
+}
+
+.container-fluid {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.title {
+	background-color:031b26;
+	color:#82a4a6;
+	padding:20px;
+}
+
+.center {
+    margin: 0 auto;
+    
+}
+
+.btn-default {
+	color:#031b26;
+	font-weight:bold;
+	width: 150px;
+}
+
+p {
+	margin-left: 20px;
+}
+
+
+</style>
+
+<script>
+
+
+    function find_pic (picture_query) {
+        var q = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9eab1c5e074fc0e1deb66c40d7535ad9&format=json&sort=relevance&page=1&per_page=1&nojsoncallback=1&text="+picture_query
+        console.log(q)
+        $.get(q, function(data, status){
+            console.log(data);
+            if (data.photos.photo.length > 0) {
+                var photo = data.photos.photo[0];
+                var photo_url = "https://farm"+photo.farm+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+"_b.jpg"
+                console.log(photo_url)
+                $("#photo").attr("src",photo_url);
+            } else {
+                console.log("not found:"+picture_query);
+                if (picture_query.lastIndexOf(" ") !== -1) {
+                    picture_query = picture_query.substr(0, picture_query.lastIndexOf(" "));
+                    find_pic(picture_query);
+                } else {
+                    console.log("picture not found");
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        var currentDestination = JSON.parse(window.sessionStorage.getItem("currentDestination"))
+        console.log(JSON.stringify(currentDestination))
+        var picture_query = currentDestination.place.display_name.split(',')[0];
+        find_pic(picture_query);
+
+        $("#title").text(picture_query)
+
+        $("#next").click(function() {
+
+            var hashed_user = JSON.parse(window.sessionStorage.getItem("hashed_user"));
+            var city = window.sessionStorage.getItem("city")
+            var d = new Date().getTime();
+            var request = {
+                user    : hashed_user.email,
+                visited : currentDestination.place,
+                time    : d,
+                rating  : 10, // ???
+                city    : city
+            };
+            console.log(request);
+
+            $.postJSON(conf.dita_server+"visited",request,function(data, status){
+
+                //console.log(JSON.stringify(data))
+                window.sessionStorage.setItem("visitplan",JSON.stringify(data));
+                window.location.href = "next_step.html"
+            });
+        });
+
+
+    });
+</script>
+
+
+            </head>
+<body>
+
+<div class="container-fluid text-center title">
+<h3 id="title"></h3>
+</div>
+
+<div class="container-fluid text-center">
+<img id="photo" src="img/fontana.jpg" class="img-responsive center">
+</div>
+
+<div class="container-fluid">
+<p>Rate the crowding level on your way here</p>
+<table class="center">
+<tr><td><button class="btn btn-default">Almost Empty</button></td><td><button class="btn btn-default">Can Walk</button></td></tr>
+<tr><td><button class="btn btn-default">Hard to Walk</button></td><td><button class="btn btn-default">Cannot Move</button></td></tr>
+</table>
+
+</div>
+
+
+<div class="container-fluid">
+<p>Share your visit</p>
+<p>
+<img src="img/like.png" class="img-rounded" width="50px">
+<span style="color:orange">Like in Facebook!</span>
+</p>
+</div>
+
+
+<div class="container-fluid">
+<button id="next" style="margin-left:20px" class="btn btn-info btn-lg">Next Visit</button>
+</div>
+
+</body>
+</html>

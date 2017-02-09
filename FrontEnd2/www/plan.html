@@ -120,11 +120,11 @@
                         lng: items.arrival.geometry.coordinates[0],
                         message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Finish:" + items.arrival_time + "</b><br />" +
                         format_name(items.arrival.display_name)+"</p>",
-                        icon: {
+                        icon: L.divIcon({
                             type: 'div',
                             className: 'marker',
                             html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
-                        }
+                        })
                     };
 
                     m[items.departure.place_id] = {
