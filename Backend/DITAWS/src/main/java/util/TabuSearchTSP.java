@@ -2,15 +2,9 @@ package util;
 
 
 import io.CityData;
-import io.Mongo;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.apache.log4j.Logger;
+import java.util.*;
 
 import services.ComputeDistances;
 import model.Distance;
@@ -56,8 +50,36 @@ public class TabuSearchTSP {
 //		tsp.run(startPlace, endPlace, POIsIDlist, 15);
 //	}
 
+
+	public static void main(String[] args) throws IOException {
+		TabuSearchTSP tsp = new TabuSearchTSP();
+
+		CityData.DESKTOP_RUN = true;
+		CityData cityData = new CityData("ReggioEmilia");
+		cityData.init();
+
+		POI place_start = cityData.retrieveActivity("44791071");
+		POI place_end = cityData.retrieveActivity("44791071");
+		String [] POIsIDarr = new String [] {
+				"44791071",
+				"48034822"
+		};
+
+		List<String> POIsIDlist = new ArrayList<>();
+		for (int i=0; i< POIsIDarr.length; i++) {
+			POIsIDlist.add(POIsIDarr[i]);
+		}
+
+		tsp.run(cityData, place_start, place_end, POIsIDlist, 15);
+	}
+
 	public Map<String[], Double> run(CityData cityData, POI startPlace, POI endPlace, List<String> POIsIDlist, int numBestSolutions) throws IOException {
 
+		//System.err.println("?????????????????????????????????????????????????");
+		//System.err.println("startPlace "+startPlace.getPlace_id());
+		//System.err.println("endPlace "+endPlace.getPlace_id());
+		//System.err.println("POIsIDlist "+POIsIDlist);
+		//System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 		Map<Integer,Map<Double, int[]>> topSolutions = new HashMap<Integer,Map<Double, int[]>>(); //<iteration, <cost, index[]>>
 		Map<String[], Double> topSolutionsPlace = new HashMap<String[], Double>(); //<place[], cost>
@@ -274,18 +296,28 @@ public class TabuSearchTSP {
 		return topSolutionsPlace;
 	}
 
-	private TreeMap<String, TreeMap<String, Double>> getDistances(CityData cityData, POI startPlace, POI endPlace, List<String> POIsIDlist) {
+	private TreeMap<String, TreeMap<String, Double>> getDistances(CityData cityData, POI startPlace, POI endPlace, List<String> oPOIsIDlist) {
+
+
+		// clone oPOIsIDlist to avoid side effects
+		List<String> POIsIDlist = new ArrayList<>();
+		for(String x: oPOIsIDlist)
+			POIsIDlist.add(x);
+
 		TreeMap<String, TreeMap<String, Double>> distancesMap = new TreeMap<>();
 		POI closest_to_end = null;
 		if (endPlace.getPlace_id().equals("00")) {
 			closest_to_end = cityData.retrieveClosestActivity(endPlace);
 			POIsIDlist.add(closest_to_end.getPlace_id());
 		}
-		
+
+
+		// original
 		for (String from : cityData.distances.keySet()) {
 			if (POIsIDlist.contains(from)) {
 				TreeMap<String, Double> tos= new TreeMap<String, Double>();
 				for (String to : cityData.distances.get(from).keySet()) {
+
 					if (null != closest_to_end && closest_to_end.getPlace_id().equals(to)) {
 						tos.put("00", cityData.getDistance(from,to));
 					} else {
@@ -299,6 +331,8 @@ public class TabuSearchTSP {
 				}
 			}
 		}
+
+
 		
 		if (startPlace.getPlace_id().equals("0")) {
 			Distance d = new ComputeDistances().runOnetoMany(cityData, startPlace, endPlace, POIsIDlist);

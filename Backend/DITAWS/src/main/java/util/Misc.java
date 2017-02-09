@@ -1,5 +1,10 @@
 package util;
 
+import model.Node;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by marco on 12/10/2016.
  */
@@ -10,7 +15,7 @@ public class Misc {
         double temp = Math.pow(10.0, position);
         a *= temp;
         a = Math.round(a);
-        return (a / (double) temp);
+        return (a / temp);
     }
 
     public static double haverDist(double[]p1, double[]p2) {
@@ -25,5 +30,31 @@ public class Misc {
         double dist = earthRadius * c;
         return round(dist,3);
     }
+
+    public static String toString(Map<String[], Double> solution) {
+        StringBuffer sb = new StringBuffer();
+
+        for(String[] k: solution.keySet()) {
+            sb.append("{"+toString(k)+","+solution.get(k)+"}");
+        }
+
+        return sb.toString();
+    }
+
+    public static String toString(String[] a) {
+        StringBuffer sb = new StringBuffer();
+        for(String s : a)
+            sb.append("->"+s);
+        return sb.substring(2);
+    }
+
+
+    public static String toString(List<Node> l) {
+        StringBuffer sb = new StringBuffer();
+        for(Node n : l)
+            sb.append("->"+n.getName());
+        return sb.substring(2);
+    }
+
 
 }

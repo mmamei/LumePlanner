@@ -33,6 +33,9 @@ public class CityData {
     public TreeMap<String, TreeMap<String, Double>> distances;
     private static Logger logger = Logger.getLogger(CityData.class);
 
+    public static boolean DESKTOP_RUN = false;
+
+
     public CityData(String city) {
         this.city = city;
         activities = new ArrayList<>();
@@ -47,8 +50,11 @@ public class CityData {
             dao = new Mongo(CityProp.getInstance().get(city).getDB());
             hopper = new GraphHopper().forServer();
 
+            if(!DESKTOP_RUN)
+                data_path = this.getClass().getResource("/../data/"+CityProp.getInstance().get(city).getDataDir()).getPath();
+            if(DESKTOP_RUN)
+                data_path = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\target\\DITA\\WEB-INF\\data\\"+city+"\\";
 
-            data_path = this.getClass().getResource("/../data/"+CityProp.getInstance().get(city).getDataDir()).getPath();
             hopper.setInMemory();
             hopper.setOSMFile(data_path+"bbox.osm");
             hopper.setGraphHopperLocation(data_path+"graph");
@@ -225,7 +231,7 @@ public class CityData {
     }
 
 
-    public double getDistance(String from, String to) {
+    public Double getDistance(String from, String to) {
         return distances.get(from).get(to);
     }
 }

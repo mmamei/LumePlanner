@@ -126,7 +126,7 @@ public class Graph {
 		}
 
 		for (String node : result.keySet()) {
-			logger.info(node+":");
+			logger.info("from "+node+" can go to:");
 			for (String succ : result.get(node)) {
 				logger.info(succ+" ");
 			}

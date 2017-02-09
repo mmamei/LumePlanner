@@ -1,26 +1,19 @@
 package services;
 
 import io.CityData;
-import io.Mongo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.graphhopper.GraphHopper;
-
-import util.Graph;
-import util.TimeUtils;
-import util.TravelPath;
+import util.*;
 import model.Activity;
 import model.Node;
 import model.POI;
 import model.Path;
-import model.UncertainValue;
 import model.Visit;
 import model.VisitPlan;
 
@@ -31,7 +24,7 @@ public class FindCrowdRelatedPath {
 	private List<String> to_visit;
 
 	public VisitPlan newPlan(CityData cityData, String user, POI departure, POI arrival, String start_time, List<String> POIsList, double crowding_preference) {
-		to_visit = new ArrayList<String>();
+		to_visit = new ArrayList<>();
 		for (String poi : POIsList) {
 			to_visit.add(poi);
 		}
@@ -40,14 +33,15 @@ public class FindCrowdRelatedPath {
 		logger.info("start:"+departure.getPlace_id());
 		logger.info("end:"+arrival.getPlace_id());
 		logger.info("start_time:"+start_time);
+		logger.info("to_visit:"+to_visit+" SIZE = "+to_visit.size());
 		
 		/*
 		 * COMPUTE CROWD RELATED PATH WITH CROWD PREFERENCE 
 		 */
 
 		try {
-            List<Node> path = new PathFindingWithCrowding().AstarSearch(cityData, departure, arrival, start_time, to_visit, 10, crowding_preference);
-            logger.info("Crowd Related path with preferred <" + crowding_preference + "> cong.levels :" + path.get(0).getName() + "-" + path.get(path.size() - 1).getName() + ":" + path.get(path.size() - 1).getF_scores());
+            List<Node> path = new AstarPathFinding().AstarSearch(cityData, departure, arrival, start_time, to_visit, 10, crowding_preference);
+            logger.info("Crowd Related path with preferred <" + crowding_preference + "> cong.levels :" + Misc.toString(path) + ":" + path.get(path.size() - 1).getF_scores());
 
 		/*
 		 * ADAPT TRAVEL TIME OF THE PATH WITH TRUE CONGESTION LEVELS
@@ -57,17 +51,23 @@ public class FindCrowdRelatedPath {
             String[] sequence = new String[(departure.getPlace_id().equals(arrival.getPlace_id()) || (departure.getPlace_id().equals("0") && arrival.getPlace_id().equals("00"))) ? to_visit.size() + 1 : to_visit.size()];
             for (Node n : path) {
                 sequence[cont++] = n.getName();
-                //logger.info("sequence["+(cont-1)+"]"+sequence[cont-1]);
+				System.err.println("sequence["+(cont-1)+"]"+sequence[cont-1]);
             }
             Map<String[], Double> solution = new HashMap<>();
             solution.put(sequence, 0D);
+			logger.info("OLD-----> "+ Misc.toString(solution));
+
+
+			//solution = new TabuSearchTSP().run(cityData, departure, arrival, to_visit, 1);
+			//logger.info("NEW-----> "+ Misc.toString(solution));
+
 
             Map<String, Map<Integer, Node>> graph = Graph.buildGraph(
                     departure.getPlace_id(),
                     arrival.getPlace_id(),
                     Graph.getSuccessorsList(solution));
 
-            path = new PathFindingWithCrowding().AstarSearch(cityData, departure, arrival, start_time, graph, 1d);
+            path = new AstarPathFinding().AstarSearch(cityData, departure, arrival, start_time, graph, 1d);
             logger.info("Crowd Related path with real cong.levels :" + path.get(0).getName() + "-" + path.get(path.size() - 1).getName() + ":" + path.get(path.size() - 1).getF_scores());
 
             POI from = null;
@@ -119,6 +119,7 @@ public class FindCrowdRelatedPath {
             return new VisitPlan();
         }
 	}
+
 	
 	
 	public VisitPlan updatePlan(CityData cityData, Visit last_visit, VisitPlan plan, List<String> POIsList, double crowd_preference) {
@@ -141,7 +142,7 @@ public class FindCrowdRelatedPath {
 		List<Node> path = new ArrayList<Node>();
 		List<Activity> activities = new ArrayList<Activity>();
 		try {
-			path = new PathFindingWithCrowding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), to_visit, 10, crowd_preference);
+			path = new AstarPathFinding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), to_visit, 10, crowd_preference);
 			logger.info("Crowd Related path with preference <"+crowd_preference+"> :"+path.get(0).getName()+"-"+path.get(path.size()-1).getName()+":"+path.get(path.size()-1).getF_scores());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,7 +169,7 @@ public class FindCrowdRelatedPath {
 		
 		activities = new ArrayList<Activity>();
 		try {
-			path = new PathFindingWithCrowding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), graph, 1d);
+			path = new AstarPathFinding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), graph, 1d);
 			logger.info("Crowd Related path with true cong.levels :"+path.get(0).getName()+"-"+path.get(path.size()-1).getName()+":"+path.get(path.size()-1).getF_scores());
 		} catch (Exception e) {
 			e.printStackTrace();

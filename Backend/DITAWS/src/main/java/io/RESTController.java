@@ -183,12 +183,13 @@ public class RESTController {
 		POI departure = null;
 		POI arrival = null;
 
+
 		//List<Activity> result = new ArrayList<Activity>();
 		if (start.getPlace_id().equals("0")) {
-			if (!new PointWithinBBox(city).check(start.getGeometry().getCoordinates())) {
+			//if (!new PointWithinBBox(city).check(start.getGeometry().getCoordinates())) {
 				//result.add(new Activity("0"));
-				return new VisitPlanAlternatives(city,new VisitPlan(), new VisitPlan(), new VisitPlan(new POI("0")), 0);
-			}
+			//	return new VisitPlanAlternatives(city,new VisitPlan(), new VisitPlan(), new VisitPlan(new POI("0")), 0);
+			//}
 			departure = new POI("0", 
 					start.getGeometry().getCoordinates().getLatitude(), 
 					start.getGeometry().getCoordinates().getLongitude(), 
@@ -198,10 +199,10 @@ public class RESTController {
 			departure = start;
 		}
 		if (end.getPlace_id().equals("0")) {
-			if (!new PointWithinBBox(city).check(end.getGeometry().getCoordinates())) {
-				//result.add(new Activity("00"));
-				return new VisitPlanAlternatives(city, new VisitPlan(), new VisitPlan(), new VisitPlan(new POI("00")), 0);
-			}
+			//if (!new PointWithinBBox(city).check(end.getGeometry().getCoordinates())) {
+			//	//result.add(new Activity("00"));
+			//	return new VisitPlanAlternatives(city, new VisitPlan(), new VisitPlan(), new VisitPlan(new POI("00")), 0);
+			//}
 			arrival = new POI("00", 
 					end.getGeometry().getCoordinates().getLatitude(), 
 					end.getGeometry().getCoordinates().getLongitude(), 
@@ -299,7 +300,7 @@ public class RESTController {
 		}
 		//insert new plan
 
-
+		/*
 		//if the visiting has started before (at least 1 visited activity)
 		//the crowding and occupancies update is done at the previous step (see: addVisitedAndReplan)
 		if (!plan_accepted.getVisited().isEmpty()) return true;
@@ -335,6 +336,7 @@ public class RESTController {
 			System.out.println("error contacting congestion module");
 			return false;
 		}
+		*/
 		return true;
 	}
 
@@ -421,7 +423,9 @@ public class RESTController {
 			default: //0
 				newP = new FindCrowdRelatedPath().updatePlan(cityData, new_visited, plans.getCrowd_related(), pois, plans.getCrowd_preference());
 			}
-			
+
+			/*
+
 			//VisitPlan leastCrowded = new FindCrowdRelatedPath().updatePlan(dao, new_visited, plans.getCrowd_related(), pois, activities, distances, travel_times, crowding_levels, occupancies, plans.getCrowd_preference(), hopper);
 			for (int i=0; i<currentP.getTo_visit().size();i++) {
 				Activity to_visit = currentP.getTo_visit().get(i);
@@ -475,6 +479,9 @@ public class RESTController {
 					}
 				}
 			}
+
+
+			*/
 
 			switch (type) {
 			case 1: // greedy

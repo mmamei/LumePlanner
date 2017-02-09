@@ -1,17 +1,11 @@
 package services;
 
 import io.CityData;
-import io.Mongo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-
-import com.graphhopper.GraphHopper;
 
 import util.TimeUtils;
 import util.TravelPath;
@@ -19,7 +13,6 @@ import model.Activity;
 import model.Node;
 import model.POI;
 import model.Path;
-import model.UncertainValue;
 import model.Visit;
 import model.VisitPlan;
 
@@ -46,7 +39,7 @@ public class FindShortestPath {
 		List<Node> path = new ArrayList<Node>();
 		List<Activity> activities = new ArrayList<Activity>();
 		try {
-			path = new PathFindingWithCrowding().AstarSearch(cityData, departure, arrival, start_time, to_visit, 1, 1d);
+			path = new AstarPathFinding().AstarSearch(cityData, departure, arrival, start_time, to_visit, 1, 1d);
 			logger.info("Shortest path with real cong.levels :"+path.get(0).getName()+"-"+path.get(path.size()-1).getName()+":"+path.get(path.size()-1).getF_scores());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,7 +105,7 @@ public class FindShortestPath {
 		List<Node> path = new ArrayList<Node>();
 		List<Activity> activities = new ArrayList<Activity>();
 		try {
-			path = new PathFindingWithCrowding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), to_visit, 1, 1d);
+			path = new AstarPathFinding().AstarSearch(cityData, last_visit.getVisited(), plan.getArrival(), TimeUtils.getStringTime(last_visit.getTime()%86400000L), to_visit, 1, 1d);
 			logger.info("Shortest path with real cong.levels :"+path.get(0).getName()+"-"+path.get(path.size()-1).getName()+":"+path.get(path.size()-1).getF_scores());
 		} catch (Exception e) {
 			e.printStackTrace();
