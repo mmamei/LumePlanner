@@ -21,16 +21,16 @@ import static util.Misc.round;
  */
 public class CityData {
     public String city;
-    public List<POI> activities;
+    private List<POI> activities;
     private List<POI> restaurants;
     private String last_crowding_levels;
     private Map<String, HashMap<String, List<UncertainValue>>> crowding_levels;
-    public Map<String, List<Integer>> occupancies;
+    private Map<String, List<Integer>> occupancies;
     private Map<String, HashMap<String, List<UncertainValue>>> travel_times;
     private Mongo dao;
     public GraphHopper hopper;
-    public String data_path;
-    public TreeMap<String, TreeMap<String, Double>> distances;
+    private String data_path;
+    private TreeMap<String, TreeMap<String, Double>> distances;
     private static Logger logger = Logger.getLogger(CityData.class);
 
     public static boolean DESKTOP_RUN = false;
@@ -165,14 +165,6 @@ public class CityData {
         return dao.retrieveGridCrowding();
     }
 
-    public POI getActivity(String place_id) {
-        for (POI current : activities) {
-            if (current.getPlace_id().equals(place_id)) {
-                return current;
-            }
-        }
-        return null;
-    }
 
     public double retrieveGridMaxCrowding() {
        return dao.retrieveGridMaxCrowding();
@@ -197,15 +189,6 @@ public class CityData {
         return result;
     }
 
-
-    public void increaseOccupancies(String to, String arr_t, String dep_t) {
-        occupancies = new Occupancies().increase(to, arr_t, dep_t, occupancies);
-    }
-
-    public void decreaseOccupancies(String to, String arr_t, String dep_t) {
-        occupancies = new Occupancies().decrease(to, arr_t, dep_t, occupancies);
-
-    }
 
     public POI retrieveActivity(String next_id) {
         return dao.retrieveActivity(next_id);
@@ -232,6 +215,28 @@ public class CityData {
 
 
     public Double getDistance(String from, String to) {
+        if(distances.get(from)==null || distances.get(from).get(to) == null) {
+            System.err.println("getDistance.getDistance "+from+" "+to+" not found");
+            return 100000.0;
+        }
         return distances.get(from).get(to);
     }
+
+    //int occupancy = cityData.
+    public int getOccupancy(String child_name, int temp_arr_time_actual) {
+        return occupancies.get(child_name).get(TimeUtils.getTimeSlot(temp_arr_time_actual));
+    }
+
+
+
+    public POI getPOI(String name) {
+        for (POI poi : activities) {
+            if (poi.getPlace_id().equals(name))
+                return poi;
+        }
+        return null;
+    }
+
+
+
 }

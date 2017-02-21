@@ -51,14 +51,8 @@ public class FindGreedyPath {
 			double min_distance = Double.MAX_VALUE;
 			POI closest = null;
 			for (String poi : to_visit) {
-				//POI current = dao.retrieveActivity(poi);
-				POI current = null;
-				for (POI p : cityData.activities) {
-					if (poi.equals(p.getPlace_id())) {
-						current = p;
-						break;
-					}
-				}
+				POI current = cityData.getPOI(poi);
+
 				double current_distance = haverDist(
 						new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()}, 
 						new double[] {current.getGeometry().getCoordinates().getLatitude(), current.getGeometry().getCoordinates().getLongitude()});
@@ -114,13 +108,7 @@ public class FindGreedyPath {
 			if (n.getName().equals("0") || n.getName().equals("00")) {
 				p = (n.getName().equals("0")) ? departure : arrival;
 			} else {
-				//p = dao.retrieveActivity(n.getName());
-				for (POI poi : cityData.activities) {
-					if (poi.getPlace_id().equals(n.getName())) {
-						p = poi;
-						break;
-					}
-				}
+				p = cityData.getPOI(n.getName());
 			}
 			current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));
 			current.setArrival_time(TimeUtils.getStringTime(n.getArrivalTime()));
@@ -170,13 +158,8 @@ public class FindGreedyPath {
 			double min_distance = Double.MAX_VALUE;
 			POI closest = null;
 			for (String poi : to_visit) {
-				POI current = null; // = dao.retrieveActivity(poi);
-				for (POI thispoi : cityData.activities) {
-					if (poi.equals(thispoi.getPlace_id())) {
-						current = thispoi;
-						break;
-					}
-				}
+				POI current = cityData.getPOI(poi);
+
 				double current_distance = haverDist(
 						new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()}, 
 						new double[] {current.getGeometry().getCoordinates().getLatitude(), current.getGeometry().getCoordinates().getLongitude()});
@@ -226,13 +209,7 @@ public class FindGreedyPath {
 			if (n.getName().equals("0") || n.getName().equals("00")) {
 				p = (n.getName().equals("0")) ? last_visit.getVisited() : plan.getArrival();
 			} else {
-				//p = dao.retrieveActivity(n.getName());
-				for (POI thispoi : cityData.activities) {
-					if (n.getName().equals(thispoi.getPlace_id())) {
-						p = thispoi;
-						break;
-					}
-				}
+				p = cityData.getPOI(n.getName());
 			}
 			current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));
 			current.setArrival_time(TimeUtils.getStringTime(n.getArrivalTime()));

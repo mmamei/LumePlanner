@@ -57,13 +57,7 @@ public class FindShortestPath {
 			if (n.getName().equals("0") || n.getName().equals("00")) {
 				p = (n.getName().equals("0")) ? departure : arrival;
 			} else {
-				for (POI poi : cityData.activities) {
-					if (n.getName().equals(poi.getPlace_id())){
-						p = poi;
-						break;
-					}
-				}
-				//p = dao.retrieveActivity(n.getName());
+				p = cityData.getPOI(n.getName());
 			}
 			current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));
 			current.setArrival_time(TimeUtils.getStringTime(n.getArrivalTime()));
@@ -123,13 +117,7 @@ public class FindShortestPath {
 			if (n.getName().equals("0") || n.getName().equals("00")) {
 				p = (n.getName().equals("0")) ? last_visit.getVisited() : plan.getArrival();
 			} else {
-				for (POI poi : cityData.activities) {
-					if (poi.getPlace_id().equals(n.getName())) {
-						p = poi;
-						break;
-					}
-				}
-				//p = dao.retrieveActivity(n.getName());
+				p = cityData.getPOI(n.getName());
 			}
 			current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));
 			current.setArrival_time(TimeUtils.getStringTime(n.getArrivalTime()));

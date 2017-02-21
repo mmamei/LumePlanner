@@ -26,7 +26,7 @@ public class UpdateCrowdings {
 		try {
 			//cell_path_distances = <position, <cell, distance_walked_in_cell>
 			
-			Long travellingTime = getTravelTime(poi_start, poi_end, time_slot, cityData.travel_times);
+			Long travellingTime = cityData.getTravelTime(poi_start, poi_end, time_slot);
 					//dao.retrieveTravelTime(poi_start, poi_end, time_slot);
 			
 			//compute the total distance covered along the path
@@ -55,15 +55,9 @@ public class UpdateCrowdings {
 			Long dep_time_fromCell = time_slot;
 			for (int i=0; i< travel_byCell.size(); i++) {
 				dep_time_fromCell += travel_byCell.get(i);
-				Cell current_cell = null;
-				for (Cell cell : cityData.grid) {
-					if (cell.getId().equals(cityData.p2p_cell_paths.get(poi_start).get(poi_end).get(i).keySet().iterator().next())) {
-						current_cell = cell;
-					}
-				}
-				//current_cell = dao.retrieveCell(cell_path_distances.get(poi_start).get(poi_end).get(i).keySet().iterator().next());
+				Cell current_cell =cityData.retrieveCell(poi_start,poi_end,i);
 
-				cityData.dao.updateGridCrowdings(current_cell, arr_time_inCell, dep_time_fromCell, inc_dec);
+				cityData.updateGridCrowdings(current_cell, arr_time_inCell, dep_time_fromCell, inc_dec);
 				arr_time_inCell += travel_byCell.get(i);
 				
 			}
@@ -78,17 +72,4 @@ public class UpdateCrowdings {
 
 		return true;
 	}
-
-	private Long getTravelTime(String poi_start, String poi_end, Long time_slot, Map<String, HashMap<String, List<UncertainValue>>> travel_times) {
-		UncertainValue travel_time = null;
-		try {
-			
-			travel_time = travel_times.get(poi_start).get(poi_end).get(TimeUtils.getTimeSlot(TimeUtils.getMillis15MRoundTime(time_slot)));
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ((long)RandomValue.get(travel_time))*60*1000l;
-	}
-
 }

@@ -304,15 +304,16 @@ public class TabuSearchTSP {
 		for(String x: oPOIsIDlist)
 			POIsIDlist.add(x);
 
-		TreeMap<String, TreeMap<String, Double>> distancesMap = new TreeMap<>();
+
 		POI closest_to_end = null;
 		if (endPlace.getPlace_id().equals("00")) {
 			closest_to_end = cityData.retrieveClosestActivity(endPlace);
 			POIsIDlist.add(closest_to_end.getPlace_id());
 		}
 
-
+		/*
 		// original
+		TreeMap<String, TreeMap<String, Double>> distancesMap = new TreeMap<>();
 		for (String from : cityData.distances.keySet()) {
 			if (POIsIDlist.contains(from)) {
 				TreeMap<String, Double> tos= new TreeMap<String, Double>();
@@ -331,9 +332,29 @@ public class TabuSearchTSP {
 				}
 			}
 		}
+		System.out.println(distancesMap);
+		*/
 
 
-		
+		TreeMap<String, TreeMap<String, Double>> distancesMap = new TreeMap<>();
+		for (String from : POIsIDlist) {
+				TreeMap<String, Double> tos= new TreeMap<String, Double>();
+				for (String to : POIsIDlist) {
+
+					if (null != closest_to_end && closest_to_end.getPlace_id().equals(to)) {
+						tos.put("00", cityData.getDistance(from,to));
+					} else {
+						tos.put(to,  cityData.getDistance(from,to));
+					}
+				}
+				if (null != closest_to_end && closest_to_end.getPlace_id().equals(from)) {
+					distancesMap.put("00", tos);
+				} else {
+					distancesMap.put(from, tos);
+				}
+		}
+		System.out.println(distancesMap);
+
 		if (startPlace.getPlace_id().equals("0")) {
 			Distance d = new ComputeDistances().runOnetoMany(cityData, startPlace, endPlace, POIsIDlist);
 			TreeMap<String, Double> tos = new TreeMap<String, Double>();
@@ -344,6 +365,8 @@ public class TabuSearchTSP {
 		}
 		return distancesMap;
 	}
+
+
 
 
 	public int[] getBestNeighbour(int[][] tabuList, int[] initSolution) {

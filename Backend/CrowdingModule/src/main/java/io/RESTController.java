@@ -128,7 +128,7 @@ public class RESTController {
 		}
 	}
 
-
+	/*
 	@RequestMapping(value = "crowding_fdbk/{user}/{city}/{departure}/{arrival}/{dep_time}/{choice}", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody UncertainValue setCrowdingFdbk(@PathVariable String user, @PathVariable String city, @PathVariable String departure, @PathVariable String arrival, @PathVariable String dep_time, @PathVariable int choice) {
 		logger.info("CM_Crowding Feedback from "+user);
@@ -145,4 +145,5 @@ public class RESTController {
 		logger.info("Updated "+updated);
 		return value;
 	}
+	*/
 }

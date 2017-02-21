@@ -82,13 +82,8 @@ public class FindCrowdRelatedPath {
                 if (n.getName().equals("0") || n.getName().equals("00")) {
                     p = (n.getName().equals("0")) ? departure : arrival;
                 } else {
+					p = cityData.getPOI(n.getName());
                     //p = dao.retrieveActivity(n.getName());
-                    for (POI poi : cityData.activities) {
-                        if (n.getName().equals(poi.getPlace_id())) {
-                            p = poi;
-                            break;
-                        }
-                    }
                 }
                 current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));
                 current.setArrival_time(TimeUtils.getStringTime(n.getArrivalTime()));
@@ -188,12 +183,7 @@ public class FindCrowdRelatedPath {
 			if (n.getName().equals("0") || n.getName().equals("00")) {
 				p = (n.getName().equals("0")) ? last_visit.getVisited() : plan.getArrival();
 			} else {
-				for (POI poi : cityData.activities) {
-					if (poi.getPlace_id().equals(n.getName())) {
-						p = poi;
-						break;
-					}
-				}
+				p = cityData.getPOI(n.getName());
 				//p = dao.retrieveActivity(n.getName());
 			}
 			current.setDeparture_time(TimeUtils.getStringTime(n.getDepartureTime()));

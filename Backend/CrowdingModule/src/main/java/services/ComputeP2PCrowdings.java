@@ -78,7 +78,7 @@ public class ComputeP2PCrowdings {
 						//logger.info("from:"+from.getPlace_id()+"\tto:"+to.getPlace_id()+"\ttime_slot:"+TimeUtils.getTimeSlot(arr_time_inCell));
 						//logger.info("travel_times:"+travel_times.get(from.getPlace_id()).get(to.getPlace_id()).toString());
 
-						Long travelling_time = ((long)RandomValue.get(cityData.travel_times.get(from).get(to).get(TimeUtils.getTimeSlot(arr_time_inCell))))*60*1000l;
+						Long travelling_time = cityData.getTime(from,to,arr_time_inCell);//(long)RandomValue.get(cityData.travel_times.get(from).get(to).get(TimeUtils.getTimeSlot(arr_time_inCell))))*60*1000l;
 						//compute the travelling time per every cell
 						List<Long> travel_byCell = new ArrayList<>();
 						for (int sequence_id = 0; sequence_id<distance_rate.size(); sequence_id++) {
@@ -88,7 +88,7 @@ public class ComputeP2PCrowdings {
 						for (int i=0; i< travel_byCell.size(); i++) {
 							dep_time_fromCell += travel_byCell.get(i);
 							String current = cityData.p2p_cell_paths.get(from).get(to).get(i).keySet().iterator().next();
-							sum_crowdings += findCrowding(cityData.grid_crowdings, current, arr_time_inCell, dep_time_fromCell)*distance_rate.get(i);
+							sum_crowdings += cityData.findCrowding(current, arr_time_inCell, dep_time_fromCell)*distance_rate.get(i);
 							arr_time_inCell += travel_byCell.get(i);
 						}
 						crowdings.add((int)dep_time/900000, new UncertainValue(sum_crowdings/cityData.p2p_cell_paths.get(from).get(to).size(), "N:"+sum_crowdings/cityData.p2p_cell_paths.get(from).get(to).size()/10d));
@@ -98,7 +98,7 @@ public class ComputeP2PCrowdings {
 					cont+=1;
 					if (cont%1000==0) logger.info(cont);
 					POI2POICrowding current = new POI2POICrowding(from, to, crowdings);
-					cityData.dao.updateCrowding(current);
+					cityData.updateCrowding(current);
 					result.add(current);
 
 
@@ -109,23 +109,7 @@ public class ComputeP2PCrowdings {
 	}
 
 
-	public Double findCrowding(Map<String, List<UncertainValue>> grid_crowdings, String current_cell, Long arr_time_inCell, Long dep_time_fromCell) {
-		Long start_time = TimeUtils.getMillis15MRoundTime(arr_time_inCell);
-		Long end_time = TimeUtils.getMillis15MRoundTime(dep_time_fromCell);
-		if (end_time<start_time) end_time += 86400000L;
-		int number_time_slots = 1 + ((int)(end_time - start_time))/900000;
 
-		//logger.info(current.getId()+" ("+arr_time_inCell+ "-"+dep_time_fromCell+") ["+number_time_slots+"] ("+start_time+"-"+end_time+")");
-
-		double max_mean = Double.MIN_VALUE;
-		for (int i=0; i<number_time_slots; i++) {
-			//logger.info("grid_crowding:"+current.getId()+"("+TimeUtils.getTimeSlot((start_time+900000*i)%86400000L)+"):::"+grid_crowdings.get(current.getId()).get(TimeUtils.getTimeSlot((start_time+900000*i)%86400000L)).getDistribution());
-			double mean = RandomValue.get(grid_crowdings.get(current_cell).get(TimeUtils.getTimeSlot((start_time+900000*i)%86400000L)));
-			max_mean = (mean > max_mean) ? mean : max_mean; 
-		}
-
-		return max_mean;
-	}
 
 
 

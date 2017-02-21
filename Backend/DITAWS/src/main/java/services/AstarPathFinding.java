@@ -240,7 +240,7 @@ public class AstarPathFinding {
 
 				double visit_time = cityData.getTime(child_name,child_name,(int)temp_arr_time_actual);
 				double visit_distance = visit_time * MAX_SPEED;
-				int occupancy = cityData.occupancies.get(child_name).get(TimeUtils.getTimeSlot((int) temp_arr_time_actual));
+				int occupancy = cityData.getOccupancy(child_name,(int) temp_arr_time_actual);
 
 				double actual_visit_speed = MAX_SPEED * (1d - Math.pow(Math.E, (-GAMMA*(1d/(occupancy/MAX_OCCUPANCY)-1d))));
 
@@ -422,7 +422,7 @@ public class AstarPathFinding {
 				//System.out.println("\t\tvisit_time:"+visit_time);
 				double visit_distance = visit_time * MAX_SPEED;
 				//System.out.println("\t\tvisit_distance:"+visit_distance);
-				int occupancy = cityData.occupancies.get(child_name).get(TimeUtils.getTimeSlot((int) temp_arr_time_actual));
+				int occupancy = cityData.getOccupancy(child_name,(int) temp_arr_time_actual);
 				//System.out.println("\t\toccupancy:"+occupancy);
 
 				double actual_visit_speed = MAX_SPEED * (1d - Math.pow(Math.E, (-GAMMA*(1d/(occupancy/MAX_OCCUPANCY)-1d))));
