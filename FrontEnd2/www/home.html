@@ -62,82 +62,20 @@
                 console.log("selected attractions = "+spois.attractions.length);
 
 
-                if(pois.hotels.length == 0) {
+                console.log("get activties form cache");
+                var departure = window.sessionStorage.getItem("departure");
+                var arrival = window.sessionStorage.getItem("arrival");
 
-                    console.log("get activities for city "+city+" from server");
-
-                    $.getJSON(conf.dita_server + 'activities?city=' + city,
-                            function (data, status) {
-                                //console.log("Data: " + data + "\nStatus: " + status);
-                                data.forEach(function (value) {
-                                    switch (value.category) {
-                                        case "attractions":
-                                            pois.attractions.push(value);
-                                            break;
-                                        case "monuments" :
-                                            pois.monuments.push(value);
-                                            break;
-                                        case "museums" :
-                                            pois.museums.push(value);
-                                            break;
-                                        case "eating" :
-                                            pois.restaurants.push(value);
-                                            break;
-                                        case "parks" :
-                                            pois.parks.push(value);
-                                            break;
-                                        case "resting" :
-                                            pois.hotels.push(value);
-                                            break;
-                                        case "historical_sites" :
-                                            pois.historical.push(value);
-                                            break;
-                                        case "religious_sites" :
-                                            pois.religious.push(value);
-                                            break;
-                                        default :
-                                            console.log("Invalid category:" + value.category);
-                                    }
-                                });
-
-                                window.sessionStorage.setItem("pois",JSON.stringify(pois));
-                                var departure = window.sessionStorage.getItem("departure");
-                                var arrival = window.sessionStorage.getItem("arrival");
-
-                                var curr_loc = "Current Location";
-                                $("#departure").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
-                                $("#arrival").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
-                                var i;
-                                for (i = 0; i < pois.hotels.length; i++) {
-                                    //console.log(hotels[i])
-                                    var name = pois.hotels[i].display_name.split(',')[0];
-                                    $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                                    $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                                }
-                            });
+                var curr_loc = "Current Location";
+                $("#departure").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
+                $("#arrival").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
+                var i;
+                for (i = 0; i < pois.hotels.length; i++) {
+                    //console.log(hotels[i])
+                    var name = pois.hotels[i].display_name.split(',')[0];
+                    $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
+                    $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
                 }
-                else {
-                    console.log("get activties form cache");
-                    var departure = window.sessionStorage.getItem("departure");
-                    var arrival = window.sessionStorage.getItem("arrival");
-
-                    var curr_loc = "Current Location";
-                    $("#departure").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
-                    $("#arrival").append("<option "+(curr_loc === departure ? "selected='selected'" : "")+" value='" + curr_loc + "'>" + curr_loc + "</option>");
-                    var i;
-                    for (i = 0; i < pois.hotels.length; i++) {
-                        //console.log(hotels[i])
-                        var name = pois.hotels[i].display_name.split(',')[0];
-                        $("#departure").append("<option "+(name === departure ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                        $("#arrival").append("<option "+(name === arrival ? "selected='selected'" : "")+" value='" + name + "'>" + name + "</option>");
-                    }
-                }
-
-
-
-
-
-
 
 
                 $("#demo1-1").hide();
@@ -282,7 +220,7 @@
 
 
                     var request = {
-                        user :  JSON.parse(window.sessionStorage.getItem("hashed_user")).email,
+                        user :  JSON.parse(window.sessionStorage.getItem("user")).email,
                         city: city,
                         crowd_preference : slid_val,
                         start_time : "09:00", //new Date($("#date-value1-1").val()).getHours(),
@@ -361,7 +299,7 @@
             </div>
 
 
-            <a href="city.html" type="button" class="btn btn-primary btn-lg">Back</a>
+            <a href="index.html" type="button" class="btn btn-primary btn-lg">Back</a>
             <button id="go" class="btn btn-success btn-lg">Get Visit Plan</button>
 
         </div>

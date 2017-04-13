@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <title>LumePlanner</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/global.js"></script>
+        <script src="js/jquery.md5.js"></script>
+
+        <style>
+            .bg-blue {
+                background-color: #084265;
+                color: #ffffff;
+            }
+            .panel-heading {
+                margin-bottom: 50px;
+            }
+            .img-responsive {
+                margin: 0 auto;
+            }
+        </style>
+
+        <script>
+
+
+
+            $(document).ready(function(){
+
+
+
+                $("#signin").click(function(){
+                    //console.log($("#email").val())
+                    var hashed_user = {id: "", email: $("#email").val().toLowerCase(), password:$.md5($("#pwd").val())};
+                    console.log(hashed_user);
+                    $.postJSON(conf.dita_server+"signin",hashed_user,
+                            function(data, status){
+                                console.log("Data: " + data + "\nStatus: " + status);
+
+                                if (data==='2' || data === 2) { //a visiting plan exists
+                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
+                                    console.log("user logged: a visiting plan exists");
+                                    console.log(JSON.stringify(data));
+                                    window.sessionStorage.setItem("visitplan", JSON.stringify(data));
+                                    window.location.href = "plan.html"
+                                } else if(data==='1' || data === 1) { //first login or a visiting plan doesn't exist
+                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
+                                    console.log("user logged: first login or a visiting plan doesn't exist");
+                                    window.location.href = "index.html"
+                                } else if (data==='0' || data === 0) { //wrong password
+                                    console.log("wrong passwrd")
+                                } else if (data==='-1' || data === -1) { //email not found
+                                    console.log("email not found")
+                                }
+                            });
+
+                });
+
+                $("#signup").click(function(){
+                    //console.log("signup");
+                    var hashed_user = {id: "", email: $("#email").val().toLowerCase(), password: $.md5($("#pwd").val())};
+                    $.postJSON(conf.dita_server+"signup",hashed_user,
+                            function(data, status){
+                                console.log("Data: " + data + "\nStatus: " + status);
+                                if (data === "true" || data === true) {
+                                    console.log("registration succedded");
+                                    $("#reg_result").html("Registration succedded!")
+                                }
+                                else {
+                                    console.log("registration failed");
+                                    $("#reg_result").html("Registration failed!")
+                                }
+                            });
+                });
+
+            });
+        </script>
+
+    </head>
+    <body class="bg-blue">
+        <div class="container-fluid text-center">
+
+            <div class="panel-heading">
+            <img src="img/logo-text.png" class="img-responsive img-rounded" alt="LumePlanner">
+            </div>
+
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="email">Email:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="pwd">Password:</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button id="signin" type="button" class="btn btn-success" style="font-size:18px; font-weight: bold">Sign In</button>
+                    <button id="signup" type="button" class="btn btn-primary" style="font-size:18px; font-weight: bold">Create Account</button> <span id="reg_result"></span>
+                </div>
+
+            </form>
+
+
+        </div>
+    </body>
+</html>

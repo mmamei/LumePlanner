@@ -51,12 +51,12 @@ p {
 
      $("#restart").click(function() {
 
-         var hashed_user = JSON.parse(window.sessionStorage.getItem("hashed_user"));
+         var user = JSON.parse(window.sessionStorage.getItem("user"));
          var city = window.sessionStorage.getItem("city");
 
          var request = {
-             user: hashed_user.email,
-             email: hashed_user.email,
+             user: user.email,
+             email: user.email,
              city: city
          };
 

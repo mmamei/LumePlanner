@@ -82,11 +82,11 @@ p {
 
         $("#next").click(function() {
 
-            var hashed_user = JSON.parse(window.sessionStorage.getItem("hashed_user"));
+            var user = JSON.parse(window.sessionStorage.getItem("user"));
             var city = window.sessionStorage.getItem("city");
             var d = new Date().getTime();
             var request = {
-                user    : hashed_user.email,
+                user    : user.email,
                 visited : currentDestination.place,
                 time    : d,
                 rating  : 10, // ???

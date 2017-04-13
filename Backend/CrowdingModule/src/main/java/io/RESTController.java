@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import citylive.DataPipeDownload;
 import model.POI2POICrowding;
 import model.UncertainValue;
 
@@ -65,6 +66,22 @@ public class RESTController {
 		}
 		return result;
 	}
+
+	@Scheduled(fixedRate = 300000) // every fife minutes
+	public void downloadData() {
+
+		DateFormat hourFormatter = new SimpleDateFormat("hh");
+		DateFormat minuteFormatter = new SimpleDateFormat("mm");
+		Date d = new Date();
+		hourFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
+		String hour = hourFormatter.format(d);
+		String minute = minuteFormatter.format(d);
+
+		logger.info("download datapipe data at "+hour+":"+minute);
+
+		new DataPipeDownload().download();
+	}
+
 
 
 	@Scheduled(fixedRate = 3600000) //hourly

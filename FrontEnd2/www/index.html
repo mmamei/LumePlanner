@@ -24,55 +24,94 @@
         </style>
 
         <script>
-
-
-
             $(document).ready(function(){
 
-
-
-                $("#signin").click(function(){
-                    //console.log($("#email").val())
-                    var hashed_user = {id: "", email: $("#email").val().toLowerCase(), password:$.md5($("#pwd").val())};
-                    console.log(hashed_user);
-                    $.postJSON(conf.dita_server+"signin",hashed_user,
-                            function(data, status){
-                                console.log("Data: " + data + "\nStatus: " + status);
-
-                                if (data==='2' || data === 2) { //a visiting plan exists
-                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
-                                    console.log("user logged: a visiting plan exists");
-                                    console.log(JSON.stringify(data));
-                                    window.sessionStorage.setItem("visitplan", JSON.stringify(data));
-                                    window.location.href = "plan.html"
-                                } else if(data==='1' || data === 1) { //first login or a visiting plan doesn't exist
-                                    window.sessionStorage.setItem("hashed_user", JSON.stringify(hashed_user));
-                                    console.log("user logged: first login or a visiting plan doesn't exist");
-                                    window.location.href = "city.html"
-                                } else if (data==='0' || data === 0) { //wrong password
-                                    console.log("wrong passwrd")
-                                } else if (data==='-1' || data === -1) { //email not found
-                                    console.log("email not found")
-                                }
-                            });
-
-                });
-
-                $("#signup").click(function(){
-                    //console.log("signup");
-                    var hashed_user = {id: "", email: $("#email").val().toLowerCase(), password: $.md5($("#pwd").val())};
-                    $.postJSON(conf.dita_server+"signup",hashed_user,
+                // login user
+                var user = window.sessionStorage.getItem("user");
+                if(!user) {
+                    console.log("user must be created");
+                    var r = ""+Math.random();
+                    user = {id: "", email: r, password: r};
+                    console.log(user);
+                    $.postJSON(conf.dita_server+"signup",user,
                             function(data, status){
                                 console.log("Data: " + data + "\nStatus: " + status);
                                 if (data === "true" || data === true) {
                                     console.log("registration succedded");
-                                    $("#reg_result").html("Registration succedded!")
+                                    window.sessionStorage.setItem("user",JSON.stringify(user))
                                 }
-                                else {
-                                    console.log("registration failed");
-                                    $("#reg_result").html("Registration failed!")
-                                }
+                                else console.log("registration failed");
+
                             });
+                }
+                else {
+                    user = JSON.parse(user);
+                }
+                // login was used only to retrieve an existing unfinished plan.
+                // for now, we just remove it
+
+
+
+                //console.log("user: "+window.localStorage.getItem("hashed_user"));
+                $("img").click(function(event) {
+
+                    console.log("the user selected "+event.target.id);
+
+
+                    // update city
+                    if(window.sessionStorage.getItem("city") !== event.target.id) {
+                        console.log("update city");
+
+                        var city = event.target.id;
+                        window.sessionStorage.setItem("city", event.target.id);
+                        window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
+
+                        var pois = new POIS();
+
+                        console.log("get activities for city "+city+" from server");
+
+                        $.getJSON(conf.dita_server + 'activities?city=' + city,
+                                function (data, status) {
+                                    //console.log("Data: " + data + "\nStatus: " + status);
+                                    data.forEach(function (value) {
+                                        switch (value.category) {
+                                            case "attractions":
+                                                pois.attractions.push(value);
+                                                break;
+                                            case "monuments" :
+                                                pois.monuments.push(value);
+                                                break;
+                                            case "museums" :
+                                                pois.museums.push(value);
+                                                break;
+                                            case "eating" :
+                                                pois.restaurants.push(value);
+                                                break;
+                                            case "parks" :
+                                                pois.parks.push(value);
+                                                break;
+                                            case "resting" :
+                                                pois.hotels.push(value);
+                                                break;
+                                            case "historical_sites" :
+                                                pois.historical.push(value);
+                                                break;
+                                            case "religious_sites" :
+                                                pois.religious.push(value);
+                                                break;
+                                            default :
+                                                console.log("Invalid category:" + value.category);
+                                        }
+                                    });
+
+                                    window.sessionStorage.setItem("pois",JSON.stringify(pois));
+                                    var departure = window.sessionStorage.getItem("departure");
+                                    var arrival = window.sessionStorage.getItem("arrival");
+                                    window.location.href = "map.html";
+                        });
+                    }
+
+
                 });
 
             });
@@ -80,33 +119,28 @@
 
     </head>
     <body class="bg-blue">
+        <div class="container-fluid text-center panel-heading">
+        <h1>Choose a City</h1>
+        </div>
         <div class="container-fluid text-center">
-
-            <div class="panel-heading">
-            <img src="img/logo-text.png" class="img-responsive img-rounded" alt="LumePlanner">
-            </div>
-
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="email">Email:</label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" id="email" placeholder="Enter email">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="pwd">Password:</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="pwd" placeholder="Enter password">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button id="signin" type="button" class="btn btn-success" style="font-size:18px; font-weight: bold">Sign In</button>
-                    <button id="signup" type="button" class="btn btn-primary" style="font-size:18px; font-weight: bold">Create Account</button> <span id="reg_result"></span>
-                </div>
-
-            </form>
-
-
+            <h2>Bologna</h2>
+            <img src="img/cities/bologna.jpg" class="img-responsive img-rounded" alt="bologna" id="Bologna">
+        </div>
+        <div class="container-fluid text-center">
+            <h2>Modena</h2>
+            <img src="img/cities/modena.jpg" class="img-responsive img-rounded" alt="modena" id="Modena" >
+        </div>
+        <div class="container-fluid text-center">
+            <h2>Reggio Emilia</h2>
+            <img src="img/cities/reggio.jpg" class="img-responsive img-rounded" alt="reggioemilia" id="ReggioEmilia">
+        </div>
+        <div class="container-fluid text-center">
+            <h2>Parma</h2>
+            <img src="img/cities/parma.jpg" class="img-responsive img-rounded" alt="parma" id="Parma">
+        </div>
+        <div class="container-fluid text-center">
+            <h2>Ferrara</h2>
+            <img src="img/cities/ferrara.jpg" class="img-responsive img-rounded" alt="ferrara" id="Ferrara">
         </div>
     </body>
 </html>
