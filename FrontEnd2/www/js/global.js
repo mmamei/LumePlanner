@@ -66,3 +66,61 @@ function POIS() {
 }
 
 
+var markerIcons = {};
+markerIcons["hotels"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-bed',
+    markerColor: 'orange'
+});
+markerIcons["attractions"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-map-marker',
+    markerColor: 'red'
+});
+markerIcons["monuments"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-home',
+    markerColor: 'darkred'
+});
+markerIcons["museums"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-home',
+    markerColor: 'blue'
+});
+markerIcons["restaurants"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-cutlery',
+    markerColor: 'darkgreen'
+});
+markerIcons["parks"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-tree',
+    markerColor: 'green'
+});
+markerIcons["historical"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-history',
+    markerColor: 'purple'
+});
+markerIcons["religious"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-microchip',
+    markerColor: 'darkpuple'
+});
+
+function format_name(name) {
+    var name_array = name.split(',');
+    if (!name_array[1]) {
+        name_array[1] = "";
+        name_array[2] = "";
+    }
+    return name_array[0]+"<br />"+name_array[1]+","+name_array[2];
+}

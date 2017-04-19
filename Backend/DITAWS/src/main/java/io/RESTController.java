@@ -18,9 +18,7 @@ import java.util.*;
 @RequestMapping("/")
 public class RESTController {
 
-	private static final String CROWDING_MODULE_URL = "http://localhost/CrowdingModule/";
-
-	private static RestTemplate restTemplate;
+	//private static RestTemplate restTemplate;
 	private Logger logger = Logger.getLogger(RESTController.class);
 	private boolean initialized = false;
 

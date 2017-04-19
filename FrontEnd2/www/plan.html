@@ -7,19 +7,15 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="js/global.js"></script>
         <script src="js/jquery.md5.js"></script>
-
-
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-
         <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-        <!--<script src="https://use.fontawesome.com/d9e0247a22.js"></script>-->
-        <!--
-        <link rel="stylesheet" href="css/leaflet-awesome/leaflet.awesome-markers.css">
-        <script src="css/leaflet-awesome/leaflet.awesome-markers.js"></script>
-        -->
+        <script src="js/LeafletPlayback.min.js"></script>
+        <link rel="stylesheet" href="css/ionicons.min.css">
+        <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
+        <script src="js/leaflet.awesome-markers.min.js"></script>
+        <script src="js/global.js"></script>
         <style>
 
 
@@ -68,15 +64,6 @@
 
         <script>
 
-
-            function format_name(name) {
-                var name_array = name.split(',');
-                if (!name_array[1]) {
-                    name_array[1] = "";
-                    name_array[2] = "";
-                }
-                return name_array[0]+"<br />"+name_array[1]+","+name_array[2];
-            }
 
 
             function drawMapAndTable(mymap,items) {
