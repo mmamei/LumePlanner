@@ -85,7 +85,7 @@
                 var lng  = items.departure.geometry.coordinates[0];
 
 
-
+                /*
                 var geojson = {
                     data  : items.path.points,
                     style : {
@@ -96,7 +96,7 @@
                         fillOpacity: 0.7
                     }
                 };
-
+                */
                 var m = {};
                 if ((items.departure.place_id === "0" && items.arrival.place_id === "00")
                         || items.departure.place_id === items.arrival.place_id ) {
@@ -196,7 +196,7 @@
 
 
 
-                L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
+               //L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
 
                 /*
                  console.log(format_name(items.departure.display_name)+" start at: "+items.departure_time)

@@ -20,7 +20,6 @@ public class VisitPlan {
 	private List<Activity> 	to_visit;
 	private List<Activity>	visited;
 	private double			crowding;
-	private Path			path;
 	private int				hash;
 	
 	public VisitPlan(){
@@ -39,7 +38,7 @@ public class VisitPlan {
 	}
 
 	public VisitPlan(String user, POI departure, POI arrival, String departure_time, String arrival_time, List<Activity> to_visit,
-			List<Activity> visited, Path path, double crowding) {
+			List<Activity> visited, double crowding) {
 
 		this.setDate(""+Calendar.getInstance().getTime().getTime());
 		this.setUser(user);
@@ -49,7 +48,6 @@ public class VisitPlan {
 		this.setArrival_time(arrival_time);
 		this.setTo_visit(to_visit);
 		this.setVisited(visited);
-		this.setPath(path);
 		this.setCrowding(crowding);
 		this.computeHash();
 	}
@@ -126,13 +124,6 @@ public class VisitPlan {
 		this.crowding = crowding;
 	}
 
-	public Path getPath() {
-		return path;
-	}
-
-	public void setPath(Path path) {
-		this.path = path;
-	}
 
 	public int getHash() {
 		return hash;
@@ -169,7 +160,7 @@ public class VisitPlan {
 	@Override
 	public String toString() {
 		return "[departure=" + departure+ ";departure_time=" + departure_time + ";arrival=" + arrival + ";arrival_time=" + arrival_time + ";to_visit=" + Arrays.toString(to_visit.toArray())
-				+ ";path=" + path.toString() + ";crowding=" + crowding + "]";
+				+ ";crowding=" + crowding + "]";
 	}
 	
 	

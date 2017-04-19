@@ -1,7 +1,5 @@
 package util;
 
-import model.Node;
-
 import java.util.List;
 import java.util.Map;
 
@@ -45,14 +43,6 @@ public class Misc {
         StringBuffer sb = new StringBuffer();
         for(String s : a)
             sb.append("->"+s);
-        return sb.substring(2);
-    }
-
-
-    public static String toString(List<Node> l) {
-        StringBuffer sb = new StringBuffer();
-        for(Node n : l)
-            sb.append("->"+n.getName());
         return sb.substring(2);
     }
 

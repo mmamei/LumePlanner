@@ -7,10 +7,7 @@ public class Activity {
 	private POI		visit;
 	
 	public Activity(){}
-	
-	public Activity(String poi_id){
-		this.visit = new POI(poi_id, 0d, 0d, null, null, null, 0f, null, null, null, null, 3);
-	}
+
 
 	public String getArrival_time() {
 		return arrival_time;

@@ -1,14 +1,10 @@
 package services;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.CityProp;
 import io.RESTController;
 import model.POI;
-import model.UncertainValue;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +74,7 @@ public class NominatimPOIsDownload {
                         POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
                         currentPOI.setCategory(POI_CATEGORIES[i]);
                         if (!POI_CATEGORIES[i].equals("resting")) {
-                            currentPOI.setVisiting_time(new UncertainValue(visiting_time, "N:"+(visiting_time/10)));
+                            currentPOI.setVisiting_time(visiting_time);
                             if (ratings.containsKey(currentPOI.getPlace_id())) {
                                 currentPOI.setRating(ratings.get(currentPOI.getPlace_id()));
                             }

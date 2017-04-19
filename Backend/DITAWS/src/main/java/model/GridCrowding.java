@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GridCrowding {
 	
 	private String cell;
-	private List<UncertainValue> crowdings;
+	private List<Double> crowdings;
 	
 	public GridCrowding(){}
 
-	public GridCrowding(String cell, List<UncertainValue> crowdings) {
+	public GridCrowding(String cell, List<Double> crowdings) {
 		super();
 		this.setCell(cell);
 		this.setCrowdings(crowdings);
@@ -26,11 +26,11 @@ public class GridCrowding {
 		this.cell = cell;
 	}
 
-	public List<UncertainValue> getCrowdings() {
+	public List<Double> getCrowdings() {
 		return crowdings;
 	}
 
-	public void setCrowdings(List<UncertainValue> crowdings) {
+	public void setCrowdings(List<Double> crowdings) {
 		this.crowdings = crowdings;
 	}
 	

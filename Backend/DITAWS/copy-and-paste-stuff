@@ -1,0 +1,45 @@
+use lume-Modena
+db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume-Modena"}]})
+db.createCollection("grid");
+db.createCollection("activities");
+db.grid.createIndex({geometry:"2dsphere"});
+db.grid.ensureIndex({geometry:"2dsphere"});
+db.activities.createIndex({geometry:"2dsphere"});
+db.activities.ensureIndex({geometry:"2dsphere"});
+use lume-ReggioEmilia
+db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume-ReggioEmilia"}]})
+db.createCollection("grid");
+db.createCollection("activities");
+db.grid.createIndex({geometry:"2dsphere"});
+db.grid.ensureIndex({geometry:"2dsphere"});
+db.activities.createIndex({geometry:"2dsphere"});
+db.activities.ensureIndex({geometry:"2dsphere"});
+use lume-Bologna
+db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume-Bologna"}]})
+db.createCollection("grid");
+db.createCollection("activities");
+db.grid.createIndex({geometry:"2dsphere"});
+db.grid.ensureIndex({geometry:"2dsphere"});
+db.activities.createIndex({geometry:"2dsphere"});
+db.activities.ensureIndex({geometry:"2dsphere"});
+use lume-Ferrara
+db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume-Ferrara"}]})
+db.createCollection("grid");
+db.createCollection("activities");
+db.grid.createIndex({geometry:"2dsphere"});
+db.grid.ensureIndex({geometry:"2dsphere"});
+db.activities.createIndex({geometry:"2dsphere"});
+db.activities.ensureIndex({geometry:"2dsphere"});
+use lume-Parma
+db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume-Parma"}]})
+db.createCollection("grid");
+db.createCollection("activities");
+db.grid.createIndex({geometry:"2dsphere"});
+db.grid.ensureIndex({geometry:"2dsphere"});
+db.activities.createIndex({geometry:"2dsphere"});
+db.activities.ensureIndex({geometry:"2dsphere"});
+
+
+
+
+

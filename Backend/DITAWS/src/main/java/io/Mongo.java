@@ -1,32 +1,17 @@
 package io;
 
-import java.io.IOException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import model.Activity;
-import model.Cell;
-import model.CrowdingFeedback;
-import model.CrowdingStats;
-import model.Distance;
-import model.DistanceTo;
-import model.GridCrowding;
-import model.OverallFeedback;
+
 import model.POI;
-import model.POI2POICrowding;
-import model.Timing;
-import model.TimingTo;
-import model.UncertainValue;
 import model.User;
 import model.Visit;
 import model.VisitPlan;
@@ -38,10 +23,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.geojson.Point;
 
-import services.ComputeDistances;
 import util.PointCodec;
-import util.TimeUtils;
-import util.UncertainValueCodec;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +61,7 @@ public class Mongo {
 
 		CodecRegistry codecRegistry =
 				CodecRegistries.fromRegistries(
-						CodecRegistries.fromCodecs(new PointCodec(), new UncertainValueCodec()),
+						CodecRegistries.fromCodecs(new PointCodec()),
 						MongoClient.getDefaultCodecRegistry());
 
 
@@ -139,45 +121,8 @@ public class Mongo {
 	}
 
 
-	public void insertDistances(List<Distance> distances) {
-		if (db.getCollection("distances").count() == 0l ) {
-			List<Document> distanceDocuments = new ArrayList<Document>();
-			for (int i =0; i< distances.size(); i++) {
-				distanceDocuments.add(Document.parse(distances.get(i).toJSONString()));
-			}
-			logger.info("---------> "+distanceDocuments.size());
-			db.getCollection("distances").insertMany(distanceDocuments);
-		}
-	}
-
-	public void insertDistancesAsPOIUpdate(List<Distance> distances) {
-		try {
-			for (Distance d : distances) {
-				db.getCollection("POIs").updateOne(
-						db.getCollection("POIs").find(new Document("place_id", d.getFrom())).first(), 
-						new Document("$set", new Document("distances", mapper.writeValueAsString(d.getDistances()))));
-			}
-
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 
-
-	public void insertTimings(List<Timing> timings) {
-		if (db.getCollection("timings").count() == 0l ) {
-			try{
-				for (int i =0; i< timings.size(); i++) {
-					db.getCollection("timings").insertOne(Document.parse(timings.get(i).toJSONString()));
-					//the insertMany takes too much memory: java heap memory error
-				}
-			} catch (Exception e) {
-				logger.info(e.getMessage());
-			}
-		}
-
-	}
 
 
 
@@ -264,140 +209,6 @@ public class Mongo {
 		return result;
 	}
 
-	public boolean checkDistances(){
-        return db.getCollection("distances").count() != 0l;
-    }
-
-	public TreeMap<String, TreeMap<String, Double>> retrieveDistances() {
-		TreeMap<String, TreeMap<String, Double>> result = new TreeMap<>();
-		try {
-			for (Iterator<Document> iter = db.getCollection("distances").find().sort(new Document("from", 1)).iterator(); iter.hasNext();) {
-				Distance distance = mapper.readValue(iter.next().toJson(), Distance.class);
-
-				TreeMap<String, Double> tos = new TreeMap<String, Double>();
-				for (DistanceTo current : distance.getDistances()) {
-					tos.put(current.getTo(), current.getDistance());
-				}
-				result.put(distance.getFrom(), tos);
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-    /*
-	public TreeMap<String, TreeMap<String, Double>> retrieveDistances(POI startPlace, POI endPlace, List<String> POIsID) throws IOException {
-		POI closest_to_end = null;
-		if (endPlace.getPlace_id().equals("00")) {
-			closest_to_end = retrieveClosestActivity(endPlace);
-			POIsID.add(closest_to_end.getPlace_id());
-		}
-		Document inClause = new Document("from", new Document("$in", mapper.readValue(mapper.writeValueAsString(POIsID), List.class)));
-		logger.info("getDistance filter:"+mapper.readValue(mapper.writeValueAsString(POIsID), List.class));
-		//Document inClause = new Document("from", new Document("$in", mapper.writeValueAsString(POIsID)));
-		TreeMap<String, TreeMap<String, Double>> result = new TreeMap<String, TreeMap<String, Double>>(); //<From, <To, Distance>>
-
-		try {
-
-			for (Iterator<Document> iter = db.getCollection("distances").find(inClause).sort(new Document("from", 1)).iterator(); iter.hasNext();) {
-				Distance getDistance = mapper.readValue(iter.next().toJson(), Distance.class);
-				TreeMap<String, Double> tos = new TreeMap<String, Double>();
-				for (DistanceTo current : getDistance.getDistances()) {
-					if (null != closest_to_end && closest_to_end.getPlace_id().equals(current.getTo())) {
-						tos.put("00", current.getDistance());
-					} else {
-						tos.put(current.getTo(), current.getDistance());
-					}
-				}
-				if (null != closest_to_end && closest_to_end.getPlace_id().equals(getDistance.getFrom())) {
-					result.put("00", tos);
-				} else {
-					result.put(getDistance.getFrom(), tos);
-				}
-			}
-
-			if (startPlace.getPlace_id().equals("0")) {
-				Distance d = new ComputeDistances().runOnetoMany(this, startPlace, endPlace, POIsID);
-				TreeMap<String, Double> tos = new TreeMap<String, Double>();
-				for (Iterator<DistanceTo> iterTos = d.getDistances().iterator();iterTos.hasNext();) {
-					DistanceTo current = iterTos.next();
-					tos.put(current.getTo(), current.getDistance());
-				}
-				result.put(d.getFrom(), tos);
-			}
-
-			logger.info("distances size:"+result.size());
-		} catch(Exception e) {
-			logger.info(e.getMessage());
-			e.printStackTrace();
-		}
-		return result;
-	}
-    */
-
-	public String retrieveCrowdingLevels(Map<String, HashMap<String, List<UncertainValue>>> crowding_levels, String last_crowding_levels) {
-		int update_size=0;
-		String result = last_crowding_levels;
-		try {
-			FindIterable<Document> crowdings = db.getCollection("crowdings").find(new Document("timestamp", new Document("$gt", last_crowding_levels)));
-			for (Iterator<Document> iter = crowdings.iterator(); iter.hasNext();) {
-				update_size++;
-				POI2POICrowding crowding = mapper.readValue(iter.next().toJson(), POI2POICrowding.class);
-				if (!crowding_levels.containsKey(crowding.getFrom_id())) {
-					crowding_levels.put(crowding.getFrom_id(), new HashMap<String, List<UncertainValue>>());
-				}
-				crowding_levels.get(crowding.getFrom_id()).put(crowding.getTo_id(), crowding.getCrowdings());
-				if (Long.parseLong(crowding.getTimestamp()) > Long.parseLong(result)) {
-					result = crowding.getTimestamp();
-				}
-			}
-			logger.info(update_size+" crowdings updated");
-			return result;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return ""+Long.MIN_VALUE;
-		}
-		
-	}
-
-	public boolean checkTravelTimes(){
-        return db.getCollection("timings").count() != 0l;
-    }
-
-	public Map<String, HashMap<String, List<UncertainValue>>> retrieveTravelTimes() {
-		Map<String, HashMap<String, List<UncertainValue>>> result = new HashMap<>();
-		try {
-			FindIterable<Document> iterable = db.getCollection("timings").find();
-			for (Iterator<Document> iter = iterable.iterator(); iter.hasNext();) {
-				Timing timing = mapper.readValue(iter.next().toJson(), Timing.class);
-				for(TimingTo to : timing.getTimes()) {
-					if (!result.containsKey(timing.getFrom())) {
-						result.put(timing.getFrom(), new HashMap<String, List<UncertainValue>>());
-					}
-					result.get(timing.getFrom()).put(to.getTo(), to.getTime());
-				}
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-
-
-	/*
-	 * *************************************** REMOVE ***************************************
-	 */
-
-
-	public void testRemoval() {
-		MongoCollection<Document> collection = db.getCollection("testCollection");
-		collection.deleteOne(new Document("key1", "value1"));
-		collection.deleteMany(new Document());
-	}
-
-
 
 
 	/*
@@ -474,88 +285,6 @@ public class Mongo {
 
 	}
 
-
-	public boolean updateUser(CrowdingFeedback fdbk, UncertainValue value) {
-		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(fdbk.getUser().getBytes()).toString())).first();
-		try {
-			User user = mapper.readValue(userRecord.toJson(), User.class);
-			switch(fdbk.getChoice()) {
-			case 0: {
-				if (user.getLow_crowding().getMean() == 0d || user.getLow_crowding().getMean() < value.getMean()) {
-					user.setLow_crowding(value); //store the higher
-				}
-				logger.info("User "+user.getEmail()+" reported "+value.getMean()+" as a low crowding");
-				break;
-			}
-			case 1: {
-				if (user.getLowAvg_crowding().getMean() == 0d || user.getLowAvg_crowding().getMean() < value.getMean()) {
-					user.setLowAvg_crowding(value); //store the higher
-				}
-				logger.info("User "+user.getEmail()+" reported "+value.getMean()+" as an average crowding");
-				break;
-			}
-			case 2: {
-				if (user.getAvgHig_crowding().getMean() == 0d || user.getAvgHig_crowding().getMean() < value.getMean()) {
-					user.setAvgHig_crowding(value); //store the higher
-				}
-				logger.info("User "+user.getEmail()+" reported "+value.getMean()+" as an average crowding");
-				break;
-			}
-			case 3: {
-				if (user.getHig_crowding().getMean() == 0d || user.getHig_crowding().getMean() > value.getMean()) {
-					user.setHig_crowding(value); //store the lower
-				}
-				logger.info("User "+user.getEmail()+" reported "+value.getMean()+" as an high crowding");
-				break;
-			}
-			default: break;
-			}
-			db.getCollection("users").findOneAndReplace(userRecord, Document.parse(user.toJSONString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	public boolean updateUserOv_Cr(OverallFeedback fdbk) {
-		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(fdbk.getUser().getBytes()).toString())).first();
-		try {
-			User user = mapper.readValue(userRecord.toJson(), User.class);
-
-			user.setOverall_crowding(new UncertainValue(fdbk.getCrowding(), "N:"+(fdbk.getCrowding()/10d)));
-
-			if (fdbk.getChoice() == 0) {
-				user.setLiked_crowding(true);
-			} else {
-				user.setLiked_crowding(false);
-			}
-
-			db.getCollection("users").findOneAndReplace(userRecord, Document.parse(user.toJSONString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	public boolean updateUserOv_Pl(OverallFeedback fdbk) {
-		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(fdbk.getUser().getBytes()).toString())).first();
-		try {
-			User user = mapper.readValue(userRecord.toJson(), User.class);
-			if (fdbk.getChoice() == 0) {
-				user.setLiked_plan(true);
-			} else {
-				user.setLiked_plan(false);
-			}
-
-			db.getCollection("users").findOneAndReplace(userRecord, Document.parse(user.toJSONString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
 
 
 	public VisitPlanAlternatives updatePlan(Visit new_visited) {
@@ -657,36 +386,4 @@ public class Mongo {
 			return false;
 		}
 	}
-
-
-	public List<GridCrowding> retrieveGridCrowding() {
-		List<GridCrowding> result = new ArrayList<>();
-		try {
-			FindIterable<Document> documents = db.getCollection("grid_crowdings").find();
-			for (Document doc : documents) {
-				result.add(mapper.readValue(doc.toJson(), GridCrowding.class));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
-
-	public double retrieveGridMaxCrowding() {
-		double result = 1d;
-		CrowdingStats cs = null;
-		try {
-			if (db.getCollection("crowdingStats").count() > 0l ) {
-				cs = mapper.readValue(db.getCollection("crowdingStats").find().first().toJson(), CrowdingStats.class);
-				result = cs.getMaxValue();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-
-
 }

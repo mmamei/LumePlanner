@@ -17,14 +17,14 @@ public class POI implements Comparable<POI> {
 	private String 	icon;
 	
 	//extra fields
-	private UncertainValue visiting_time;
+	private double visiting_time;
 	
 	private String opening_hours; //format: [hh:mm-hh:mm] comma separated strings
 	private String opening_days; //format: [wd] comma separated int (form 1=sunday to 7=saturday)
 	private int rating;
 
 	public POI(String place_id, double lat, double lon, String display_name, String category, String type,
-			float importance, String icon, UncertainValue visiting_time, String opening_hours, String opening_days, int rating) {
+			float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating) {
 		super();
 		this.place_id 				= place_id;
 		this.geometry 				= new Point(lon, lat);
@@ -41,7 +41,7 @@ public class POI implements Comparable<POI> {
 	}
 	
 	public POI(String place_id, Point geometry, String display_name, String category, String type,
-			float importance, String icon, UncertainValue visiting_time, String opening_hours, String opening_days, int rating) {
+			float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating) {
 		super();
 		this.place_id 				= place_id;
 		this.geometry 				= geometry;
@@ -59,7 +59,7 @@ public class POI implements Comparable<POI> {
 	@Deprecated
 	public POI(String place_id) {
 		this.place_id 		= place_id;
-		this.visiting_time 	= new UncertainValue(0d, "N:0");
+		this.visiting_time 	= 0;
 		this.geometry 		= new Point(0d, 0d);
 		this.importance		= 0f;
 		this.rating			= 1;
@@ -67,7 +67,7 @@ public class POI implements Comparable<POI> {
 	
 	public POI(String place_id, double lat, double lng, String display_name) {
 		this.place_id 		= place_id;
-		this.visiting_time 	= new UncertainValue(0d, "N:0");
+		this.visiting_time 	= 0;
 		this.geometry 		= new Point(lng, lat);
 		this.display_name	= display_name;
 		this.importance		= 0f;
@@ -76,7 +76,7 @@ public class POI implements Comparable<POI> {
 	
 	@Deprecated
 	public POI() {
-		this.visiting_time	= new UncertainValue(0d, "N:0");
+		this.visiting_time	= 0;
 		this.geometry 		= new Point(0d, 0d);
 		this.importance		= 0f;
 		this.rating			= 1;
@@ -184,11 +184,11 @@ public class POI implements Comparable<POI> {
 		this.opening_days = opening_days;
 	}
 
-	public UncertainValue getVisiting_time() {
+	public double getVisiting_time() {
 		return visiting_time;
 	}
 
-	public void setVisiting_time(UncertainValue visiting_time) {
+	public void setVisiting_time(double visiting_time) {
 		this.visiting_time = visiting_time;
 	}
 
