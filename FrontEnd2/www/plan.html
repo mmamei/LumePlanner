@@ -80,6 +80,7 @@
 
 
             function drawMapAndTable(mymap,items) {
+                console.log(items);
                 var lat  = items.departure.geometry.coordinates[1];
                 var lng  = items.departure.geometry.coordinates[0];
 
@@ -213,7 +214,7 @@
             }
 
             $(document).ready(function(){
-                var hashed_user = JSON.parse(window.sessionStorage.getItem("hashed_user"));
+                var user = JSON.parse(window.sessionStorage.getItem("user"));
                 var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
                 var type_of_plan = "greedy";
                 var newplan = true;
@@ -222,7 +223,7 @@
 
                     newplan = false;
 
-                    $.postJSON(conf.dita_server+"plan",hashed_user,function(data, status){
+                    $.postJSON(conf.dita_server+"plan",user,function(data, status){
 
                         console.log(data);
 

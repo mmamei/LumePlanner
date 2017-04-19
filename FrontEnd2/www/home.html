@@ -157,8 +157,8 @@
 
                     if(dep === "Current Location" || arr === "Current Location") {
                         navigator.geolocation.getCurrentPosition(function(position) {
-                            //submit(position.coords.latitude,position.coords.longitude)
-                            submit(44.695246, 10.629712)
+                            submit(position.coords.latitude,position.coords.longitude);
+                            //submit(44.695246, 10.629712)
                         });
                     }
                     else submit()

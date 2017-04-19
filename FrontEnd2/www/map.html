@@ -70,6 +70,8 @@
 
     <script>
 
+        var mymap;
+
         function format_name(name) {
             var name_array = name.split(',');
             if (!name_array[1]) {
@@ -80,8 +82,31 @@
         }
 
 
+        var centerMarker = null;
+        function localize(position) {
+            console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
+
+            mymap.panTo([position.coords.latitude, position.coords.longitude]);
+            if(centerMarker == null) {
+
+                var icon = L.divIcon({
+                        type: 'div',
+                        className: 'marker',
+                        html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+                    });
+                centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
+                mymap.setZoom(15)
+            }
 
 
+
+            centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
+
+
+
+            window.setTimeout(function(){navigator.geolocation.getCurrentPosition(localize)},1000)
+
+        }
 
 
 
@@ -138,12 +163,15 @@
                 markerColor: 'darkpuple'
             });
 
+
+
+
             var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 
             console.log(pois);
             console.log(markers);
 
-            var mymap = L.map('mapid',{
+            mymap = L.map('mapid',{
                 attributionControl: false,
                 scrollWheelZoom: true,
                 doubleClickZoom: true,
@@ -183,6 +211,9 @@
 
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
+
+            if(conf.localize && navigator.geolocation)
+                navigator.geolocation.getCurrentPosition(localize);
 
 
             $("#itinerary").click(function(){

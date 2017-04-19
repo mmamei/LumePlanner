@@ -7,9 +7,16 @@
         "files": {}
     },
     "installed_plugins": {
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
+        },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
+        }
+    }
 }

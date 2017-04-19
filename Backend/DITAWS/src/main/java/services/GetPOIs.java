@@ -25,21 +25,66 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GetPOIs  {
 
-	private static final String NOMINATIM_URL = "http://nominatim.openstreetmap.org/";
-	
+
+
 	public static void main(String[] args) throws Exception  {
 		GetPOIs g = new GetPOIs();
+		String city = "ReggioEmilia";
+		Mongo dao = new Mongo(CityProp.getInstance().get(city).getDB());
+		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
+		g.run(dao,dir);
+	}
+	/*
+	private static final String NOMINATIM_URL = "http://nominatim.openstreetmap.org/";
+	static String [] POICategories = {"attractions", "monuments", "museums", "eating", "parks", "resting", "historical_sites", "religious_sites"}; //"lifestyle"
+	private static final String dataPath = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\nominatim\\";
+	public static void main2(String[] args) throws Exception  {
+		GetPOIs g = new GetPOIs();
 		String city = "Modena";
-		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\modena\\";
 		Mongo dao = new Mongo(CityProp.getInstance().get(city).getDB());
 		String bbox = CityProp.getInstance().get(city).getBbox();
-		g.run(dao, dir, bbox);
+		g.run(dao, bbox);
 	}
-
-	static String [] POICategories = {"attractions", "monuments", "museums", "eating", "parks", "resting", "historical_sites", "religious_sites"}; //"lifestyle"
+	*/
 
 	private Logger logger = Logger.getLogger(RESTController.class);
-	public void run(Mongo dao, String dataPath, String bbox) {
+
+
+
+	public void run(Mongo dao, String pois_dir) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		try {
+
+
+			File dir = new File(pois_dir);
+			for(File f: dir.listFiles()) {
+
+				String file = f.getAbsolutePath();
+				if(file.endsWith("json")) {
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					JSONArray parsed = new JSONArray(br.readLine());
+					for (int j = 0; j < parsed.length(); j++) {
+						JSONObject currentJPOI = (JSONObject) parsed.get(j);
+						POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
+						logger.info("**** " + currentPOI.toString());
+
+						if (currentPOI.getCategory().equals("eating"))
+							dao.insertRestaurant(currentPOI);
+						else
+							dao.insertActivity(currentPOI);
+
+					}
+					br.close();
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	public void run2(Mongo dao, String bbox) {
 
 		
 		Map<String, Integer> ratings = new HashMap<>();//new SocialPulse().loadStars();
@@ -52,7 +97,7 @@ public class GetPOIs  {
 
 		try {
 			for (int i=0; i<POICategories.length;i++)  {
-				File file = new File(dataPath+"nominatim/"+POICategories[i]);
+				File file = new File(dataPath+POICategories[i]);
 
 				logger.info("=======> "+file.getAbsolutePath());
 
@@ -107,4 +152,5 @@ public class GetPOIs  {
 			e.printStackTrace();
 		}
 	}
+	*/
 }

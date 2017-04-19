@@ -78,7 +78,8 @@ public class CityData {
 
         if (!dao.checkActivities()) {
             logger.info("/../data/"+CityProp.getInstance().get(city).getDataDir());
-            new GetPOIs().run(dao, this.getClass().getResource("/../data/"+CityProp.getInstance().get(city).getDataDir()).getPath(), CityProp.getInstance().get(city).getBbox());
+            //String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
+            new GetPOIs().run(dao, this.getClass().getResource("/../data/"+CityProp.getInstance().get(city).getDataDir()+"/pois").getPath());
             logger.info("POIs collected from OSM API");
         }
         activities = dao.retrieveActivities();

@@ -82,6 +82,236 @@
 
 
 
+            var mymap;
+            var start;
+            var end;
+
+
+
+
+            function drawStartEndPlacemarks() {
+                var m = [];
+                m[0] = {
+                    lat : parseFloat(start.split(',')[0]),
+                    lng: parseFloat(start.split(',')[1]),
+                    icon: L.divIcon({
+                        type: 'div',
+                        className: 'marker',
+                        html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                    })
+                };
+
+                m[1] = {
+                    lat : parseFloat(end.split(',')[0]),
+                    lng: parseFloat(end.split(',')[1]),
+                    icon: L.divIcon({
+                        type: 'div',
+                        className: 'marker',
+                        html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
+                    })
+                };
+                for(var i=0; i<m.length;i++) {
+                    var marker = L.marker(m[i],{icon:m[i].icon}).addTo(mymap);
+                }
+            }
+
+
+            /****************************************************************************************************/
+            /****************************************************************************************************/
+            /*                                        SIMULATED MOVEMENT                                        */
+            /****************************************************************************************************/
+            /****************************************************************************************************/
+
+            function simulatedMovement() {
+                //GH alt_key: LijBPDQGfu7Iiq80w3HzwB4RUDJbMbhs6BU0dEnn
+                $.getJSON('https://graphhopper.com/api/1/route?' +
+                        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+                        '&point=' + start + '&point=' + end, function (data, status) {
+
+                    //routing API
+                    console.log(data.paths[0]);
+                    var geoJsonPoints = data.paths[0].points.coordinates;
+                    var time_tot = data.paths[0].time;
+
+                    var distances = [];
+                    var d_tot = 0.0;
+                    var i, p_from, p_to, d;
+                    for (i = 0; i < geoJsonPoints.length - 1; i += 1) {
+                        p_from = geoJsonPoints[i];
+                        p_to = geoJsonPoints[i + 1];
+                        d = computeDistance(p_from[1], p_from[0], p_to[1], p_to[0]);
+                        distances.push(d);
+                        d_tot += d;
+                    }
+
+                    var d_rates = [];
+                    for (i = 0; i < distances.length; i += 1) {
+                        d_rates.push(distances[i] / d_tot);
+                    }
+
+                    var start_time = new Date().getTime();
+                    var timings = [];
+                    timings.push(start_time);
+                    for (i = 0; i < d_rates.length; i += 1) {
+                        start_time += parseInt(d_rates[i] * time_tot, 10);
+                        timings.push(start_time);
+                    }
+
+
+                    var adaptedGeoJsonData = {
+                        type: "Feature",
+                        geometry: {
+                            type: "MultiPoint",
+                            coordinates: geoJsonPoints
+                        },
+                        properties: {
+                            time: timings
+                        }
+                    };
+                    console.log({adaptedGeoJson: adaptedGeoJsonData});
+
+                    var timed_update;
+                    var old_position;
+
+
+                    function playback(adaptedGeoJsonData) {
+
+                        // ***** This part place a placemark according to user simulated movement
+
+                        var options = {
+                            //tickLen : '', //millis [def:250]
+                            speed : 10.0, //float multiplier [def:1]
+                            tracksLayer : false,
+                            marker: {
+                                icon: L.divIcon({
+                                    type: 'div',
+                                    className: 'marker',
+                                    html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+                                })
+                            }
+                        };
+                        var v = new L.Playback(mymap, adaptedGeoJsonData, null, options);
+                        v.start();
+
+                        // ***** this part centers the map where is the previous placemerk
+
+                        timed_update = setInterval(function() {
+                            var latlng = mymap.layerPointToLatLng(mymap.getPanes().markerPane.childNodes[0]._leaflet_pos);
+                            //console.log(latlng)
+                            if (old_position && old_position===latlng) {
+                                console.log("qui");
+                            }
+                            old_position = latlng;
+                            var dist =  computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
+                            //console.log(dist);
+                            if ( dist < 50) {
+                                //changeView
+                                clearInterval(timed_update);
+                                if (items.to_visit.length > 0) {
+                                    window.location.href = "visit.html"
+                                } else {
+                                    window.location.href = "overview.html"
+                                }
+                            } else {
+                                //console.log("moving:"+computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng));
+                                mymap.panTo(L.latLng(latlng));
+                            }
+                        }, 100);
+                    }
+
+
+                    playback(adaptedGeoJsonData);
+
+
+
+                    drawStartEndPlacemarks();
+
+                    var geojson = {
+                        data: data.paths[0].points,
+                        style: {
+                            fillColor: "green",
+                            weight: 2,
+                            opacity: 1,
+                            color: 'blue',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                        }
+                    };
+
+                    L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
+
+                });
+            }
+
+
+            /****************************************************************************************************/
+            /****************************************************************************************************/
+            /*                                             REAL MOVEMENT                                        */
+            /****************************************************************************************************/
+            /****************************************************************************************************/
+
+
+            var centerMarker = null;
+
+
+            var path=null;
+            function computeRoute() {
+                console.log("recomute route");
+                var newstart = centerMarker.getLatLng();
+                newstart = newstart.lat+","+newstart.lng;
+                $.getJSON('https://graphhopper.com/api/1/route?' +
+                        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+                        '&point=' + newstart + '&point=' + end, function (data, status) {
+
+                    var geojson = {
+                        data: data.paths[0].points,
+                        style: {
+                            fillColor: "green",
+                            weight: 2,
+                            opacity: 1,
+                            color: 'blue',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                        }
+                    };
+                    if(path!=null)
+                        mymap.removeLayer(path);
+                    path = L.geoJSON(geojson.data, {style: geojson.style});
+                    path.addTo(mymap);
+
+                });
+                window.setTimeout(computeRoute,30000)
+            }
+
+
+            function localize(position) {
+                console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
+
+                mymap.panTo([position.coords.latitude, position.coords.longitude]);
+                if(centerMarker == null) {
+
+                    var icon = L.divIcon({
+                        type: 'div',
+                        className: 'marker',
+                        html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+                    });
+                    centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
+                    mymap.setZoom(15);
+
+                    drawStartEndPlacemarks();
+                    computeRoute()
+                }
+
+
+                centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
+
+
+
+                window.setTimeout(function(){navigator.geolocation.getCurrentPosition(localize)},1000)
+
+            }
+
+
 
             $(document).ready(function(){
 
@@ -94,9 +324,6 @@
 
                 var items = visitplan[type_of_plan];
                 console.log(items);
-
-                var start;
-                var end;
 
 
                 var currentDeparture = {};
@@ -118,6 +345,7 @@
                     currentDeparture = new PlaceTime(items.visited[items.visited.length-1].visit, items.visited[items.visited.length-1].departure_time);
                     currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
                 }
+
                 console.log("start:"+start);
                 console.log("destination:"+end);
 
@@ -125,9 +353,7 @@
                 window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
 
 
-
-
-                var mymap = L.map('mapid',{
+                mymap = L.map('mapid',{
                     attributionControl: false,
                     scrollWheelZoom: false,
                     doubleClickZoom: false,
@@ -140,159 +366,11 @@
                 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 
+                if(conf.localize && navigator.geolocation)
+                    navigator.geolocation.getCurrentPosition(localize);
+                else
+                    simulatedMovement();
 
-
-
-                var leafletData = mymap;
-
-                //GH alt_key: LijBPDQGfu7Iiq80w3HzwB4RUDJbMbhs6BU0dEnn
-                $.getJSON('https://graphhopper.com/api/1/route?'+
-                        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false'+
-                        '&point=' + start + '&point=' + end,function(data, status){
-
-                    //routing API
-                    console.log(data.paths[0]);
-                    var geoJsonPoints = data.paths[0].points.coordinates;
-                    var time_tot = data.paths[0].time;
-
-                    var distances = [];
-                    var d_tot = 0.0;
-                    var i, p_from, p_to, d;
-                    for (i=0; i<geoJsonPoints.length-1; i+=1) {
-                        p_from = geoJsonPoints[i];
-                        p_to = geoJsonPoints[i+1];
-                        d = computeDistance(p_from[1], p_from[0], p_to[1], p_to[0]);
-                        distances.push(d);
-                        d_tot += d;
-                    }
-
-                    var d_rates = [];
-                    for (i=0;i<distances.length;i+=1) {
-                        d_rates.push(distances[i]/d_tot);
-                    }
-
-                    var start_time = new Date().getTime();
-                    var timings = [];
-                    timings.push(start_time);
-                    for (i=0;i<d_rates.length;i+=1) {
-                        start_time +=  parseInt(d_rates[i]*time_tot, 10);
-                        timings.push(start_time);
-                    }
-
-
-                    var adaptedGeoJsonData = {
-                        type: "Feature",
-                        geometry: {
-                            type: "MultiPoint",
-                            coordinates: geoJsonPoints
-                        },
-                        properties: {
-                            time: timings
-                        }
-                    };
-
-                    console.log ({adaptedGeoJson : adaptedGeoJsonData});
-
-
-                    function playback(map) {
-
-
-
-                            var options = {
-                                //tickLen : '', //millis [def:250]
-                                speed : 10.0, //float multiplier [def:1]
-                                tracksLayer : false,
-                                marker: {
-                                    icon: L.divIcon({
-                                        type: 'div',
-                                        className: 'marker',
-                                        html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-                                    })
-                                }
-                            };
-                            var v = new L.Playback(map, adaptedGeoJsonData, null, options);
-                            v.start();
-
-
-                    }
-
-
-                    var timed_update;
-                    var old_position;
-                    function updateCenter(map) {
-                        //leafletData.getMap('map').then(function(map) {
-                        timed_update = setInterval(function() {
-                            var latlng = map.layerPointToLatLng(map.getPanes().markerPane.childNodes[0]._leaflet_pos);
-                            //console.log(latlng)
-                            if (old_position && old_position===latlng) {
-                                console.log("qui");
-                            }
-                            old_position = latlng;
-                            var dist =  computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
-                            //console.log(dist);
-                            if ( dist < 50) {
-                                //changeView
-                                clearInterval(timed_update);
-                                if (items.to_visit.length > 0) {
-                                    window.location.href = "visit.html"
-                                } else {
-                                    window.location.href = "overview.html"
-                                }
-                            } else {
-                                //console.log("moving:"+computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng));
-                                map.panTo(L.latLng(latlng));
-                            }
-                        }, 100);
-                    }
-
-
-                    playback(mymap);
-                    updateCenter(mymap);
-
-
-
-                    var m = [];
-                    m[0] = {
-                        lat : parseFloat(start.split(',')[0]),
-                        lng: parseFloat(start.split(',')[1]),
-                        icon: L.divIcon({
-                            type: 'div',
-                            className: 'marker',
-                            html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
-                        })
-                    };
-
-                    m[1] = {
-                        lat : parseFloat(end.split(',')[0]),
-                        lng: parseFloat(end.split(',')[1]),
-                        icon: L.divIcon({
-                            type: 'div',
-                            className: 'marker',
-                            html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
-                        })
-                    };
-
-
-                    for(var i=0; i<m.length;i++) {
-                        var marker = L.marker(m[i],{icon:m[i].icon}).addTo(mymap);
-                    }
-
-
-                    var geojson = {
-                        data  : data.paths[0].points,
-                        style : {
-                            fillColor: "green",
-                            weight: 2,
-                            opacity: 1,
-                            color: 'blue',
-                            dashArray: '3',
-                            fillOpacity: 0.7
-                        }
-                    };
-
-                    L.geoJSON(geojson.data, {style: geojson.style}).addTo(mymap);
-
-                });
 
                 $("#visit").click(function(){
                     if (items.to_visit.length > 0) {
