@@ -83,7 +83,7 @@ public class RESTController {
 	}
 
 
-
+	/*
 	@Scheduled(fixedRate = 3600000) //hourly
 	public void update() throws IOException {
 		if (initialized) {
@@ -129,9 +129,7 @@ public class RESTController {
 		return new ComputeP2PCrowdings().run(cityDataMap.get(city));
 	}
 
-	/**
-	 * 
-	 */
+
 	@RequestMapping(value = "crowding/{city}/{inc_dec}/{poi_start}/{poi_end}/{time_slot}", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody boolean updateCrowding(@PathVariable String city, @PathVariable String inc_dec, @PathVariable String poi_start, @PathVariable String poi_end, @PathVariable Long time_slot) {
 		logger.info("Update request:<"+city+","+inc_dec+","+poi_start+","+poi_end+","+time_slot+">");

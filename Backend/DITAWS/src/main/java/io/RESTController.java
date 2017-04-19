@@ -37,6 +37,7 @@ public class RESTController {
 		cityDataMap = new HashMap<>();
 		for(String city: CityProp.getInstance().keySet())
 			cityDataMap.put(city,new CityData(city));
+		init();
 	}
 	
 
@@ -63,9 +64,8 @@ public class RESTController {
 
 		//new SocialPulse().writeCrowdPOI();
 		//logger.info("POI written");
-
+		/*
 		try {
-
 			DisableSSLCertificateCheckUtil.disableChecks();
 			ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(new TrustSelfSignedCertHttpClientFactory().getObject());
 			restTemplate = new RestTemplate(requestFactory);
@@ -73,8 +73,8 @@ public class RESTController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		initCrowdingModule();
+		*/
+		//initCrowdingModule();
 
 		for(String city : cityDataMap.keySet()) {
 			logger.info("\n*********************************** "+city+" ***********************************\n");
@@ -89,11 +89,11 @@ public class RESTController {
 
 	}
 
-
+	/*
 	private boolean initCrowdingModule() {
 		return restTemplate.getForObject(CROWDING_MODULE_URL+"init", Boolean.class);
 	}
-
+	*/
 
 	/**
 	 * Load the POIs from the DB (if necessary) and compute the congestion_levels and the travel_times for the day
@@ -129,6 +129,8 @@ public class RESTController {
 //		}
 //	}
 
+
+	/*
 	@Scheduled(fixedRate = 900000) //every 15 minutes
 	public void updateCongestions() throws IOException {
 		if (!initialized) {
@@ -155,16 +157,15 @@ public class RESTController {
 					+ "\t\t****************(congestions)****************\n\n\n");
 		}
 	}
+	*/
 
 
-	/**
-	 * 
-	 */
 	@RequestMapping(value = "activities", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody List<POI> sendActivities(@RequestParam(value="city", defaultValue="unknown") String city) {
 		logger.info(city);
 		return cityDataMap.get(city).retrieveActivities();
 	}
+
 
 	/**
 	 * Compute the visiting plan for the POIs 
@@ -347,7 +348,7 @@ public class RESTController {
 		return cityDataMap.get(city).retrievePlan(user.getEmail());
 	}
 
-
+	/*
 	@RequestMapping(value = "crowding_fdbk", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean setCrowdingFdbk(@RequestBody CrowdingFeedback fdbk) {
 
@@ -366,7 +367,7 @@ public class RESTController {
 				fdbk.getChoice());
 		return cityDataMap.get(city).updateUser(fdbk, value);
 	}
-
+	*/
 
 	@RequestMapping(value = "visited", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
@@ -510,7 +511,7 @@ public class RESTController {
 
 		return plans;
 	}
-
+	/*
 	@RequestMapping(value = "ov_crowding_fdbk", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean setOverallCrowdingFdbk(@RequestBody OverallFeedback fdbk) {
 		logger.info("Overall Crowding Feedback from "+fdbk.getUser());
@@ -526,14 +527,14 @@ public class RESTController {
 		String city = fdbk.getCity();
 		return cityDataMap.get(city).updateUserOv_Pl(fdbk);
 	}
-
+	*/
 	@RequestMapping(value = "finish", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean removePlan(@RequestBody User user) {
 		logger.info("User "+user.getEmail()+" completed his visiting plan in "+user.getCity());
 		String city = user.getCity();
 		return cityDataMap.get(city).deletePlan(user.getEmail());
 	}
-
+	/*
 	public void askUpdate() {
 		try {
 			updateCongestions();
@@ -544,4 +545,5 @@ public class RESTController {
 		}
 
 	}
+	*/
 }
