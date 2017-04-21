@@ -1,7 +1,6 @@
 package citylive;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.CityProp;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LngLatAlt;
@@ -210,9 +209,9 @@ public class CityArea {
 	public static void main(String[] args) throws Exception {
 
 		String city = "modena";
-		CityArea a = new CityArea(city, CityProp.getInstance().get(city).getLonLatBbox());
+		//CityArea a = new CityArea(city, CityProp.getInstance().get(city).getLonLatBbox());
 		//a.toKml(base_dir+city".kml");
-		a.toGeoJson(base_dir_er+city+".geojson");
+		//a.toGeoJson(base_dir_er+city+".geojson");
 	}
 
 }

@@ -273,12 +273,14 @@
                 console.log("recomute route");
                 var newstart = centerMarker.getLatLng();
                 newstart = newstart.lat+","+newstart.lng;
-                $.getJSON('https://graphhopper.com/api/1/route?' +
-                        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
-                        '&point=' + newstart + '&point=' + end, function (data, status) {
-
+                //$.getJSON('https://graphhopper.com/api/1/route?' +
+                //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+                //        '&point=' + newstart + '&point=' + end, function (data, status) {
+                $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end='+end,function (data, status) {
+                    //console.log(data)
                     var geojson = {
-                        data: data.paths[0].points,
+                        //data: data.paths[0].points, // <--- use this if calling graphhopper.com
+                        data: data.points,
                         style: {
                             fillColor: "green",
                             weight: 2,

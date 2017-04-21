@@ -9,13 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import model.Activity;
-
-import model.POI;
-import model.User;
-import model.Visit;
-import model.VisitPlan;
-import model.VisitPlanAlternatives;
+import model.*;
 
 import org.apache.log4j.Logger;
 import org.bson.Document;
@@ -42,22 +36,16 @@ public class Mongo {
     private static final String MONGO_URL = "127.0.0.1:27017";
 	private static final String MONGO_USER = "dita";
     private static final String MONGO_PASSWORD = "mames1976";
-
+	private static final String MONGO_DB = "lume";
 	private Logger logger = Logger.getLogger(Mongo.class);
 
 	private ObjectMapper mapper;
-
 	private MongoClient mongoClient;
-
 	private MongoDatabase db;
-
 	private java.util.logging.Logger mongoLogger;
 
-	private String nameDB;
 
-	public Mongo (String nameDB) {
-
-		this.nameDB = nameDB;
+	public Mongo () {
 
 		CodecRegistry codecRegistry =
 				CodecRegistries.fromRegistries(
@@ -73,17 +61,17 @@ public class Mongo {
         mongoClient = new MongoClient(new ServerAddress(MONGO_URL), Arrays.asList(
 							MongoCredential.createCredential(
                                     MONGO_USER,
-									nameDB,
+									MONGO_DB,
                                     MONGO_PASSWORD.toCharArray())),
 									MongoClientOptions.builder().codecRegistry(codecRegistry).build());
-        db = mongoClient.getDatabase(nameDB);
-        logger.info("loading new db "+nameDB+" .....");
+        db = mongoClient.getDatabase(MONGO_DB);
+        logger.info("loading new db "+MONGO_DB+" .....");
 	}
 
 
-//	public void closeMongoConnection(){
-//		this.mongoClient.close();
-//	}
+	//	public void closeMongoConnection(){
+	//		this.mongoClient.close();
+	//	}
 
 
 	/*
@@ -102,19 +90,28 @@ public class Mongo {
 	}
 
 
-	public void insertActivity(POI poi) {
+	public void insertActivity(String city, POI poi) {
 		try {
-			if (db.getCollection("activities").find(new Document("place_id", poi.getPlace_id())).first() == null)
-				db.getCollection("activities").insertOne(Document.parse(poi.toJSONString()));
+			if (db.getCollection(city+"activities").find(new Document("place_id", poi.getPlace_id())).first() == null)
+				db.getCollection(city+"activities").insertOne(Document.parse(poi.toJSONString()));
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
 	}
 
-	public void insertRestaurant(POI poi) {
+	public void insertRestaurant(String city, POI poi) {
 		try {
-			if (db.getCollection("restaurants").find(new Document("place_id", poi.getPlace_id())).first() == null)
-				db.getCollection("restaurants").insertOne(Document.parse(poi.toJSONString()));
+			if (db.getCollection(city+"restaurants").find(new Document("place_id", poi.getPlace_id())).first() == null)
+				db.getCollection(city+"restaurants").insertOne(Document.parse(poi.toJSONString()));
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+	}
+
+	public void insertItinerary(String city, Itinerary itinerary) {
+		try {
+			if (db.getCollection(city+"itineraries").find(new Document("itinerary_id", itinerary.getItinerary_id())).first() == null)
+				db.getCollection(city+"itineraries").insertOne(Document.parse(itinerary.toJSONString()));
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
@@ -141,10 +138,10 @@ public class Mongo {
 	}
 
 
-	public List<POI> retrieveRestaurants() {
+	public List<POI> retrieveRestaurants(String city) {
 		List<POI> result = new ArrayList<POI>();
 		try {
-			for (Iterator<Document> iter = db.getCollection("restaurants").find().iterator(); iter.hasNext();) {
+			for (Iterator<Document> iter = db.getCollection(city+"restaurants").find().iterator(); iter.hasNext();) {
 				result.add(mapper.readValue(iter.next().toJson(), POI.class));
 			}
 		} catch(Exception e) {
@@ -153,13 +150,10 @@ public class Mongo {
 		return result;
 	}
 
-	public List<POI> retrieveActivities() {
-
-		logger.info("retrieveActivities from "+nameDB+" "+db.getName());
-
-		List<POI> result = new ArrayList<POI>();
+	public List<POI> retrieveActivities(String city) {
+		List<POI> result = new ArrayList<>();
 		try {
-			for (Iterator<Document> iter = db.getCollection("activities").find().iterator(); iter.hasNext();) {
+			for (Iterator<Document> iter = db.getCollection(city+"activities").find().iterator(); iter.hasNext();) {
 				POI p = mapper.readValue(iter.next().toJson(), POI.class);
 				p.setDisplay_name(Normalizer.normalize(p.getDisplay_name(), Normalizer.Form.NFD).replaceAll("[^\\x00-\\x7F]", "").replaceAll("''", "'"));
 				result.add(p);
@@ -170,24 +164,24 @@ public class Mongo {
 		return result;
 	}
 
-	public boolean checkActivities(){
-        return db.getCollection("activities").count() != 0l;
+	public boolean checkActivities(String city){
+		return db.getCollection(city+"activities").count() != 0l;
     }
 
-	public POI retrieveActivity(String place_id) {
+	public POI retrieveActivity(String city,String place_id) {
 		try {
 			//logger.info("Retrieve activity:"+place_id);
-			return mapper.readValue(db.getCollection("activities").find(new Document("place_id", place_id)).iterator().next().toJson(), POI.class);
+			return mapper.readValue(db.getCollection(city+"activities").find(new Document("place_id", place_id)).iterator().next().toJson(), POI.class);
 		} catch(Exception e) {
 			logger.info(e.getMessage());
 		}
 		return null;
 	}
 
-	public POI retrieveClosestActivity(POI custom) {
+	public POI retrieveClosestActivity(String city,POI custom) {
 		POI result = new POI();
 		try {
-			result = mapper.readValue(db.getCollection("activities").find(new Document("geometry", new Document("$near", 
+			result = mapper.readValue(db.getCollection(city+"activities").find(new Document("geometry", new Document("$near",
 					new Document("$geometry", custom.getGeometry())))).first().toJson(), POI.class);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -195,13 +189,27 @@ public class Mongo {
 		return result;
 	}
 
-	public List<POI> retrieveClosestRestaurants(Point location) {
+	public List<POI> retrieveClosestRestaurants(String city,Point location) {
 		List<POI> result = new ArrayList<>();
 		try {
-			FindIterable<Document> top15 = db.getCollection("activities").find(new Document("geometry", new Document("$near", 
+			FindIterable<Document> top15 = db.getCollection(city+"activities").find(new Document("geometry", new Document("$near",
 					new Document("$geometry", location)))).limit(15);
 			for (Document document : top15) {
 				result.add(mapper.readValue(document.toJson(), POI.class));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<Itinerary> retrieveItineraries(String city) {
+		List<Itinerary> result = new ArrayList<>();
+		try {
+			for (Iterator<Document> iter = db.getCollection(city+"itineraries").find().iterator(); iter.hasNext();) {
+				Itinerary i = mapper.readValue(iter.next().toJson(), Itinerary.class);
+				i.setDisplay_name(Normalizer.normalize(i.getDisplay_name(), Normalizer.Form.NFD).replaceAll("[^\\x00-\\x7F]", "").replaceAll("''", "'"));
+				result.add(i);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -216,7 +224,7 @@ public class Mongo {
 	 */
 
 
-	public boolean Signup(User user) {
+	public boolean signup(User user) {
 		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(user.getEmail().getBytes()).toString())).first();
 		if (null == userRecord) {
 			logger.info("Creating new user account for "+user.getEmail());
@@ -228,7 +236,7 @@ public class Mongo {
 		}
 	}
 
-	public Integer Login(User user) {
+	public Integer login(User user) {
 		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(user.getEmail().getBytes()).toString())).first();
 		if (null != userRecord) {
 			if (userRecord.get("password").equals(user.getPassword())) {

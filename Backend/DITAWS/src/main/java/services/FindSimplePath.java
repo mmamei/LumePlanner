@@ -1,10 +1,8 @@
 package services;
 
-import io.CityData;
+import io.Mongo;
 import model.*;
 import org.apache.log4j.Logger;
-import util.TimeUtils;
-import util.TravelPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,11 +18,8 @@ import static util.Misc.haverDist;
 public class FindSimplePath {
 
     public static void main(String[] args) throws IOException {
-        CityData.DESKTOP_RUN = true;
 
-
-        CityData cityData = new CityData("Modena");
-        cityData.init();
+        Mongo dao = new Mongo();
         POI departure = new POI("0", 44.6290051, 10.8701162, "Current Location");
         POI arrival = new POI("00", 44.6290051, 10.8701162, "Current Location");
         String start_time = "09:00";
@@ -32,10 +27,7 @@ public class FindSimplePath {
         POIsList.add("00");
         POIsList.add("159280732");
 
-
-
-        //System.out.println(new FindGreedyPath().newPlan(cityData,"marco",departure,arrival,start_time,POIsList));
-        System.out.println(new FindSimplePath().newPlan(cityData,"marco",departure,arrival,start_time,POIsList));
+       System.out.println(new FindSimplePath().newPlan("Modena",dao,"marco",departure,arrival,start_time,POIsList));
 
     }
 
@@ -45,7 +37,7 @@ public class FindSimplePath {
 
     private List<String> to_visit;
 
-    public VisitPlan newPlan(CityData cityData, String user, POI departure, POI arrival, String start_time, List<String> POIsList) {
+    public VisitPlan newPlan(String city, Mongo dao, String user, POI departure, POI arrival, String start_time, List<String> POIsList) {
         to_visit = new ArrayList<>();
         for (String poi : POIsList) {
             to_visit.add(poi);
@@ -69,7 +61,7 @@ public class FindSimplePath {
             double min_distance = Double.MAX_VALUE;
             POI closest = null;
             for (String poi : to_visit) {
-                POI current = cityData.getPOI(poi);
+                POI current = dao.retrieveActivity(city,poi);
 
                 double current_distance = haverDist(
                         new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()},
@@ -104,7 +96,7 @@ public class FindSimplePath {
             if (ps.equals("0") || ps.equals("00")) {
                 p = (ps.equals("0")) ? departure : arrival;
             } else {
-                p = cityData.getPOI(ps);
+                p = dao.retrieveActivity(city,ps);
             }
             current.setDeparture_time("10:00");
             current.setArrival_time("10:00");
@@ -120,7 +112,7 @@ public class FindSimplePath {
 
     }
 
-    public VisitPlan updatePlan(CityData cityData, Visit last_visit, VisitPlan plan, List<String> POIsList) {
+    public VisitPlan updatePlan(String city, Mongo dao, Visit last_visit, VisitPlan plan, List<String> POIsList) {
         return plan;
     }
 }

@@ -20,9 +20,6 @@
         <script src="js/jquery.md5.js"></script>
 
 
-
-
-
         <style>
             .bg-blue {
                 background-color: #084265;
@@ -37,6 +34,61 @@
         </style>
 
         <script>
+
+
+            function loadActivities(city) {
+                console.log("get activities for city "+city+" from server");
+                return  $.getJSON(conf.dita_server + 'activities?city=' + city,
+                        function (data, status) {
+                            var pois = new POIS();
+                            //console.log("Data: " + data + "\nStatus: " + status);
+                            data.forEach(function (value) {
+                                switch (value.category) {
+                                    case "attractions":
+                                        pois.attractions.push(value);
+                                        break;
+                                    case "monuments" :
+                                        pois.monuments.push(value);
+                                        break;
+                                    case "museums" :
+                                        pois.museums.push(value);
+                                        break;
+                                    case "eating" :
+                                        pois.restaurants.push(value);
+                                        break;
+                                    case "parks" :
+                                        pois.parks.push(value);
+                                        break;
+                                    case "resting" :
+                                        pois.hotels.push(value);
+                                        break;
+                                    case "historical_sites" :
+                                        pois.historical.push(value);
+                                        break;
+                                    case "religious_sites" :
+                                        pois.religious.push(value);
+                                        break;
+                                    default :
+                                        console.log("Invalid category:" + value.category);
+                                }
+                            });
+                            window.sessionStorage.setItem("pois",JSON.stringify(pois));
+                            var departure = window.sessionStorage.getItem("departure");
+                            var arrival = window.sessionStorage.getItem("arrival");
+                        });
+            }
+
+            function loadItineraries(city) {
+                window.sessionStorage.setItem("itineraries",null);
+                console.log("get itineraries for city "+city+" from server");
+                return  $.getJSON(conf.dita_server + 'itineraries?city=' + city,
+                        function (data, status) {
+                            if(data.length > 0)
+                                window.sessionStorage.setItem("itineraries",JSON.stringify(data));
+                        });
+            }
+
+
             $(document).ready(function(){
 
                 // login user
@@ -78,56 +130,13 @@
                         var city = event.target.id;
                         window.sessionStorage.setItem("city", event.target.id);
                         window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
-
-                        var pois = new POIS();
-
-                        console.log("get activities for city "+city+" from server");
-
-                        $.getJSON(conf.dita_server + 'activities?city=' + city,
-                                function (data, status) {
-                                    //console.log("Data: " + data + "\nStatus: " + status);
-                                    data.forEach(function (value) {
-                                        switch (value.category) {
-                                            case "attractions":
-                                                pois.attractions.push(value);
-                                                break;
-                                            case "monuments" :
-                                                pois.monuments.push(value);
-                                                break;
-                                            case "museums" :
-                                                pois.museums.push(value);
-                                                break;
-                                            case "eating" :
-                                                pois.restaurants.push(value);
-                                                break;
-                                            case "parks" :
-                                                pois.parks.push(value);
-                                                break;
-                                            case "resting" :
-                                                pois.hotels.push(value);
-                                                break;
-                                            case "historical_sites" :
-                                                pois.historical.push(value);
-                                                break;
-                                            case "religious_sites" :
-                                                pois.religious.push(value);
-                                                break;
-                                            default :
-                                                console.log("Invalid category:" + value.category);
-                                        }
-                                    });
-
-                                    window.sessionStorage.setItem("pois",JSON.stringify(pois));
-                                    var departure = window.sessionStorage.getItem("departure");
-                                    var arrival = window.sessionStorage.getItem("arrival");
-                                    window.location.href = "map.html";
+                        $.when(loadActivities(city), loadItineraries(city)).done(function(){
+                            window.location.href = "map.html";
                         });
                     }
                     else {
                         window.location.href = "map.html";
                     }
-
-
                 });
 
             });

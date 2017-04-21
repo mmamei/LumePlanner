@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import services.FindSimplePath;
+import services.SaveItineraries2DB;
+import services.SavePOIs2DB;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -20,38 +22,25 @@ public class RESTController {
 
 	//private static RestTemplate restTemplate;
 	private Logger logger = Logger.getLogger(RESTController.class);
-	private boolean initialized = false;
 
-	private static Map<String,CityData> cityDataMap;
+	private  GHopper gHopper;
+	private Mongo dao;
 
 	public RESTController() {
-		cityDataMap = new HashMap<>();
-		for(String city: CityProp.getInstance().keySet())
-			cityDataMap.put(city,new CityData(city));
-		init();
-	}
-	
-
-	@RequestMapping(value = "signin", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody Integer performLogin(@RequestBody User user) {
-		String city = "Modena";
-		return cityDataMap.get(city).login(user);
-	}
-
-	@RequestMapping(value = "signup", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody boolean performSignup(@RequestBody User user) {
-		String city = "Modena";
-		return cityDataMap.get(city).signup(user);
-	}
-
-
-	/**
-	 * Retrieve POIs, compute haversine distances, integrate POIs with visiting times from venice
-	 * @return Status of the initialisation process
-	 * @throws IOException 
-	 */
-	public void init() {
 		logger.info("Server initialization started");
+		dao = new Mongo();
+		gHopper = new GHopper();
+
+		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
+			String city = cp.getName();
+			if (!dao.checkActivities(city)) {
+				logger.info("/../data/"+cp.getDataDir());
+				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
+				new SavePOIs2DB().run(city, dao, this.getClass().getResource("/../data/"+cp.getDataDir()+"/pois").getPath());
+				logger.info("POIs collected from OSM API");
+			}
+			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/"+cp.getDataDir()).getPath()+"/itineraries.json");
+		}
 
 		/*
 		try {
@@ -63,38 +52,41 @@ public class RESTController {
 			e.printStackTrace();
 		}
 		*/
+	}
+	
 
-		for(String city : cityDataMap.keySet()) {
-			logger.info("\n*********************************** "+city+" ***********************************\n");
-			cityDataMap.get(city).init();
-		}
+	@RequestMapping(value = "signin", headers="Accept=application/json", method = RequestMethod.POST)
+	public @ResponseBody Integer performLogin(@RequestBody User user) {
+		return dao.login(user);
+	}
 
-		initialized = true;
-
-		logger.info("\n\n\n\t\t*********************************************\n"
-				+ "\t\t*******Server successfully initialized*******\n"
-				+ "\t\t*********************************************\n\n\n");
-
+	@RequestMapping(value = "signup", headers="Accept=application/json", method = RequestMethod.POST)
+	public @ResponseBody boolean performSignup(@RequestBody User user) {
+		return dao.signup(user);
 	}
 
 
-	/**
-	 * Load the POIs from the DB (if necessary) and compute the congestion_levels and the travel_times for the day
-	 * @return Status of the update process
-	 * @throws IOException 
-	 */
 	@RequestMapping(value = "activities", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody List<POI> sendActivities(@RequestParam(value="city", defaultValue="unknown") String city) {
+		return dao.retrieveActivities(city);
+	}
+
+	@RequestMapping(value = "itineraries", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody List<Itinerary> sendItineraries(@RequestParam(value="city", defaultValue="unknown") String city) {
 		logger.info(city);
-		return cityDataMap.get(city).retrieveActivities();
+		return dao.retrieveItineraries(city);
 	}
 
 
-	/**
-	 * Compute the visiting plan for the POIs 
-	 * @param plan_request sent w/ POST containing the list of POIs selected from user in json format
-	 * @return Suggested visiting sequence for the requested set of POIs
-	 */
+	@RequestMapping(value = "route", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody Path route(@RequestParam(value="vechicle", defaultValue="foot") String vechicle,
+									@RequestParam(value="start", defaultValue="unknown") String start,
+									@RequestParam(value="end", defaultValue="unknown") String end) {
+		String[] s = start.split(",");
+		String[] e = end.split(",");
+		return gHopper.route(vechicle, Double.parseDouble(s[0]),Double.parseDouble(s[1]),Double.parseDouble(e[0]),Double.parseDouble(e[1]));
+	}
+
 
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
@@ -148,7 +140,6 @@ public class RESTController {
 		}
 
 
-
 		logger.info("USER: "+plan_request.getUser()+"   "+"TIME: "+plan_request.getStart_time());
 		logger.info("CITY: "+city);
 		logger.info("PLAN REQUEST: "+POIsList.toString()+"\n");
@@ -156,7 +147,7 @@ public class RESTController {
 		logger.info("ARR: "+arrival.toString());
 
 
-		VisitPlan simple = new FindSimplePath().newPlan(cityDataMap.get(city), plan_request.getUser(), departure, arrival, start_time, POIsList);
+		VisitPlan simple = new FindSimplePath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
 		logger.info("Simple computed " + simple.getUser());
 
 		logger.info("newPlan user:"+plan_request.getUser());
@@ -168,14 +159,12 @@ public class RESTController {
 	@RequestMapping(value = "accept_plan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody boolean acceptVisitPlan(@RequestBody VisitPlanAlternatives plans) {
 		String city = plans.getCity();
-		return acceptVisitPlanWithType(cityDataMap.get(city), 0, plans);
+		return acceptVisitPlanWithType(0, plans);
 	}
 
-	public boolean acceptVisitPlanWithType(CityData cityData, int type, VisitPlanAlternatives plans) {
-		if (!cityData.insertPlan(plans)) return false;
-
+	public boolean acceptVisitPlanWithType(int type, VisitPlanAlternatives plans) {
+		if (!dao.insertPlan(plans)) return false;
 		VisitPlan plan_accepted = null;
-
 		switch (type) {
 		case 1: // greedy
 			plan_accepted = plans.getGreedy();
@@ -192,8 +181,7 @@ public class RESTController {
 
 	@RequestMapping(value = "plan", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives getPlan(@RequestBody User user) {
-		String city = "Modena";
-		return cityDataMap.get(city).retrievePlan(user.getEmail());
+		return dao.retrievePlan(user.getEmail());
 	}
 
 
@@ -202,7 +190,7 @@ public class RESTController {
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
 		String city = new_visited.getCity();
 		logger.info("++++++++++++++++++++++"+city);
-		return addVisitedAndReplanWithType(cityDataMap.get(city), 0, new_visited);
+		return addVisitedAndReplanWithType(0, new_visited);
 
 	}
 
@@ -223,8 +211,8 @@ public class RESTController {
 	}
 
 
-	public VisitPlanAlternatives addVisitedAndReplanWithType(CityData cityData, int type, Visit new_visited) {
-		VisitPlanAlternatives plans = cityData.updatePlan(new_visited);
+	public VisitPlanAlternatives addVisitedAndReplanWithType(int type, Visit new_visited) {
+		VisitPlanAlternatives plans = dao.updatePlan(new_visited);
 		if (null == plans) return null;
 
 		//logger.info(plans.toString());
@@ -261,13 +249,13 @@ public class RESTController {
 			
 			switch (type) {
 			case 1: // greedy
-				newP = new FindSimplePath().updatePlan(cityData, new_visited, plans.getGreedy(), pois);
+				newP = new FindSimplePath().updatePlan(city,dao, new_visited, plans.getGreedy(), pois);
 				break;
 			case 2: // shortest
-				newP = new FindSimplePath().updatePlan(cityData, new_visited, plans.getShortest(), pois);
+				newP = new FindSimplePath().updatePlan(city,dao, new_visited, plans.getShortest(), pois);
 				break;
 			default: //0
-				newP = new FindSimplePath().updatePlan(cityData, new_visited, plans.getCrowd_related(), pois);
+				newP = new FindSimplePath().updatePlan(city,dao, new_visited, plans.getCrowd_related(), pois);
 			}
 
 
@@ -276,21 +264,21 @@ public class RESTController {
 				return new VisitPlanAlternatives(
 						city,
 						newP,
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getShortest(), pois),
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getCrowd_related(), pois),
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getShortest(), pois),
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getCrowd_related(), pois),
 						plans.getCrowd_preference());
 			case 2: // shortest
 				return new VisitPlanAlternatives(
 						city,
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getGreedy(), pois),
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getGreedy(), pois),
 						newP,
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getCrowd_related(), pois),
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getCrowd_related(), pois),
 						plans.getCrowd_preference());
 			default: //0
 				return new VisitPlanAlternatives(
 						city,
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getGreedy(), pois),
-						new FindSimplePath().updatePlan(cityData, new_visited, plans.getShortest(), pois), newP, plans.getCrowd_preference());
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getGreedy(), pois),
+						new FindSimplePath().updatePlan(city,dao, new_visited, plans.getShortest(), pois), newP, plans.getCrowd_preference());
 			}
 			
 		}
@@ -302,6 +290,6 @@ public class RESTController {
 	public @ResponseBody boolean removePlan(@RequestBody User user) {
 		logger.info("User "+user.getEmail()+" completed his visiting plan in "+user.getCity());
 		String city = user.getCity();
-		return cityDataMap.get(city).deletePlan(user.getEmail());
+		return dao.deletePlan(user.getEmail());
 	}
 }

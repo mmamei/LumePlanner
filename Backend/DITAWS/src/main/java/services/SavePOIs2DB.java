@@ -1,6 +1,5 @@
 package services;
 
-import io.CityProp;
 import io.Mongo;
 
 import java.io.BufferedReader;
@@ -17,16 +16,16 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GetPOIs  {
+public class SavePOIs2DB {
 
 
 
 	public static void main(String[] args) throws Exception  {
-		GetPOIs g = new GetPOIs();
+		SavePOIs2DB g = new SavePOIs2DB();
 		String city = "ReggioEmilia";
-		Mongo dao = new Mongo(CityProp.getInstance().get(city).getDB());
+		Mongo dao = new Mongo();
 		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
-		g.run(dao,dir);
+		g.run(city, dao,dir);
 	}
 
 
@@ -34,7 +33,7 @@ public class GetPOIs  {
 
 
 
-	public void run(Mongo dao, String pois_dir) {
+	public void run(String city, Mongo dao, String pois_dir) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
@@ -49,13 +48,23 @@ public class GetPOIs  {
 					JSONArray parsed = new JSONArray(br.readLine());
 					for (int j = 0; j < parsed.length(); j++) {
 						JSONObject currentJPOI = (JSONObject) parsed.get(j);
-						POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
-						logger.info("**** " + currentPOI.toString());
 
-						if (currentPOI.getCategory().equals("eating"))
-							dao.insertRestaurant(currentPOI);
-						else
-							dao.insertActivity(currentPOI);
+						POI currentPOI = null;
+						try {
+							currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
+						} catch(Exception pe) {
+							logger.warn("Error parsing " + currentJPOI.toString());
+							pe.printStackTrace();
+						}
+							//logger.info("**** " + currentPOI.toString());
+
+						if(currentPOI!=null) {
+
+							if (currentPOI.getCategory().equals("eating"))
+								dao.insertRestaurant(city, currentPOI);
+							else
+								dao.insertActivity(city, currentPOI);
+						}
 
 					}
 					br.close();

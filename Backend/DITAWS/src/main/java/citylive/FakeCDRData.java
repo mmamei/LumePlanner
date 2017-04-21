@@ -1,6 +1,6 @@
 package citylive;
 
-import io.CityProp;
+import model.CityProperties;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,19 +12,19 @@ import java.io.PrintWriter;
 public class FakeCDRData {
 
     public static void main(String[] args) throws Exception {
-        for(String city: CityProp.getInstance().keySet()) {
-            System.out.println("Processing "+city);
-            run(city);
-        }
+        //for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
+        //   System.out.println("Processing "+cp.getName());
+        //   run(cp);
+        //}
     }
 
-    public static void run(String city) throws Exception {
+    public static void run(CityProperties cp) throws Exception {
 
-        String cm_base_dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\CrowdingModule\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\";
-        String dita_base_dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\";
+        String cm_base_dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\CrowdingModule\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\";
+        String dita_base_dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\";
         new File(cm_base_dir).mkdirs();
         new File(dita_base_dir).mkdirs();
-        CityArea a = new CityArea(city, CityProp.getInstance().get(city).getLonLatBbox());
+        CityArea a = new CityArea(cp.getName(), cp.getLonLatBbox());
 
         a.toGeoJson(cm_base_dir+"grid.geojson");
         a.toGeoJson(dita_base_dir+"grid.geojson");
