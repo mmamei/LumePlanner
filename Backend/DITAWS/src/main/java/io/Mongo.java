@@ -119,11 +119,6 @@ public class Mongo {
 
 
 
-
-
-
-
-
 	/*
 	 * *************************************** RETRIEVE ***************************************
 	 */
@@ -241,7 +236,7 @@ public class Mongo {
 		if (null != userRecord) {
 			if (userRecord.get("password").equals(user.getPassword())) {
 				logger.info("User "+user.getEmail()+" successfully logged in");
-				if (null == db.getCollection("plans").find(new Document("crowd_related.user", user.getEmail())).first()) {
+				if (null == db.getCollection("plans").find(new Document("crowd.user", user.getEmail())).first()) {
 					return 1;
 				} else {
 					return 2;
@@ -258,9 +253,9 @@ public class Mongo {
 
 
 	public boolean insertPlan(VisitPlanAlternatives plans) {
-		VisitPlan plan_accepted = plans.getCrowd_related();
+		VisitPlan plan_accepted = plans.getShortest();
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd_related.user", plan_accepted.getUser())).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", plan_accepted.getUser())).first();
 			if (null == userPlanRecord) {
 				logger.info("Creating new visit plan for user "+plan_accepted.getUser());
 				db.getCollection("plans").insertOne(Document.parse(plans.toJSONString()));
@@ -274,12 +269,11 @@ public class Mongo {
 			e.printStackTrace();
 			return false;
 		}
-
 	}
 
 	public VisitPlanAlternatives retrievePlan(String user_email) {
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd_related.user", user_email)).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", user_email)).first();
 			if (null == userPlanRecord) {
 				return null;
 			} else {
@@ -293,11 +287,14 @@ public class Mongo {
 
 	}
 
-
+	/*
+	 * *************************************** USER-SERVICES ***************************************
+	 */
 
 	public VisitPlanAlternatives updatePlan(Visit new_visited) {
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd_related.user", new_visited.getUser())).first();
+			logger.info("Trying to find the plan for user "+new_visited.getUser());
+			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", new_visited.getUser())).first();
 			if (null != userPlanRecord) {
 				VisitPlanAlternatives current = mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
 
@@ -324,7 +321,7 @@ public class Mongo {
 				//logger.info("short swap:"+to_swap);
 				/***** UPDATE GREEDY *****/
 				to_swap = null;
-				plan = current.getGreedy();
+				plan = current.getAsis();
 				for (Activity activity : plan.getTo_visit()) {
 					//logger.info("Greedy check:"+activity.getVisit().getPlace_id());
 					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
@@ -345,7 +342,7 @@ public class Mongo {
 				//logger.info("greedy swap:"+to_swap);
 				/***** UPDATE LESS CROWDED *****/
 
-				plan = current.getCrowd_related();
+				plan = current.getCrowd();
 				to_swap = null;
 				for (Activity activity : plan.getTo_visit()) {
 					//logger.info("Crowd check:"+activity.getVisit().getPlace_id());
@@ -381,7 +378,7 @@ public class Mongo {
 
 	public boolean deletePlan(String user_mail) {
 		try{
-			DeleteResult userPlanRecord = db.getCollection("plans").deleteOne(new Document("crowd_related.user", user_mail));
+			DeleteResult userPlanRecord = db.getCollection("plans").deleteOne(new Document("crowd.user", user_mail));
 			if (0 == userPlanRecord.getDeletedCount()) {
 				logger.info("Visiting Plan not found for removal "+user_mail);
 				return false;

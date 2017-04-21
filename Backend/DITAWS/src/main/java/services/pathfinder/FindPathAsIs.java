@@ -1,21 +1,22 @@
-package services;
+package services.pathfinder;
 
 import io.Mongo;
-import model.*;
+import model.Activity;
+import model.POI;
+import model.Visit;
+import model.VisitPlan;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.List;
-
 
 import static util.Misc.haverDist;
 
 /**
  * Created by marco on 19/04/2017.
  */
-public class FindSimplePath {
+public class FindPathAsIs {
 
     public static void main(String[] args) throws IOException {
 
@@ -27,13 +28,13 @@ public class FindSimplePath {
         POIsList.add("00");
         POIsList.add("159280732");
 
-       System.out.println(new FindSimplePath().newPlan("Modena",dao,"marco",departure,arrival,start_time,POIsList));
+       System.out.println(new FindPathAsIs().newPlan("Modena",dao,"marco",departure,arrival,start_time,POIsList));
 
     }
 
 
 
-    private Logger logger = Logger.getLogger(FindSimplePath.class);
+    private Logger logger = Logger.getLogger(FindPathAsIs.class);
 
     private List<String> to_visit;
 

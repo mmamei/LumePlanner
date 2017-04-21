@@ -203,8 +203,14 @@
             $(document).ready(function(){
                 var user = JSON.parse(window.sessionStorage.getItem("user"));
                 var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-                var type_of_plan = "greedy";
+                var type_of_plan = "shortest";
                 var newplan = true;
+                /*
+
+                Questa è utile
+                ad esempio un utente spegne l'applicazione quando entra in un museo e può riprendere il tragitto da dove si era fermato.
+                Magari mettere un pulasnate di resume in index.
+
 
                 if (visitplan==='2' || visitplan === 2) { // user comes from 'sign' view --> a visiting plan exists already
 
@@ -217,21 +223,28 @@
                         var city = data.city;
                         window.sessionStorage.setItem("city",city);
 
-                        visitplan = {city:city, greedy: data.greedy, shortest: data.shortest, crowd_related:data.crowd_related, crowd_preference: data.crowd_preference};
+                        visitplan = {
+                            city:city,
+                            asis: data.asis,
+                            shortest: data.shortest,
+                            crowd:data.crowd,
+                        };
                         window.sessionStorage.setItem("visitplan",JSON.stringify(visitplan));
                         //console.log(JSON.stringify(visitplan))
+
                         var mymap = L.map('mapid');
                         drawMapAndTable(mymap, visitplan[type_of_plan]);
 
                     });
 
                 }
-                else {
+                */
+                //else {
                     //console.log(JSON.stringify(visitplan))
                     var mymap = L.map('mapid');
                     drawMapAndTable(mymap, visitplan[type_of_plan]);
-                }
-
+                 //}
+                console.log(visitplan);
 
 
                 $(".path").click(function(event) {
@@ -248,14 +261,13 @@
                     window.sessionStorage.setItem("type_of_plan",JSON.stringify(type_of_plan));
 
                     if(newplan) {
-
                         $.postJSON(conf.dita_server+"accept_plan",visitplan,function(data, status){
-
+                            console.log(data);
+                            if(data) window.location.href = "next_step.html";
+                            else console.log("Cannot create plan")
                         });
-
                     }
-
-                    window.location.href = "next_step.html"
+                    else window.location.href = "next_step.html"
                 });
 
 

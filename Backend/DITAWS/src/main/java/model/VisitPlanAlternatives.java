@@ -6,67 +6,69 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class VisitPlanAlternatives {
 
 	private String city;
-	private VisitPlan 	greedy;
+	private VisitPlan 	asis;
 	private VisitPlan 	shortest;
-	private VisitPlan 	crowd_related;
+	private VisitPlan 	crowd;
 	private double		crowd_preference; //-1=fullyCrowded; -0.5=mainlyCrowded; +0.5=mainlyUncrowded; +1=fullyUncrowded
-
-
-
-	public VisitPlanAlternatives() {
-	    this.shortest = new VisitPlan();
-	    this.crowd_related = new VisitPlan();
-	    this.greedy = new VisitPlan();
-	    this.crowd_preference = 1d;
-	}
-	
-	public VisitPlanAlternatives(String city, VisitPlan greedy, VisitPlan shortest, VisitPlan crowd_related, double crowd_preference) {
-		this.city = city;
-		this.setGreedy(greedy);
-		this.setShortest(shortest);
-		this.setCrowd_related(crowd_related);
-		this.setCrowd_preference(crowd_preference);
-	}
 
 
 	public String getCity() {
 		return city;
 	}
 
+	public VisitPlan getAsis() {
+		return asis;
+	}
+
 	public void setCity(String city) {
 		this.city = city;
 	}
-	public VisitPlan getGreedy() {
-		return greedy;
-	}
 
-	public void setGreedy(VisitPlan greedy) {
-		this.greedy = greedy;
-	}
-
-	public VisitPlan getShortest() {
-		return shortest;
+	public void setAsis(VisitPlan asis) {
+		this.asis = asis;
 	}
 
 	public void setShortest(VisitPlan shortest) {
 		this.shortest = shortest;
 	}
 
-	public VisitPlan getCrowd_related() {
-		return crowd_related;
+	public void setCrowd(VisitPlan crowd) {
+		this.crowd = crowd;
 	}
-	
-	public void setCrowd_related(VisitPlan crowd_related) {
-		this.crowd_related = crowd_related;
+
+	public void setCrowd_preference(double crowd_preference) {
+		this.crowd_preference = crowd_preference;
+	}
+
+	public VisitPlan getShortest() {
+
+		return shortest;
+	}
+
+	public VisitPlan getCrowd() {
+		return crowd;
 	}
 
 	public double getCrowd_preference() {
 		return crowd_preference;
 	}
 
-	public void setCrowd_preference(double crowd_preference) {
+
+	public VisitPlanAlternatives() {
+		this.asis = new VisitPlan();
+		this.shortest = new VisitPlan();
+		this.crowd = new VisitPlan();
+		this.crowd_preference = 1d;
+	}
+
+	public VisitPlanAlternatives(String city, VisitPlan asis, VisitPlan shortest, VisitPlan crowd, double crowd_preference) {
+		this.city = city;
+		this.asis = asis;
+		this.shortest = shortest;
+		this.crowd = crowd;
 		this.crowd_preference = crowd_preference;
 	}
+
 
 	public String toJSONString() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -77,14 +79,4 @@ public class VisitPlanAlternatives {
 		}
 		return "";
 	}
-
-	@Override
-	public String toString() {
-		return "VisitPlanAlternatives [greedy=" + greedy + ", shortest="
-				+ shortest + ", crowd_related=" + crowd_related + "]";
-	}
-
-	
-	
-
 }
