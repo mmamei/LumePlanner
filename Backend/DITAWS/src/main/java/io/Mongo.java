@@ -252,6 +252,11 @@ public class Mongo {
 	}
 
 
+
+	/*
+	 * *************************************** PLAN-SERVICES ***************************************
+	 */
+
 	public boolean insertPlan(VisitPlanAlternatives plans) {
 		VisitPlan plan_accepted = plans.getShortest();
 		try{
@@ -287,9 +292,7 @@ public class Mongo {
 
 	}
 
-	/*
-	 * *************************************** USER-SERVICES ***************************************
-	 */
+
 
 	public VisitPlanAlternatives updatePlan(Visit new_visited) {
 		try{

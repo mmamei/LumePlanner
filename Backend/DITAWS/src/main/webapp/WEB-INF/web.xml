@@ -19,7 +19,7 @@
 
 	<servlet-mapping>
 		<servlet-name>controller</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/WS/*</url-pattern>
 	</servlet-mapping>
 
 	<context-param>

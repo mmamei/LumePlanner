@@ -73,4 +73,10 @@ public class CityProperties {
     public double[][] getLonLatBbox() {
         return new double[][]{lonLatBL,lonLatTR};
     }
+
+
+    public boolean contains(double lat, double lon) {
+        return (lonLatBL[0] < lon && lonLatBL[1] < lat && lonLatTR[0] > lon && lonLatTR[1] > lat);
+    }
+
 }

@@ -20,22 +20,24 @@ public class RESTController {
 
 	//private static RestTemplate restTemplate;
 	private Logger logger = Logger.getLogger(RESTController.class);
-
 	private  GHopper gHopper;
 	private Mongo dao;
+
+	private List<String> cities;
 
 	public RESTController() {
 		logger.info("Server initialization started");
 		dao = new Mongo();
 		gHopper = new GHopper();
-
+		cities = new ArrayList<>();
 		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
 			String city = cp.getName();
+			cities.add(city);
 			if (!dao.checkActivities(city)) {
 				logger.info("/../data/"+cp.getDataDir());
 				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
 				new SavePOIs2DB().run(city, dao, this.getClass().getResource("/../data/"+cp.getDataDir()+"/pois").getPath());
-				logger.info("POIs collected from OSM API");
+				logger.info("POIs collected");
 			}
 			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/"+cp.getDataDir()).getPath()+"/itineraries.json");
 		}
@@ -51,7 +53,12 @@ public class RESTController {
 		}
 		*/
 	}
-	
+
+	@RequestMapping(value = "cities", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody List<String> sendCities() {
+		return cities;
+	}
+
 
 	@RequestMapping(value = "signin", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody Integer performLogin(@RequestBody User user) {

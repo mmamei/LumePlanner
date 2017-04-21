@@ -34,7 +34,10 @@ public class NominatimPOIsDownload {
 
         String bbox = cp.getBbox();
         String out_file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois\\nominatim.json";
-        download(cp.getName(),bbox,out_file);
+        if(new File(out_file).exists())
+            System.out.println(out_file+" Already Exists");
+        else
+            download(cp.getName(),bbox,out_file);
         System.out.println("Completed "+cp.getName());
     }
 
