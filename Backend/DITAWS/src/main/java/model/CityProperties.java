@@ -22,6 +22,7 @@ public class CityProperties {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while((line=br.readLine())!=null) {
+                if(line.startsWith("//")) continue;
                 String[] e = line.split(",");
                 l.add(new CityProperties(e[0],
                         new double[]{Double.parseDouble(e[1]),Double.parseDouble(e[2])},

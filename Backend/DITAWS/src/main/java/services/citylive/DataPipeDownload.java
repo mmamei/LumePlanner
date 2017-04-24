@@ -1,4 +1,4 @@
-package citylive;
+package services.citylive;
 
 import org.apache.commons.io.IOUtils;
 

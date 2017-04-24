@@ -1,4 +1,4 @@
-package citylive;
+package services.citylive;
 
 import model.CityProperties;
 

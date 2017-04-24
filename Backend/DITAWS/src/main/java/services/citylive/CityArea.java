@@ -1,4 +1,4 @@
-package citylive;
+package services.citylive;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geojson.Feature;

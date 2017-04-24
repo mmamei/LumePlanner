@@ -1,4 +1,4 @@
-package citylive;
+package services.citylive;
 
 import tilab.nimble.coordconvert.CoordConvert;
 import tilab.nimble.coordconvert.GlobalCoordinates;

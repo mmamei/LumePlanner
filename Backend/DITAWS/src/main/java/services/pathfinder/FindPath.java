@@ -52,12 +52,13 @@ public class FindPath {
 
         logger.info("USER: "+plan_request.getUser()+"   "+"TIME: "+plan_request.getStart_time());
         logger.info("CITY: "+city);
-        logger.info("PLAN REQUEST: "+POIsList.toString()+"\n");
+        logger.info("PLAN REQUEST: "+POIsList.toString());
         logger.info("DEP: "+departure.toString());
         logger.info("ARR: "+arrival.toString());
 
-        VisitPlan asis = new FindPathAsIs().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
+
         VisitPlan shortest = new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
+        VisitPlan asis = new FindPathAsIs().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
         VisitPlan crowd = shortest;
         return new VisitPlanAlternatives(city, asis, shortest, crowd, plan_request.getCrowd_preference());
     }
