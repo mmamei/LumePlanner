@@ -292,9 +292,28 @@ public class Mongo {
 
 	}
 
-
-
 	public VisitPlanAlternatives updatePlan(Visit new_visited) {
+		try{
+			logger.info("Trying to find the plan for user "+new_visited.getUser());
+			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", new_visited.getUser())).first();
+			if (null != userPlanRecord) {
+				VisitPlanAlternatives current = mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
+				current.getShortest().updatePlan(new_visited);
+				current.getAsis().updatePlan(new_visited);
+				current.getCrowd().updatePlan(new_visited);
+				db.getCollection("plans").findOneAndReplace(userPlanRecord, Document.parse(current.toJSONString()));
+				return current;
+			}
+		}catch(Exception e) {
+			logger.info(e.getMessage());
+		}
+		logger.info("user plan not found or exception");
+		return null;
+	}
+
+
+
+	private VisitPlanAlternatives updatePlanOLD(Visit new_visited) {
 		try{
 			logger.info("Trying to find the plan for user "+new_visited.getUser());
 			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", new_visited.getUser())).first();

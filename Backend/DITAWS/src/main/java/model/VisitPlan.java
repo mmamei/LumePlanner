@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.Mongo;
+import org.apache.log4j.Logger;
 
 public class VisitPlan {
 	
@@ -21,7 +23,10 @@ public class VisitPlan {
 	private List<Activity>	visited;
 	private double			crowding;
 	private int				hash;
-	
+
+
+	private Logger logger = Logger.getLogger(VisitPlan.class);
+
 	public VisitPlan(){
 		this.date 		= ""+Calendar.getInstance().getTime().getTime();
 		this.to_visit 	= new ArrayList<>();
@@ -164,7 +169,23 @@ public class VisitPlan {
 	}
 
 
-	
-	
-
+	public void updatePlan(Visit new_visited) {
+		Activity to_swap = null;
+		for (Activity activity : this.getTo_visit()) {
+			//logger.info("Short check:"+activity.getVisit().getPlace_id());
+			if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
+				to_swap = activity;
+				break;
+			}
+		}
+		if (null == to_swap) {
+			logger.error("to_swap is null on shortest: " + new_visited.getVisited().getPlace_id() + " plan: " + this.toString());
+			throw new RuntimeException();
+		}
+		this.getTo_visit().remove(to_swap);
+		if (this.getVisited() == null) {
+			this.setVisited(new ArrayList<Activity>());
+		}
+		this.getVisited().add(to_swap);
+	}
 }
