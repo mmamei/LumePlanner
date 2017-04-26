@@ -203,7 +203,9 @@
             $(document).ready(function(){
                 var user = JSON.parse(window.sessionStorage.getItem("user"));
                 var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-                var type_of_plan = "shortest";
+                var type_of_plan = "crowd";
+                visitplan.selected = type_of_plan;
+                console.log(visitplan);
                 var newplan = true;
                 /*
 
@@ -250,7 +252,11 @@
                 $(".path").click(function(event) {
                     console.log(event.target.id);
                     type_of_plan = event.target.id;
-                    drawMapAndTable(mymap, visitplan[event.target.id]);
+                    visitplan.selected = type_of_plan;
+                    $(".path").attr('class', 'btn btn-primary btn-lg path');
+                    $("#"+event.target.id).attr('class', 'btn btn-success btn-lg path');
+
+                    drawMapAndTable(mymap, visitplan[type_of_plan]);
                 });
 
                 $("#back").click(function(){
@@ -285,8 +291,8 @@
         <div class="container-fluid text-center">
 
             <div class="btn-group">
-                <button id="crowd" type="button" class="btn btn-primary btn-lg path">Crowd Related</button>
-                <button id="greedy" type="button" class="btn btn-primary btn-lg path">Greedy</button>
+                <button id="crowd" type="button" class="btn btn-success btn-lg path">Crowd Related</button>
+                <button id="asis" type="button" class="btn btn-primary btn-lg path">As Is</button>
                 <button id="shortest" type="button" class="btn btn-primary btn-lg path">Shortest</button>
             </div>
 

@@ -1,160 +1,82 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <title>LumePlanner</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-        <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/ionicons.min.css">
-        <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
-        <script src="js/leaflet.awesome-markers.min.js"></script>
-
-
-        <script src="js/global.js"></script>
-        <script src="js/jquery.md5.js"></script>
-
-
-        <style>
-            .bg-blue {
-                background-color: #084265;
-                color: #ffffff;
-            }
-            .panel-heading {
-                margin-bottom: 50px;
-            }
-            .img-responsive {
-                margin: 0 auto;
-            }
-        </style>
-
-        <script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LUMEPlanner</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <script src="js/jquery.min.js"></script>
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="js/leaflet.awesome-markers.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/main/index.js"></script>
+    <style>
+        .ui-grid-a img {
+            width  : 100%;
+            height : auto;
+        }
+        .ui-grid-b img {
+            width  : 100%;
+            height : auto;
+        }
+        .ui-grid-c img {
+            width  : 100%;
+            height : auto;
+        }
+    </style>
 
 
-            function loadActivities(city) {
-                console.log("get activities for city "+city+" from server");
-                return  $.getJSON(conf.dita_server + 'activities?city=' + city,
-                        function (data, status) {
-                            var pois = new POIS();
-                            //console.log("Data: " + data + "\nStatus: " + status);
-                            data.forEach(function (value) {
-                                switch (value.category) {
-                                    case "attractions":
-                                        pois.attractions.push(value);
-                                        break;
-                                    case "monuments" :
-                                        pois.monuments.push(value);
-                                        break;
-                                    case "museums" :
-                                        pois.museums.push(value);
-                                        break;
-                                    case "eating" :
-                                        pois.restaurants.push(value);
-                                        break;
-                                    case "parks" :
-                                        pois.parks.push(value);
-                                        break;
-                                    case "resting" :
-                                        pois.hotels.push(value);
-                                        break;
-                                    case "historical_sites" :
-                                        pois.historical.push(value);
-                                        break;
-                                    case "religious_sites" :
-                                        pois.religious.push(value);
-                                        break;
-                                    default :
-                                        console.log("Invalid category:" + value.category);
-                                }
-                            });
-                            window.sessionStorage.setItem("pois",JSON.stringify(pois));
-                            var departure = window.sessionStorage.getItem("departure");
-                            var arrival = window.sessionStorage.getItem("arrival");
-                        });
-            }
-
-            function loadItineraries(city) {
-                window.sessionStorage.setItem("itineraries",null);
-                console.log("get itineraries for city "+city+" from server");
-                return  $.getJSON(conf.dita_server + 'itineraries?city=' + city,
-                        function (data, status) {
-                            if(data.length > 0)
-                                window.sessionStorage.setItem("itineraries",JSON.stringify(data));
-                        });
-            }
+</head>
+<body>
 
 
-            $(document).ready(function(){
+<div data-role="page" id = "pageone" class="jqm-demos jqm-home">
 
-                $.getJSON(conf.dita_server+"cities",function(data, status){
-                   for(var i=0; i<data.length;i++) {
-                       $("#cities").append("<div class=\"container-fluid text-center\"><h2>"+data[i]+"</h2><img src=\""+conf.dita_server_img+"cities/"+data[i]+".jpg\" class=\"img-responsive img-rounded\" alt=\""+data[i]+"\" id=\""+data[i]+"\"></div>");
-                   }
+    <div data-role="header" class="jqm-header"  data-position="fixed" >
+        <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
+        <!--<p>Version <span class="jqm-version"></span></p> -->
+        <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    </div><!-- /header -->
 
-                    $("img").click(function(event) {
+    <div role="main" class="ui-content jqm-content">
 
-                        console.log("the user selected "+event.target.id);
+        <h1 align = "center">LUMEPlanner</h1>
+        <p align = "center"><strong>Plan your next visit in Emilia Romagna!</strong></p>
 
-
-                        // update city
-                        if(window.sessionStorage.getItem("city") !== event.target.id) {
-                            console.log("update city");
-
-                            var city = event.target.id;
-                            window.sessionStorage.setItem("city", event.target.id);
-                            window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
-                            $.when(loadActivities(city), loadItineraries(city)).done(function(){
-                                window.location.href = "map.html";
-                            });
-                        }
-                        else {
-                            window.location.href = "map.html";
-                        }
-                    });
+        <!--
+        <label for="search-mini"></label>
+        <input type="search" name="search-mini" id="search-mini" value="" data-mini="true" />
+        -->
 
 
-                });
-
-                // login user
-                var user = window.sessionStorage.getItem("user");
-                if(!user) {
-                    console.log("user must be created");
-                    var r = ""+Math.random();
-                    user = {id: "", email: r, password: r};
-                    console.log(user);
-                    $.postJSON(conf.dita_server+"signup",user,
-                            function(data, status){
-                                console.log("Data: " + data + "\nStatus: " + status);
-                                if (data === "true" || data === true) {
-                                    console.log("registration succedded");
-                                    window.sessionStorage.setItem("user",JSON.stringify(user))
-                                }
-                                else console.log("registration failed");
-
-                            });
-                }
-                else {
-                    user = JSON.parse(user);
-                }
-                // login was used only to retrieve an existing unfinished plan.
-                // for now, we just remove it
-
-                //console.log("user: "+window.localStorage.getItem("hashed_user"));
+        <div id="cities" class="ui-grid-a ui-responsive">
 
 
-            });
-        </script>
-
-    </head>
-    <body class="bg-blue">
-        <div class="container-fluid text-center panel-heading">
-        <h1>Choose a City</h1>
         </div>
-        <div id="cities"></div>
-    </body>
+    </div><!-- /content -->
+    <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
+
+        <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
+            <li data-filtertext="homepage" data-icon="home"><a href="../">Homepage</a></li>
+            <li data-filtertext="luoghi" data-icon = "location"><a href="../myplaces/" data-icon="location" data-ajax="false">I miei luoghi</a></li>
+            <li data-filtertext="viaggi" data-icon = "camera"><a href="../mytravels/" data-icon="location" data-ajax="false">I miei viaggi</a></li>
+            <li data-filtertext="percorsi" data-icon = "star"><a href="../favoritepath/" data-ajax="false">I percorsi più visti</a></li>
+            <li data-filtertext="account" data-icon = "user"><a href="fb/fb.html" data-ajax="false">Account</a></li>
+            <li data-filtertext="assistenza" data-icon = "phone"><a href="../assist/" data-ajax="false">Assistenza</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+    <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
+        <p align = "center">LUMEPlanner</p>
+
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+</body>
 </html>

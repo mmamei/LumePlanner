@@ -12,6 +12,9 @@
         },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "it.unimore.morselli.lume"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
         }
     },
     "dependent_plugins": {

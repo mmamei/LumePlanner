@@ -10,7 +10,7 @@ public class VisitPlanAlternatives {
 	private VisitPlan 	shortest;
 	private VisitPlan 	crowd;
 	private double		crowd_preference; //-1=fullyCrowded; -0.5=mainlyCrowded; +0.5=mainlyUncrowded; +1=fullyUncrowded
-
+	private String selected;
 
 	public String getCity() {
 		return city;
@@ -39,9 +39,18 @@ public class VisitPlanAlternatives {
 	public void setCrowd_preference(double crowd_preference) {
 		this.crowd_preference = crowd_preference;
 	}
+	public double getCrowd_preference() {
+		return crowd_preference;
+	}
+	public String getSelected() {
+		return selected;
+	}
+
+	public void setSelected(String selected) {
+		this.selected = selected;
+	}
 
 	public VisitPlan getShortest() {
-
 		return shortest;
 	}
 
@@ -49,9 +58,6 @@ public class VisitPlanAlternatives {
 		return crowd;
 	}
 
-	public double getCrowd_preference() {
-		return crowd_preference;
-	}
 
 
 	public VisitPlanAlternatives() {
@@ -59,6 +65,7 @@ public class VisitPlanAlternatives {
 		this.shortest = new VisitPlan();
 		this.crowd = new VisitPlan();
 		this.crowd_preference = 1d;
+		this.selected = "null";
 	}
 
 	public VisitPlanAlternatives(String city, VisitPlan asis, VisitPlan shortest, VisitPlan crowd, double crowd_preference) {
@@ -67,6 +74,14 @@ public class VisitPlanAlternatives {
 		this.shortest = shortest;
 		this.crowd = crowd;
 		this.crowd_preference = crowd_preference;
+		this.selected = "null";
+	}
+
+	public VisitPlan getVisitPlanSelected() {
+		if(selected.equals("asis")) return asis;
+		if(selected.equals("shortest")) return shortest;
+		if(selected.equals("crowd")) return crowd;
+		return null;
 	}
 
 

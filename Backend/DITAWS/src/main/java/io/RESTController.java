@@ -1,6 +1,6 @@
 package io;
 
-import services.citylive.DataPipeDownload;
+import services.timdatapipe.DataPipeDownload;
 import model.*;
 import org.apache.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -101,26 +101,11 @@ public class RESTController {
 
 	@RequestMapping(value = "accept_plan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody boolean acceptVisitPlan(@RequestBody VisitPlanAlternatives plans) {
-		String city = plans.getCity();
-		int type = 0;
-		if (!dao.insertPlan(plans)) return false;
-		/*
-		VisitPlan plan_accepted = null;
-		switch (type) {
-		case 1: // greedy
-			plan_accepted = plans.getGreedy();
-			break;
-		case 2: // shortest
-			plan_accepted = plans.getShortest();
-			break;
-		default:
-			plan_accepted = plans.getCrowd_related();
-		}
-		*/
-		return true;
+		logger.info("User "+plans.getVisitPlanSelected().getUser()+" selected plan "+plans.getSelected());
+		 return dao.insertPlan(plans);
 	}
 
-
+	// Questo metodo per ora non viene usato. Serve se devo recuperare un piano precedente non terminato
 	@RequestMapping(value = "plan", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives getPlan(@RequestBody User user) {
 		return dao.retrievePlan(user.getEmail());
@@ -131,7 +116,7 @@ public class RESTController {
 	@RequestMapping(value = "visited", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
 		//String city = new_visited.getCity();
-		return new FindPath().addVisitedAndReplanWithType(dao,0, new_visited);
+		return new FindPath().addVisitedAndReplanWithType(dao,new_visited);
 
 	}
 
@@ -144,7 +129,7 @@ public class RESTController {
 	}
 
 
-	@Scheduled(fixedRate = 300000) // every fife minutes
+	@Scheduled(fixedRate = 300000) // every five minutes
 	public void downloadData() {
 
 		DateFormat hourFormatter = new SimpleDateFormat("hh");

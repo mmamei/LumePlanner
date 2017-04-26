@@ -63,9 +63,11 @@ public class FindPath {
         return new VisitPlanAlternatives(city, asis, shortest, crowd, plan_request.getCrowd_preference());
     }
 
-    public VisitPlanAlternatives addVisitedAndReplanWithType(Mongo dao, int type, Visit new_visited) {
+    public VisitPlanAlternatives addVisitedAndReplanWithType(Mongo dao, Visit new_visited) {
         VisitPlanAlternatives plans = dao.updatePlan(new_visited);
         if (null == plans) return null;
+
+        String selectedPlan = plans.getSelected();
 
         //logger.info(plans.toString());
         VisitPlan currentP = null;
@@ -73,16 +75,10 @@ public class FindPath {
 
         String city = new_visited.getCity();
 
-        switch (type) {
-            case 1: // greedy
-                currentP = plans.getAsis();
-                break;
-            case 2: // shortest
-                currentP = plans.getShortest();
-                break;
-            default: //0
-                currentP = plans.getCrowd();
-        }
+
+        if(selectedPlan.equals("asis")) currentP = plans.getAsis();
+        if(selectedPlan.equals("shortest")) currentP = plans.getShortest();
+        if(selectedPlan.equals("crowd")) currentP = plans.getCrowd();
 
         //logger.info(v.toString());
         if (!currentP.getTo_visit().isEmpty()) {
@@ -97,42 +93,14 @@ public class FindPath {
             }
             pois.add(currentP.getArrival().getPlace_id());
 
-            VisitPlan newP = null;
-
-            switch (type) {
-                case 1: // greedy
-                    newP = new FindShortestPath().updatePlan(city,dao, new_visited, plans.getAsis(), pois);
-                    break;
-                case 2: // shortest
-                    newP = new FindShortestPath().updatePlan(city,dao, new_visited, plans.getShortest(), pois);
-                    break;
-                default: //0
-                    newP = new FindShortestPath().updatePlan(city,dao, new_visited, plans.getCrowd(), pois);
-            }
 
 
-            switch (type) {
-                case 1: // greedy
-                    return new VisitPlanAlternatives(
-                            city,
-                            newP,
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getShortest(), pois),
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getCrowd(), pois),
-                            plans.getCrowd_preference());
-                case 2: // shortest
-                    return new VisitPlanAlternatives(
-                            city,
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getAsis(), pois),
-                            newP,
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getCrowd(), pois),
-                            plans.getCrowd_preference());
-                default: //0
-                    return new VisitPlanAlternatives(
-                            city,
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getAsis(), pois),
-                            new FindShortestPath().updatePlan(city,dao, new_visited, plans.getShortest(), pois), newP, plans.getCrowd_preference());
-            }
-
+            return new VisitPlanAlternatives(
+                    city,
+                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getAsis(), pois),
+                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getShortest(), pois),
+                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getCrowd(), pois),
+                    plans.getCrowd_preference());
         }
 
         return plans;

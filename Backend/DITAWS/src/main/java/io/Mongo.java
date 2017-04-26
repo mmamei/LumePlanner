@@ -302,8 +302,9 @@ public class Mongo {
 				VisitPlanAlternatives current = mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
 
 				/***** UPDATE SHORTEST PATH *****/
-				VisitPlan plan = current.getShortest();
+
 				Activity to_swap = null;
+				VisitPlan plan = current.getShortest();
 				for (Activity activity : plan.getTo_visit()) {
 					//logger.info("Short check:"+activity.getVisit().getPlace_id());
 					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
@@ -344,9 +345,9 @@ public class Mongo {
 				plan.getVisited().add(to_swap);
 				//logger.info("greedy swap:"+to_swap);
 				/***** UPDATE LESS CROWDED *****/
-
-				plan = current.getCrowd();
 				to_swap = null;
+				plan = current.getCrowd();
+
 				for (Activity activity : plan.getTo_visit()) {
 					//logger.info("Crowd check:"+activity.getVisit().getPlace_id());
 					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
@@ -365,8 +366,10 @@ public class Mongo {
 					plan.setVisited(new ArrayList<Activity>());
 				}
 				plan.getVisited().add(to_swap);
-				db.getCollection("plans").findOneAndReplace(userPlanRecord, Document.parse(current.toJSONString()));
 
+
+
+				db.getCollection("plans").findOneAndReplace(userPlanRecord, Document.parse(current.toJSONString()));
 				//logger.info("crowd swap:"+to_swap);
 				return current;
 			}

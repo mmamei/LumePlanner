@@ -162,6 +162,8 @@ public class VisitPlan {
 		return "[departure=" + departure+ ";departure_time=" + departure_time + ";arrival=" + arrival + ";arrival_time=" + arrival_time + ";to_visit=" + Arrays.toString(to_visit.toArray())
 				+ ";crowding=" + crowding + "]";
 	}
+
+
 	
 	
 
