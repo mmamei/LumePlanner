@@ -173,30 +173,6 @@ public class Mongo {
 		return null;
 	}
 
-	public POI retrieveClosestActivity(String city,POI custom) {
-		POI result = new POI();
-		try {
-			result = mapper.readValue(db.getCollection(city+"activities").find(new Document("geometry", new Document("$near",
-					new Document("$geometry", custom.getGeometry())))).first().toJson(), POI.class);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	public List<POI> retrieveClosestRestaurants(String city,Point location) {
-		List<POI> result = new ArrayList<>();
-		try {
-			FindIterable<Document> top15 = db.getCollection(city+"activities").find(new Document("geometry", new Document("$near",
-					new Document("$geometry", location)))).limit(15);
-			for (Document document : top15) {
-				result.add(mapper.readValue(document.toJson(), POI.class));
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
 
 	public List<Itinerary> retrieveItineraries(String city) {
 		List<Itinerary> result = new ArrayList<>();
@@ -258,9 +234,9 @@ public class Mongo {
 	 */
 
 	public boolean insertPlan(VisitPlanAlternatives plans) {
-		VisitPlan plan_accepted = plans.getShortest();
+		VisitPlan plan_accepted = plans.get(plans.getSelected());
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", plan_accepted.getUser())).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("user", plan_accepted.getUser())).first();
 			if (null == userPlanRecord) {
 				logger.info("Creating new visit plan for user "+plan_accepted.getUser());
 				db.getCollection("plans").insertOne(Document.parse(plans.toJSONString()));
@@ -278,7 +254,7 @@ public class Mongo {
 
 	public VisitPlanAlternatives retrievePlan(String user_email) {
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", user_email)).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("user", user_email)).first();
 			if (null == userPlanRecord) {
 				return null;
 			} else {
@@ -295,12 +271,11 @@ public class Mongo {
 	public VisitPlanAlternatives updatePlan(Visit new_visited) {
 		try{
 			logger.info("Trying to find the plan for user "+new_visited.getUser());
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", new_visited.getUser())).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("user", new_visited.getUser())).first();
 			if (null != userPlanRecord) {
 				VisitPlanAlternatives current = mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
-				current.getShortest().updatePlan(new_visited);
-				current.getAsis().updatePlan(new_visited);
-				current.getCrowd().updatePlan(new_visited);
+				for(VisitPlan p : current.getPlans().values())
+					p.updatePlan(new_visited);
 				db.getCollection("plans").findOneAndReplace(userPlanRecord, Document.parse(current.toJSONString()));
 				return current;
 			}
@@ -308,95 +283,6 @@ public class Mongo {
 			logger.info(e.getMessage());
 		}
 		logger.info("user plan not found or exception");
-		return null;
-	}
-
-
-
-	private VisitPlanAlternatives updatePlanOLD(Visit new_visited) {
-		try{
-			logger.info("Trying to find the plan for user "+new_visited.getUser());
-			Document userPlanRecord = db.getCollection("plans").find(new Document("crowd.user", new_visited.getUser())).first();
-			if (null != userPlanRecord) {
-				VisitPlanAlternatives current = mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
-
-				/***** UPDATE SHORTEST PATH *****/
-
-				Activity to_swap = null;
-				VisitPlan plan = current.getShortest();
-				for (Activity activity : plan.getTo_visit()) {
-					//logger.info("Short check:"+activity.getVisit().getPlace_id());
-					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
-						to_swap = activity;
-						break;
-					}
-				}
-				if (null == to_swap) {
-					logger.error("to_swap is null on shortest: " + new_visited.getVisited().getPlace_id() + " plan: " + plan.toString());
-					throw new RuntimeException();
-				}
-				plan.getTo_visit().remove(to_swap);
-				if (plan.getVisited() == null) {
-					plan.setVisited(new ArrayList<Activity>());
-				}
-				plan.getVisited().add(to_swap);
-
-				//logger.info("short swap:"+to_swap);
-				/***** UPDATE GREEDY *****/
-				to_swap = null;
-				plan = current.getAsis();
-				for (Activity activity : plan.getTo_visit()) {
-					//logger.info("Greedy check:"+activity.getVisit().getPlace_id());
-					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
-						to_swap = activity;
-						break;
-					}
-				}
-				if (null == to_swap) {
-					logger.error("to_swap is null on greedy: " + new_visited.getVisited().getPlace_id() + " plan: " + plan.toString());
-					throw new RuntimeException();
-				}
-
-				plan.getTo_visit().remove(to_swap);
-				if (plan.getVisited() == null) {
-					plan.setVisited(new ArrayList<Activity>());
-				}
-				plan.getVisited().add(to_swap);
-				//logger.info("greedy swap:"+to_swap);
-				/***** UPDATE LESS CROWDED *****/
-				to_swap = null;
-				plan = current.getCrowd();
-
-				for (Activity activity : plan.getTo_visit()) {
-					//logger.info("Crowd check:"+activity.getVisit().getPlace_id());
-					if (activity.getVisit().getPlace_id().equals(new_visited.getVisited().getPlace_id())) {
-						to_swap = activity;
-						break;
-					}
-				}
-				if (null == to_swap) {
-					logger.error("to_swap is null on crow_related: " + new_visited.getVisited().getPlace_id() + " plan: " + plan.toString());
-					throw new RuntimeException();
-				}
-
-
-				plan.getTo_visit().remove(to_swap);
-				if (plan.getVisited() == null) {
-					plan.setVisited(new ArrayList<Activity>());
-				}
-				plan.getVisited().add(to_swap);
-
-
-
-				db.getCollection("plans").findOneAndReplace(userPlanRecord, Document.parse(current.toJSONString()));
-				//logger.info("crowd swap:"+to_swap);
-				return current;
-			}
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		logger.info("user plan not found or exception");
-
 		return null;
 	}
 

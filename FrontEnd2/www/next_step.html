@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="css/ionicons.min.css">
         <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
         <script src="js/leaflet.awesome-markers.min.js"></script>
+        <link rel="stylesheet" href="js/easy-button.css">
+        <script src="js/easy-button.js"></script>
         <script src="js/global.js"></script>
         <style>
 
@@ -124,7 +126,7 @@
                             var lat = x.geometry.coordinates[1];
                             var lon = x.geometry.coordinates[0];
                             var marker = L.marker([lat, lon], {icon: markerIcons[type]}).addTo(mymap);
-                            marker.bindPopup(format_name(x.display_name)).openPopup();
+                            marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
                         }
                 }
             }
@@ -299,11 +301,11 @@
                 window.setTimeout(computeRoute,30000)
             }
 
-
+            var dragged = false;
             function localize(position) {
                 console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
-
-                mymap.panTo([position.coords.latitude, position.coords.longitude]);
+                if(!dragged)
+                    mymap.panTo([position.coords.latitude, position.coords.longitude]);
                 if(centerMarker == null) {
 
                     var icon = L.divIcon({
@@ -338,7 +340,7 @@
                 console.log(type_of_plan);
 
 
-                items = visitplan[type_of_plan];
+                items = visitplan.plans[type_of_plan];
                 console.log(items);
 
 
@@ -371,11 +373,20 @@
 
                 mymap = L.map('mapid',{
                     attributionControl: false,
-                    scrollWheelZoom: false,
-                    doubleClickZoom: false,
-                    zoomControl: false,
-                    touchZoom: false,
-                    dragging: false,
+                    scrollWheelZoom: true,
+                    doubleClickZoom: true,
+                    zoomControl: true,
+                    touchZoom: true,
+                    dragging: true,
+                });
+
+                L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
+                    dragged = false;
+                }).addTo(mymap);
+
+
+                mymap.on('drag', function(e) {
+                    dragged = true;
                 });
 
                 mymap.setView([parseFloat(start.split(',')[0]), parseFloat(start.split(',')[1])], 18);

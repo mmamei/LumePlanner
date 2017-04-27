@@ -2,37 +2,39 @@ var mymap;
 
 
 
-
+var dragged = false;
 var centerMarker = null;
 function localize(position) {
-    console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
 
-    mymap.panTo([position.coords.latitude, position.coords.longitude]);
-    if(centerMarker == null) {
+        console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+        if(!dragged)
+            mymap.panTo([position.coords.latitude, position.coords.longitude]);
+        if (centerMarker == null) {
 
-        var icon = L.divIcon({
-            type: 'div',
-            className: 'marker',
-            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-        });
-        centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
-        mymap.setZoom(15)
-    }
-
-
-
-    centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
+            var icon = L.divIcon({
+                type: 'div',
+                className: 'marker',
+                html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+            });
+            centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
+            mymap.setZoom(15)
+        }
 
 
+        centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
 
-    window.setTimeout(function(){navigator.geolocation.getCurrentPosition(localize)},1000)
 
+        window.setTimeout(function () {
+            navigator.geolocation.getCurrentPosition(localize)
+        }, 1000)
 }
 
 
 
 
 $(document).ready(function(){
+
+
 
 
 
@@ -47,6 +49,16 @@ $(document).ready(function(){
         zoomControl: true,
         touchZoom: true,
         dragging: true,
+    });
+
+    L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
+        dragged = false;
+    }).addTo(mymap);
+
+
+
+    mymap.on('drag', function(e) {
+        dragged = true;
     });
 
 
@@ -64,7 +76,7 @@ $(document).ready(function(){
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
                 var marker = L.marker([lat, lon], {icon: markerIcons[type]}).addTo(mymap);
-                marker.bindPopup(format_name(x.display_name)).openPopup();
+                marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
                 markers.push(marker);
                 minLat = Math.min(minLat, lat);
                 minLon = Math.min(minLon, lon);

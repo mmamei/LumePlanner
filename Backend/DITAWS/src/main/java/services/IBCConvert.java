@@ -93,19 +93,22 @@ public class IBCConvert {
 
             // POI Constructor:
             // String place_id, double lat, double lon, String display_name, String category, String type,
-            // float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating
+            // float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating, String photo, String desc, String www
 
             NumberFormat format = NumberFormat.getInstance(Locale.ITALY);
             int tot = 0;
             while ((line = br.readLine()) != null) {
-                line = line.replaceAll("\",\"","\";\"");
+                line = line.replaceAll(",,",",\"\",").replaceAll("\",\"","\";\"");
                 //System.out.println(line);
                 String[] e = line.replaceAll("\"","").split(";");
                 double[] lonlat = new double[]{format.parse(e[2]).doubleValue(),format.parse(e[1]).doubleValue()};
 
                 for(CityProperties cp: cities) {
                     if (cp.contains(lonlat[1], lonlat[0])) {
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], "ibc: " + e[0], ibc2nominatim.get(f), f, 10, "", 0, "ok", "ok", 0));
+                        System.out.println(line);
+                        String www = e[3];
+                        if(www.isEmpty()) www = e[4];
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[0]+",from:IBC", ibc2nominatim.get(f), f, 10, "", 0, "ok", "ok", 0, null,null,www));
                         tot++;
                     }
                 }
@@ -129,11 +132,11 @@ public class IBCConvert {
                 line = line + " " + other;
             line = line + " " + other;
             if(line.endsWith(",")) line = line.substring(0,line.length()-1);
-            line = line.replaceAll("\",\"","\";\"").replaceAll("\"","");
+            line = line.replaceAll(",,",",\"\",").replaceAll("\",\"","\";\"").replaceAll("\"","");
             System.out.println(line);
             String[] e = line.split(";");
 
-            String key = e[0]+" "+e[1]+""+e[2];
+            String key = e[0]+""+e[1]+""+e[2];
             List<Object> v = trees.get(key);
             if(v == null) {
                 v  = new ArrayList<>();
@@ -150,7 +153,8 @@ public class IBCConvert {
             double[] lonlat = new double[]{(double)v.get(2),(double)v.get(1)};
             for(CityProperties cp: cities) {
                 if (cp.contains(lonlat[1], lonlat[0])) {
-                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], "ibc: " +v.get(0)+" "+v.get(3), "parks", "parks", 10, "", 0, "ok", "ok", 0));
+                    String img = (String)v.get(3);
+                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", "parks", "parks", 10, "", 0, "ok", "ok", 0, img,null,null));
                     tot++;
                 }
             }

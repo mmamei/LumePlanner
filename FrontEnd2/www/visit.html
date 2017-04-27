@@ -61,10 +61,10 @@ p {
         $.get(q, function(data, status){
             console.log(data);
             if (data.photos.photo.length > 0) {
-                var photo = data.photos.photo[0];
-                var photo_url = "https://farm"+photo.farm+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+"_b.jpg";
+                var photo_url = data.photos.photo[0];
+                var photo_url = "https://farm"+photo_url.farm+".staticflickr.com/"+photo_url.server+"/"+photo_url.id+"_"+photo_url.secret+"_b.jpg";
                 console.log(photo_url);
-                $("#photo").attr("src",photo_url);
+                $("#photo_url").attr("src",photo_url);
             } else {
                 console.log("not found:"+picture_query);
                 if (picture_query.lastIndexOf(" ") !== -1) {
@@ -78,33 +78,51 @@ p {
     }
 
     $(document).ready(function() {
+
+        var type = getUrlParameter("type");
+        var n = getUrlParameter("num");
+        if(type) {
+            var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+            var currentVisit = pois[type][n]
+        }
         var currentDestination = JSON.parse(window.sessionStorage.getItem("currentDestination"));
-        console.log(JSON.stringify(currentDestination));
-        var picture_query = currentDestination.place.display_name.split(',')[0];
+
+        var actualVisit = {};
+        if(currentDestination) actualVisit = currentDestination;
+        if(currentVisit) {
+            actualVisit.place = currentVisit;
+            $("#next").hide()
+        }
+
+
+
+        console.log(actualVisit);
+        var picture_query = actualVisit.place.display_name.split(',')[0] + " " + window.sessionStorage.getItem("city");
         find_pic(picture_query);
 
         $("#title").text(picture_query);
 
         $("#next").click(function() {
+            if(!currentVisit) {
+                var user = JSON.parse(window.sessionStorage.getItem("user"));
+                var city = window.sessionStorage.getItem("city");
+                var d = new Date().getTime();
+                var request = {
+                    user: user.email,
+                    visited: currentDestination.place,
+                    time: d,
+                    rating: 10, // ???
+                    city: city
+                };
+                console.log(request);
 
-            var user = JSON.parse(window.sessionStorage.getItem("user"));
-            var city = window.sessionStorage.getItem("city");
-            var d = new Date().getTime();
-            var request = {
-                user    : user.email,
-                visited : currentDestination.place,
-                time    : d,
-                rating  : 10, // ???
-                city    : city
-            };
-            console.log(request);
+                $.postJSON(conf.dita_server + "visited", request, function (data, status) {
 
-            $.postJSON(conf.dita_server+"visited",request,function(data, status){
-
-                //console.log(JSON.stringify(data))
-                window.sessionStorage.setItem("visitplan",JSON.stringify(data));
-                window.location.href = "next_step.html"
-            });
+                    //console.log(JSON.stringify(data))
+                    window.sessionStorage.setItem("visitplan", JSON.stringify(data));
+                    window.location.href = "next_step.html"
+                });
+            }
         });
 
 
@@ -120,7 +138,7 @@ p {
 </div>
 
 <div class="container-fluid text-center">
-<img id="photo" src="img/fontana.jpg" class="img-responsive center">
+<img id="photo_url" src="" class="img-responsive center">
 </div>
 
 <div class="container-fluid">

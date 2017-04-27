@@ -66,6 +66,7 @@ public class NominatimPOIsDownload {
                     JSONArray parsed = new JSONArray(url_br.readLine());
                     for (int j=0;j<parsed.length();j++) {
                         JSONObject currentJPOI = (JSONObject) parsed.get(j);
+                        System.out.println(currentJPOI.toString());
                         POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
                         currentPOI.setCategory(poi_category);
                         if (!poi_category.equals("resting")) {

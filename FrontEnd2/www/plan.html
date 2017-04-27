@@ -203,10 +203,24 @@
             $(document).ready(function(){
                 var user = JSON.parse(window.sessionStorage.getItem("user"));
                 var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-                var type_of_plan = "crowd";
-                visitplan.selected = type_of_plan;
+                var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
                 console.log(visitplan);
                 var newplan = true;
+                var cont = 0;
+                for(k in visitplan.plans) {
+                    if(cont == 0)  type_of_plan = k;
+                    var btype = cont == 0 ? "primary" : "success";
+                    $("#altplans").append("<button id=\"" + k + "\" type=\"button\" class=\"btn btn-"+btype+" btn-lg path\">" + k + "</button>");
+                    cont++;
+                }
+                visitplan.selected = type_of_plan;
+
+
+                //
+                //<button id="asis" type="button" class="btn btn-primary btn-lg path">As Is</button>
+                //<button id="shortest" type="button" class="btn btn-primary btn-lg path">Shortest</button>
+
+
                 /*
 
                 Questa è utile
@@ -244,7 +258,7 @@
                 //else {
                     //console.log(JSON.stringify(visitplan))
                     var mymap = L.map('mapid');
-                    drawMapAndTable(mymap, visitplan[type_of_plan]);
+                    drawMapAndTable(mymap, visitplan.plans[type_of_plan]);
                  //}
                 console.log(visitplan);
 
@@ -256,7 +270,7 @@
                     $(".path").attr('class', 'btn btn-primary btn-lg path');
                     $("#"+event.target.id).attr('class', 'btn btn-success btn-lg path');
 
-                    drawMapAndTable(mymap, visitplan[type_of_plan]);
+                    drawMapAndTable(mymap, visitplan.plans[type_of_plan]);
                 });
 
                 $("#back").click(function(){
@@ -290,10 +304,8 @@
 
         <div class="container-fluid text-center">
 
-            <div class="btn-group">
-                <button id="crowd" type="button" class="btn btn-success btn-lg path">Crowd Related</button>
-                <button id="asis" type="button" class="btn btn-primary btn-lg path">As Is</button>
-                <button id="shortest" type="button" class="btn btn-primary btn-lg path">Shortest</button>
+            <div class="btn-group" id="altplans">
+
             </div>
 
         </div>

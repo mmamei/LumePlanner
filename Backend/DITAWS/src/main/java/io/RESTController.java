@@ -101,7 +101,7 @@ public class RESTController {
 
 	@RequestMapping(value = "accept_plan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody boolean acceptVisitPlan(@RequestBody VisitPlanAlternatives plans) {
-		logger.info("User "+plans.getVisitPlanSelected().getUser()+" selected plan "+plans.getSelected());
+		logger.info("User "+plans.get(plans.getSelected()).getUser()+" selected plan "+plans.getSelected());
 		 return dao.insertPlan(plans);
 	}
 

@@ -15,6 +15,9 @@
         },
         "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "it.unimore.morselli.lume"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
         }
     },
     "dependent_plugins": {

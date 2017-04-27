@@ -10,10 +10,13 @@
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "it.unimore.morselli.lume"
         },
-        "cordova-plugin-whitelist": {
+        "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "it.unimore.morselli.lume"
         },
-        "cordova-plugin-inappbrowser": {
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "it.unimore.morselli.lume"
+        },
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "it.unimore.morselli.lume"
         }
     },

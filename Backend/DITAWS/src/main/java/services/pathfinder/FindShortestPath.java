@@ -25,7 +25,8 @@ public class FindShortestPath {
         String start_time = "09:00";
         List<String> POIsList = new ArrayList<>();
         POIsList.add("00");
-        POIsList.add("159280732");
+        POIsList.add("44,64555122643570");
+        POIsList.add("44,64160291752600");
 
        System.out.println(new FindShortestPath().newPlan("Modena",dao,"marco",departure,arrival,start_time,POIsList));
 

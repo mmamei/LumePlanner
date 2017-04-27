@@ -15,71 +15,67 @@ public class POI implements Comparable<POI> {
 	private String 	type;
 	private float 	importance;
 	private String 	icon;
-	
-	//extra fields
+
 	private double visiting_time;
 	
 	private String opening_hours; //format: [hh:mm-hh:mm] comma separated strings
 	private String opening_days; //format: [wd] comma separated int (form 1=sunday to 7=saturday)
 	private int rating;
 
-	public POI(String place_id, double lat, double lon, String display_name, String category, String type,
-			float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating) {
-		super();
-		this.place_id 				= place_id;
-		this.geometry 				= new Point(lon, lat);
-		this.display_name			= display_name;
-		this.category 				= category;
-		this.type 					= type;
-		this.importance 			= importance;
-		this.icon 					= icon;
-		this.visiting_time			= visiting_time;
-		this.opening_hours 			= opening_hours;
-		this.opening_days 			= opening_days;
-		this.rating 				= rating;
+	private String photo_url;
+	private String description;
+	private String www;
 
+	public POI(String place_id, double lat, double lon, String display_name, String category, String type,
+			   float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating,
+			   String photo, String description, String url) {
+		super();
+		this.place_id = place_id;
+		this.geometry = new Point(lon, lat);
+		this.display_name = display_name;
+		this.category = category;
+		this.type = type;
+		this.importance = importance;
+		this.icon = icon;
+		this.visiting_time = visiting_time;
+		this.opening_hours = opening_hours;
+		this.opening_days = opening_days;
+		this.rating = rating;
+		this.photo_url = photo;
+		this.description = description;
+		this.www = url;
 	}
+
 	
 	public POI(String place_id, Point geometry, String display_name, String category, String type,
-			float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating) {
+			   float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating,
+			   String photo, String description, String url) {
 		super();
-		this.place_id 				= place_id;
-		this.geometry 				= geometry;
-		this.display_name			= display_name;
-		this.category 				= category;
-		this.type 					= type;
-		this.importance 			= importance;
-		this.icon 					= icon;
-		this.visiting_time			= visiting_time;
-		this.opening_hours 			= opening_hours;
-		this.opening_days 			= opening_days;
-		this.rating					= rating;
+		this.place_id = place_id;
+		this.geometry = geometry;
+		this.display_name = display_name;
+		this.category = category;
+		this.type = type;
+		this.importance = importance;
+		this.icon = icon;
+		this.visiting_time = visiting_time;
+		this.opening_hours = opening_hours;
+		this.opening_days = opening_days;
+		this.rating = rating;
+		this.photo_url = photo;
+		this.description = description;
+		this.www = url;
 	}
 
-	@Deprecated
-	public POI(String place_id) {
-		this.place_id 		= place_id;
-		this.visiting_time 	= 0;
-		this.geometry 		= new Point(0d, 0d);
-		this.importance		= 0f;
-		this.rating			= 1;
+	public POI() {
+		this.geometry = new Point(0d, 0d);
 	}
-	
+
+
 	public POI(String place_id, double lat, double lng, String display_name) {
 		this.place_id 		= place_id;
-		this.visiting_time 	= 0;
 		this.geometry 		= new Point(lng, lat);
 		this.display_name	= display_name;
-		this.importance		= 0f;
-		this.rating			= 1;
-	}
-	
-	@Deprecated
-	public POI() {
-		this.visiting_time	= 0;
-		this.geometry 		= new Point(0d, 0d);
-		this.importance		= 0f;
-		this.rating			= 1;
 	}
 
 	public String getPlace_id() {
@@ -163,6 +159,30 @@ public class POI implements Comparable<POI> {
 		return "";
 	}
 
+	public String getPhoto_url() {
+		return photo_url;
+	}
+
+	public void setPhoto_url(String photo_url) {
+		this.photo_url = photo_url;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getWww() {
+		return www;
+	}
+
+	public void setWww(String www) {
+		this.www = www;
+	}
+
 	@Override
 	public int compareTo(POI arg0) {
 		return place_id.compareTo(arg0.place_id);
@@ -237,7 +257,4 @@ public class POI implements Comparable<POI> {
 	public String toString() {
 		return place_id;
 	}
-
-	
-	
 }

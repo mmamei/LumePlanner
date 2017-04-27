@@ -3,45 +3,40 @@ package model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class VisitPlanAlternatives {
 
 	private String city;
-	private VisitPlan 	asis;
-	private VisitPlan 	shortest;
-	private VisitPlan 	crowd;
-	private double		crowd_preference; //-1=fullyCrowded; -0.5=mainlyCrowded; +0.5=mainlyUncrowded; +1=fullyUncrowded
+	private String user;
+	private Map<String,VisitPlan> plans;
 	private String selected;
 
 	public String getCity() {
 		return city;
 	}
 
-	public VisitPlan getAsis() {
-		return asis;
-	}
-
 	public void setCity(String city) {
 		this.city = city;
 	}
 
-	public void setAsis(VisitPlan asis) {
-		this.asis = asis;
+	public String getUser() {
+		return user;
 	}
 
-	public void setShortest(VisitPlan shortest) {
-		this.shortest = shortest;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
-	public void setCrowd(VisitPlan crowd) {
-		this.crowd = crowd;
+	public Map<String, VisitPlan> getPlans() {
+		return plans;
 	}
 
-	public void setCrowd_preference(double crowd_preference) {
-		this.crowd_preference = crowd_preference;
+	public void setPlans(Map<String, VisitPlan> plans) {
+		this.plans = plans;
 	}
-	public double getCrowd_preference() {
-		return crowd_preference;
-	}
+
 	public String getSelected() {
 		return selected;
 	}
@@ -50,38 +45,24 @@ public class VisitPlanAlternatives {
 		this.selected = selected;
 	}
 
-	public VisitPlan getShortest() {
-		return shortest;
-	}
-
-	public VisitPlan getCrowd() {
-		return crowd;
-	}
-
-
-
 	public VisitPlanAlternatives() {
-		this.asis = new VisitPlan();
-		this.shortest = new VisitPlan();
-		this.crowd = new VisitPlan();
-		this.crowd_preference = 1d;
+		plans = new HashMap<>();
 		this.selected = "null";
 	}
 
-	public VisitPlanAlternatives(String city, VisitPlan asis, VisitPlan shortest, VisitPlan crowd, double crowd_preference) {
+	public VisitPlanAlternatives(String city, String user) {
 		this.city = city;
-		this.asis = asis;
-		this.shortest = shortest;
-		this.crowd = crowd;
-		this.crowd_preference = crowd_preference;
+		this.user = user;
+		plans = new HashMap<>();
 		this.selected = "null";
 	}
 
-	public VisitPlan getVisitPlanSelected() {
-		if(selected.equals("asis")) return asis;
-		if(selected.equals("shortest")) return shortest;
-		if(selected.equals("crowd")) return crowd;
-		return null;
+	public void add(String name, VisitPlan plan) {
+		plans.put(name,plan);
+	}
+
+	public VisitPlan get(String key) {
+		return plans.get(key);
 	}
 
 

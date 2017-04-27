@@ -23,9 +23,9 @@
 	<security:ldap-server />
 
 	<http auto-config='true'>
-		<intercept-url pattern="/secure/**" access="ROLE_USER"
+		<intercept-www pattern="/secure/**" access="ROLE_USER"
 			requires-channel="https" />
-		<intercept-url pattern="/**" access="ROLE_USER"
+		<intercept-www pattern="/**" access="ROLE_USER"
 			requires-channel="any" />
 		<x509 subject-principal-regex="CN=(.*?)," />
 	</http>

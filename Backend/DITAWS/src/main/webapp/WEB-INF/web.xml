@@ -34,7 +34,7 @@
 
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
+		<www-pattern>/*</www-pattern>
 	</filter-mapping>
 	 -->
 

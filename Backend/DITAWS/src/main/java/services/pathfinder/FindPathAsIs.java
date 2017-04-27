@@ -21,12 +21,13 @@ public class FindPathAsIs {
     public static void main(String[] args) throws IOException {
 
         Mongo dao = new Mongo();
-        POI departure = new POI("0", 44.6290051, 10.8701162, "Current Location");
+        POI departure = new POI("0", 44.6290051, 10.8701162, "Current Location"); // cognento
         POI arrival = new POI("00", 44.6290051, 10.8701162, "Current Location");
         String start_time = "09:00";
         List<String> POIsList = new ArrayList<>();
         POIsList.add("00");
-        POIsList.add("159280732");
+        POIsList.add("44,64555122643570"); // centro
+        POIsList.add("44,64160291752600"); // villaggio giardino
 
        System.out.println(new FindPathAsIs().newPlan("Modena",dao,"marco",departure,arrival,start_time,POIsList));
 
@@ -58,24 +59,13 @@ public class FindPathAsIs {
 
         double tot_distance = 0d;
         POI from = departure;
-        while (!to_visit.isEmpty()) {
-            double min_distance = Double.MAX_VALUE;
-            POI closest = null;
-            for (String poi : to_visit) {
-                POI current = dao.retrieveActivity(city,poi);
-
-                double current_distance = haverDist(
-                        new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()},
-                        new double[] {current.getGeometry().getCoordinates().getLatitude(), current.getGeometry().getCoordinates().getLongitude()});
-                if (current_distance < min_distance) {
-                    min_distance = current_distance;
-                    closest = current;
-                }
-            }
-            poi_sequence[cont++] = closest.getPlace_id();
-            tot_distance += min_distance;
-            to_visit.remove(closest.getPlace_id());
-            from = closest;
+        for(String poi: to_visit){
+            poi_sequence[cont++] = poi;
+            POI current = dao.retrieveActivity(city, poi_sequence[cont-1]);
+            tot_distance += haverDist(
+                            new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()},
+                            new double[] {current.getGeometry().getCoordinates().getLatitude(), current.getGeometry().getCoordinates().getLongitude()});
+            from = current;
         }
         tot_distance += haverDist(
                 new double[] {from.getGeometry().getCoordinates().getLatitude(), from.getGeometry().getCoordinates().getLongitude()},

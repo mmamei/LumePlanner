@@ -22,7 +22,7 @@ public class SavePOIs2DB {
 
 	public static void main(String[] args) throws Exception  {
 		SavePOIs2DB g = new SavePOIs2DB();
-		String city = "ReggioEmilia";
+		String city = "Modena";
 		Mongo dao = new Mongo();
 		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
 		g.run(city, dao,dir);
@@ -54,7 +54,7 @@ public class SavePOIs2DB {
 							logger.warn("Error parsing " + currentJPOI.toString());
 							pe.printStackTrace();
 						}
-							//logger.info("**** " + currentPOI.toString());
+							logger.info("**** " + currentPOI.getDisplay_name());
 
 						if(currentPOI!=null) {
 

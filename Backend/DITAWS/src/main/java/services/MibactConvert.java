@@ -72,7 +72,7 @@ public class MibactConvert {
         mibact2nominatim.put("Stazione","attractions");
         mibact2nominatim.put("Borgo","historical");
         mibact2nominatim.put("Convento","religious");
-        mibact2nominatim.put(" Mercato","attractions");
+        mibact2nominatim.put("Mercato","attractions");
         mibact2nominatim.put("Oratorio","religious");
         mibact2nominatim.put("Ospitale","historical");
         mibact2nominatim.put("Colombaio","historical");
@@ -135,7 +135,7 @@ public class MibactConvert {
 
         // POI Constructor:
         // String place_id, double lat, double lon, String display_name, String category, String type,
-        // float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating
+        // float importance, String icon, double visiting_time, String opening_hours, String opening_days, int rating, String photo_url, String description, String www
 
 
 
@@ -155,16 +155,18 @@ public class MibactConvert {
             double[] lonlat = convert(e[0]);
             for(CityProperties cp: cities) {
                 if(cp.contains(lonlat[1],lonlat[0])) {
+
                     if(!GUIDA_ROSSA_ONLY || (GUIDA_ROSSA_ONLY && e.length > 26 && !e[26].isEmpty())) {
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], "mibact: " + e[3], mibact2nominatim.get(cat), cat, 10, "", 0, "ok", "ok", 0));
+                        String www = e.length > 27 && !e[27].isEmpty() ? e[27] : e.length > 20 && !e[20].isEmpty() ? e[20] : null;
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", mibact2nominatim.get(cat), cat, 10, "", 0, "ok", "ok", 0, null,null,www));
                         tot ++;
                     }
                 }
             }
         }
 
-        for(String k: allCategories.keySet())
-            System.out.println(k+" ==> "+allCategories.get(k));
+        //for(String k: allCategories.keySet())
+        //    System.out.println(k+" ==> "+allCategories.get(k));
 
         br.close();
         System.out.println("tot = "+tot);

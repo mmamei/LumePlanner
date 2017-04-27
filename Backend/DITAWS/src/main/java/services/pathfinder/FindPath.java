@@ -13,6 +13,7 @@ import java.util.List;
 public class FindPath {
     private Logger logger = Logger.getLogger(FindPath.class);
     public VisitPlanAlternatives getNewVisitPlan(Mongo dao, PlanRequest plan_request) {
+        String user = plan_request.getUser();
         String city = plan_request.getCity();
         POI start = plan_request.getStart_place();
         POI end = plan_request.getEnd_place();
@@ -50,17 +51,18 @@ public class FindPath {
             POIsList.add(poi);
         }
 
-        logger.info("USER: "+plan_request.getUser()+"   "+"TIME: "+plan_request.getStart_time());
+        logger.info("USER: "+user+"   "+"TIME: "+start_time);
         logger.info("CITY: "+city);
         logger.info("PLAN REQUEST: "+POIsList.toString());
         logger.info("DEP: "+departure.toString());
         logger.info("ARR: "+arrival.toString());
 
+        VisitPlanAlternatives vpa = new VisitPlanAlternatives(city,user);
+        vpa.add("shortest", new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
+        vpa.add("asis",  new FindPathAsIs().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
+        vpa.add("crowd", new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
 
-        VisitPlan shortest = new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
-        VisitPlan asis = new FindPathAsIs().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList);
-        VisitPlan crowd = shortest;
-        return new VisitPlanAlternatives(city, asis, shortest, crowd, plan_request.getCrowd_preference());
+        return vpa;
     }
 
     public VisitPlanAlternatives addVisitedAndReplanWithType(Mongo dao, Visit new_visited) {
@@ -70,15 +72,11 @@ public class FindPath {
         String selectedPlan = plans.getSelected();
 
         //logger.info(plans.toString());
-        VisitPlan currentP = null;
+        VisitPlan currentP = plans.get(selectedPlan);
 
+        String user = plans.getUser();
+        String city = plans.getCity();
 
-        String city = new_visited.getCity();
-
-
-        if(selectedPlan.equals("asis")) currentP = plans.getAsis();
-        if(selectedPlan.equals("shortest")) currentP = plans.getShortest();
-        if(selectedPlan.equals("crowd")) currentP = plans.getCrowd();
 
         //logger.info(v.toString());
         if (!currentP.getTo_visit().isEmpty()) {
@@ -94,13 +92,12 @@ public class FindPath {
             pois.add(currentP.getArrival().getPlace_id());
 
 
-
-            return new VisitPlanAlternatives(
-                    city,
-                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getAsis(), pois),
-                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getShortest(), pois),
-                    new FindShortestPath().updatePlan(city,dao, new_visited, plans.getCrowd(), pois),
-                    plans.getCrowd_preference());
+            VisitPlanAlternatives newVPA = new VisitPlanAlternatives(city,user);
+            for(String key : plans.getPlans().keySet()) {
+                VisitPlan p = plans.get(key);
+                newVPA.add(key,new FindShortestPath().updatePlan(city,dao, new_visited, p, pois));  // <-- problema!!!
+            }
+            return newVPA;
         }
 
         return plans;
