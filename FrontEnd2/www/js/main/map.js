@@ -5,7 +5,7 @@ var mymap;
 var dragged = false;
 var centerMarker = null;
 function localize(position) {
-
+        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon="+ position.coords.longitude+"&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
         console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
         if(!dragged)
             mymap.panTo([position.coords.latitude, position.coords.longitude]);
@@ -26,7 +26,7 @@ function localize(position) {
 
         window.setTimeout(function () {
             navigator.geolocation.getCurrentPosition(localize)
-        }, 1000)
+        }, LOCALIZE_EVERY)
 }
 
 
@@ -34,35 +34,10 @@ function localize(position) {
 
 $(document).ready(function(){
 
-
-
-
-
     var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-
     console.log(pois);
+    var markers = new Markers();
 
-    mymap = L.map('mapid',{
-        attributionControl: false,
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        zoomControl: true,
-        touchZoom: true,
-        dragging: true,
-    });
-
-    L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
-        dragged = false;
-    }).addTo(mymap);
-
-
-
-    mymap.on('drag', function(e) {
-        dragged = true;
-    });
-
-
-    var markers = [];
     var minLat = 1000;
     var minLon = 1000;
     var maxLat = -1000;
@@ -75,15 +50,42 @@ $(document).ready(function(){
                 var x = pois[type][i];
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
-                var marker = L.marker([lat, lon], {icon: markerIcons[type]}).addTo(mymap);
-                marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
-                markers.push(marker);
+                var marker = L.marker([lat, lon], {icon: markerIcons[type]});
+                marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
                 minLat = Math.min(minLat, lat);
                 minLon = Math.min(minLon, lon);
                 maxLat = Math.max(maxLat, lat);
                 maxLon = Math.max(maxLon, lon)
             }
     }
+
+
+    var layers = [];
+    for(k in markers)
+        layers.push(markers[k])
+
+    mymap = L.map('mapid',{
+        attributionControl: false,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        zoomControl: true,
+        touchZoom: true,
+        dragging: true,
+        layers: layers
+    });
+
+    L.control.layers(null,markers).addTo(mymap);
+
+    L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
+        dragged = false;
+    }).addTo(mymap);
+
+
+
+    mymap.on('drag', function(e) {
+        dragged = true;
+    });
+
 
     mymap.fitBounds([
         [minLat, minLon],
@@ -93,9 +95,11 @@ $(document).ready(function(){
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 
-    if(conf.localize && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(localize);
-
+    if(conf.localize)
+        if(navigator.geolocation)
+            navigator.geolocation.getCurrentPosition(localize);
+        else
+            alert("Turn on GPS");
 
     $("#itinerary").click(function(){
         window.location.href = "home.html";

@@ -6,7 +6,6 @@ public class PlanRequest {
 	
 	private String			user;
 	private String 			city;
-	private double			crowd_preference;
 	private POI 			start_place;
 	private POI 			end_place;
 	private String 			start_time;
@@ -18,7 +17,6 @@ public class PlanRequest {
 			POI end_place, String start_time, List<String> visits) {
 		this.user = user;
 		this.city = city;
-		this.crowd_preference = crowd_preference;
 		this.start_place = start_place;
 		this.end_place = end_place;
 		this.start_time = start_time;
@@ -39,14 +37,6 @@ public class PlanRequest {
 
 	public void setUser(String user) {
 		this.user = user;
-	}
-
-	public double getCrowd_preference() {
-		return crowd_preference;
-	}
-
-	public void setCrowd_preference(double crowd_preference) {
-		this.crowd_preference = crowd_preference;
 	}
 
 	public POI getStart_place() {
@@ -80,7 +70,9 @@ public class PlanRequest {
 	public void setVisits(List<String> visits) {
 		this.visits = visits;
 	}
-	
-	
+
+	public String toString() {
+		return "plan request for "+user+" in "+city+" from "+start_place.getPlace_id()+" to "+end_place.getPlace_id()+" at time "+start_time + " to visit: "+visits;
+	}
 
 }

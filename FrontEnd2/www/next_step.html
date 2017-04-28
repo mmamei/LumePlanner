@@ -118,6 +118,7 @@
                 }
 
                 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+                var markers = new Markers();
                 for(var type in pois) {
                     console.log(type);
                     if (pois[type])
@@ -125,10 +126,13 @@
                             var x = pois[type][i];
                             var lat = x.geometry.coordinates[1];
                             var lon = x.geometry.coordinates[0];
-                            var marker = L.marker([lat, lon], {icon: markerIcons[type]}).addTo(mymap);
-                            marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
+                            var marker = L.marker([lat, lon], {icon: markerIcons[type]});
+                            marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
                         }
                 }
+                for(k in markers)
+                    mymap.addLayer(markers[k])
+                L.control.layers(null,markers).addTo(mymap);
             }
 
 
@@ -298,11 +302,12 @@
                     path.addTo(mymap);
 
                 });
-                window.setTimeout(computeRoute,30000)
+                window.setTimeout(computeRoute,REROUTE_EVERY)
             }
 
             var dragged = false;
             function localize(position) {
+                $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon="+ position.coords.longitude+"&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
                 console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
                 if(!dragged)
                     mymap.panTo([position.coords.latitude, position.coords.longitude]);
@@ -325,7 +330,7 @@
 
 
 
-                window.setTimeout(function(){navigator.geolocation.getCurrentPosition(localize)},1000)
+                window.setTimeout(function(){navigator.geolocation.getCurrentPosition(localize)},LOCALIZE_EVERY)
 
             }
 

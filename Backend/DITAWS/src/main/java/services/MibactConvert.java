@@ -158,7 +158,12 @@ public class MibactConvert {
 
                     if(!GUIDA_ROSSA_ONLY || (GUIDA_ROSSA_ONLY && e.length > 26 && !e[26].isEmpty())) {
                         String www = e.length > 27 && !e[27].isEmpty() ? e[27] : e.length > 20 && !e[20].isEmpty() ? e[20] : null;
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", mibact2nominatim.get(cat), cat, 10, "", 0, "ok", "ok", 0, null,null,www));
+
+                        String category = mibact2nominatim.get(cat);
+                        if(category == null) category = "attractions";
+
+
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", category, cat, 10, "", 0, "ok", "ok", 0, null,null,www));
                         tot ++;
                     }
                 }

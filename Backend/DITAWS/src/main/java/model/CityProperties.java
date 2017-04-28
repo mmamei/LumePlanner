@@ -76,6 +76,10 @@ public class CityProperties {
     }
 
 
+    public double[] getCenterLonLat() {
+        return new double[]{(lonLatBL[0]+lonLatTR[0])/2, (lonLatBL[1]+lonLatTR[1])/2};
+    }
+
     public boolean contains(double lat, double lon) {
         return (lonLatBL[0] < lon && lonLatBL[1] < lat && lonLatTR[0] > lon && lonLatTR[1] > lat);
     }

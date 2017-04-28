@@ -65,6 +65,7 @@ p {
                 var photo_url = "https://farm"+photo_url.farm+".staticflickr.com/"+photo_url.server+"/"+photo_url.id+"_"+photo_url.secret+"_b.jpg";
                 console.log(photo_url);
                 $("#photo_url").attr("src",photo_url);
+                $("#photo_url").show();
             } else {
                 console.log("not found:"+picture_query);
                 if (picture_query.lastIndexOf(" ") !== -1) {
@@ -79,6 +80,12 @@ p {
 
     $(document).ready(function() {
 
+
+
+        $("#photo_url").hide();
+        $("#description").hide();
+        $("#www").hide();
+
         var type = getUrlParameter("type");
         var n = getUrlParameter("num");
         if(type) {
@@ -89,18 +96,48 @@ p {
 
         var actualVisit = {};
         if(currentDestination) actualVisit = currentDestination;
+
         if(currentVisit) {
             actualVisit.place = currentVisit;
             $("#next").hide()
         }
 
-
-
         console.log(actualVisit);
-        var picture_query = actualVisit.place.display_name.split(',')[0] + " " + window.sessionStorage.getItem("city");
-        find_pic(picture_query);
 
-        $("#title").text(picture_query);
+        $.getJSON(conf.dita_server + 'look?poi=' + actualVisit.place.place_id + "&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
+
+
+        $("#title").text(actualVisit.place.display_name.split(",")[0]);
+        if(actualVisit.place.photo_url != null) {
+            $("#photo_url").attr("src",actualVisit.place.photo_url);
+            $("#photo_url").show();
+        }
+        else {
+            // tyring looking for a picture in Flickr
+            var picture_query = actualVisit.place.display_name.split(',')[0] + " " + window.sessionStorage.getItem("city");
+            find_pic(picture_query);
+        }
+        $("#info").html(actualVisit.place.display_name.replace(",","<br/>"));
+        if(actualVisit.place.description != null) {
+            $("#description").html(actualVisit.place.description);
+            $("#description").show()
+        }
+        if(actualVisit.place.www != null) {
+            var href = actualVisit.place.www.trim();
+            console.log("www ==> " +href);
+            if(href.startsWith("\""))
+                href = href.split(",")[0].substring(1);
+            console.log("www ==> " +href);
+
+
+
+            $("#www").attr("href",href);
+            $("#www").show()
+        }
+
+        $("#close").click(function() {
+            window.history.back()
+        });
 
         $("#next").click(function() {
             if(!currentVisit) {
@@ -124,13 +161,10 @@ p {
                 });
             }
         });
-
-
     });
 </script>
+</head>
 
-
-            </head>
 <body>
 
 <div class="container-fluid text-center title">
@@ -138,17 +172,13 @@ p {
 </div>
 
 <div class="container-fluid text-center">
-<img id="photo_url" src="" class="img-responsive center">
+    <img id="photo_url" src="" class="img-responsive center">
+    <h2 id="info"></h2>
+    <p id="description" class="center"></p>
+    <a id="www" href="#"class="btn btn-info btn-lg" role="button">More info</a>
 </div>
 
-<div class="container-fluid">
-<p>Rate the crowding level on your way here</p>
-<table class="center">
-<tr><td><button class="btn btn-default">Almost Empty</button></td><td><button class="btn btn-default">Can Walk</button></td></tr>
-<tr><td><button class="btn btn-default">Hard to Walk</button></td><td><button class="btn btn-default">Cannot Move</button></td></tr>
-</table>
 
-</div>
 
 
 <div class="container-fluid">
@@ -161,7 +191,8 @@ p {
 
 
 <div class="container-fluid">
-<button id="next" style="margin-left:20px" class="btn btn-info btn-lg">Next Visit</button>
+    <button id="next" style="margin-left:20px" class="btn btn-info btn-lg">Next Visit</button>
+    <button id="close" style="margin-left:20px" class="btn btn-info btn-lg">Close</button>
 </div>
 
 </body>

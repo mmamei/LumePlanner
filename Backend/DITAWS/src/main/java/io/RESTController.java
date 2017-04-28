@@ -20,6 +20,7 @@ public class RESTController {
 
 	//private static RestTemplate restTemplate;
 	private Logger logger = Logger.getLogger(RESTController.class);
+	static final Logger tracelog = Logger.getLogger("reportsLogger");
 	private  GHopper gHopper;
 	private Mongo dao;
 
@@ -32,7 +33,8 @@ public class RESTController {
 		cities = new ArrayList<>();
 		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
 			String city = cp.getName();
-			cities.add(city);
+			double[] lonlat = cp.getCenterLonLat();
+			cities.add(city+","+lonlat[0]+","+lonlat[1]);
 			if (!dao.checkActivities(city)) {
 				logger.info("/../data/"+cp.getDataDir());
 				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
@@ -62,26 +64,30 @@ public class RESTController {
 
 	@RequestMapping(value = "signin", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody Integer performLogin(@RequestBody User user) {
+		tracelog.info("user "+user.getEmail()+" signin");
 		return dao.login(user);
 	}
 
 	@RequestMapping(value = "signup", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean performSignup(@RequestBody User user) {
+		tracelog.info("user "+user.getEmail()+" signup");
 		return dao.signup(user);
 	}
 
 
 	@RequestMapping(value = "activities", headers="Accept=application/json", method = RequestMethod.GET)
-	public @ResponseBody List<POI> sendActivities(@RequestParam(value="city", defaultValue="unknown") String city) {
+	public @ResponseBody List<POI> sendActivities(@RequestParam(value="city", defaultValue="unknown") String city,
+												  @RequestParam(value="user", defaultValue="unknown") String user) {
+		tracelog.info("user "+user+ " got activities of " +city);
 		return dao.retrieveActivities(city);
 	}
 
 	@RequestMapping(value = "itineraries", headers="Accept=application/json", method = RequestMethod.GET)
-	public @ResponseBody List<Itinerary> sendItineraries(@RequestParam(value="city", defaultValue="unknown") String city) {
-		logger.info(city);
+	public @ResponseBody List<Itinerary> sendItineraries(@RequestParam(value="city", defaultValue="unknown") String city,
+														 @RequestParam(value="user", defaultValue="unknown") String user) {
+		tracelog.info("user "+user+ " got itineraries of " +city);
 		return dao.retrieveItineraries(city);
 	}
-
 
 	@RequestMapping(value = "route", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody Path route(@RequestParam(value="vechicle", defaultValue="foot") String vechicle,
@@ -95,14 +101,15 @@ public class RESTController {
 
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
+		tracelog.info("user "+plan_request.getUser()+" request newplan "+plan_request);
 		return new FindPath().getNewVisitPlan(dao,plan_request);
 	}
 
 
 	@RequestMapping(value = "accept_plan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody boolean acceptVisitPlan(@RequestBody VisitPlanAlternatives plans) {
-		logger.info("User "+plans.get(plans.getSelected()).getUser()+" selected plan "+plans.getSelected());
-		 return dao.insertPlan(plans);
+		tracelog.info("user "+plans.get(plans.getSelected()).getUser()+" selected plan "+plans.getSelected());
+		return dao.insertPlan(plans);
 	}
 
 	// Questo metodo per ora non viene usato. Serve se devo recuperare un piano precedente non terminato
@@ -112,10 +119,30 @@ public class RESTController {
 	}
 
 
+	// the service visited is for the actual visit of a place in an itinerary
+	// this is just to log people activities
+	@RequestMapping(value = "localize", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody boolean localize(@RequestParam(value="lat", defaultValue="unknown") String lat,
+									  @RequestParam(value="lon", defaultValue="unknown") String lon,
+									  @RequestParam(value="user", defaultValue="unknown") String user) {
+		tracelog.info("user "+user+ " localized at "+lat+","+lon);
+		return true;
+	}
+
+
+	// the service visited is for the actual visit of a place in an itinerary
+	// this is just to log people activities
+	@RequestMapping(value = "look", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody boolean look(@RequestParam(value="poi", defaultValue="unknown") String poi,
+									  @RequestParam(value="user", defaultValue="unknown") String user) {
+		tracelog.info("user "+user+ " visited "+poi);
+		return true;
+
+	}
 
 	@RequestMapping(value = "visited", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
-		//String city = new_visited.getCity();
+		tracelog.info("user "+new_visited.getUser()+ " visited (in plan) "+new_visited.toString());
 		return new FindPath().addVisitedAndReplanWithType(dao,new_visited);
 
 	}
@@ -123,8 +150,7 @@ public class RESTController {
 
 	@RequestMapping(value = "finish", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean removePlan(@RequestBody User user) {
-		logger.info("User "+user.getEmail()+" completed his visiting plan in "+user.getCity());
-		String city = user.getCity();
+		tracelog.info("user "+user.getEmail()+" completed his visiting plan in "+user.getCity());
 		return dao.deletePlan(user.getEmail());
 	}
 
@@ -138,9 +164,7 @@ public class RESTController {
 		hourFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 		String hour = hourFormatter.format(d);
 		String minute = minuteFormatter.format(d);
-
-		logger.info("download datapipe data at "+hour+":"+minute);
-
+		System.out.println("download datapipe data at "+hour+":"+minute);
 		new DataPipeDownload().download();
 	}
 

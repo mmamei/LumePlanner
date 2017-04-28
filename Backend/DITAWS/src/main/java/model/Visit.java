@@ -49,7 +49,10 @@ public class Visit {
 	public void setTime(long time) {
 		this.time = time;
 	}
-	
+
+	public String toString() {
+		return user+" in "+city+" visited place "+visited.getPlace_id()+" at "+time;
+	}
 	
 
 }
