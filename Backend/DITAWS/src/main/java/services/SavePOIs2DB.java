@@ -22,7 +22,7 @@ public class SavePOIs2DB {
 
 	public static void main(String[] args) throws Exception  {
 		SavePOIs2DB g = new SavePOIs2DB();
-		String city = "Bologna";
+		String city = "ReggioEmilia";
 		Mongo dao = new Mongo();
 		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
 		g.run(city, dao,dir);

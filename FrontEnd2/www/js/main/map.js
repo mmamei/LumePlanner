@@ -102,7 +102,11 @@ $(document).ready(function(){
             alert("Turn on GPS");
 
     $("#itinerary").click(function(){
-        window.location.href = "home.html";
+        var data = JSON.parse(window.sessionStorage.getItem("itineraries"));
+        if(data == null)
+            window.location.href = "itinerary_create.html";
+        else
+            window.location.href = "itineraries.html";
     })
 
 });

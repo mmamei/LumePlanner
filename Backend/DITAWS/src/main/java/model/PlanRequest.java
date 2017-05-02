@@ -13,7 +13,7 @@ public class PlanRequest {
 	
 	public PlanRequest(){}
 
-	public PlanRequest(String user, String city, double crowd_preference, POI start_place,
+	public PlanRequest(String user, String city, POI start_place,
 			POI end_place, String start_time, List<String> visits) {
 		this.user = user;
 		this.city = city;

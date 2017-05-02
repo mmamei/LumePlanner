@@ -106,6 +106,7 @@ $(document).ready(function() {
         window.sessionStorage.setItem("arrival",v)
     });
 
+
     $("#select-itineraries").change(function() {
         var v = $(this).val();
         for(var i=0; i<itineraries.length;i++)
@@ -117,6 +118,7 @@ $(document).ready(function() {
             }
         console.log(spois)
     });
+
 
     var slid_val = 1.0;
     $(".crowdb").click(function() {

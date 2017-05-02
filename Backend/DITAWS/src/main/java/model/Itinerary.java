@@ -13,14 +13,16 @@ public class Itinerary {
     private String itinerary_id;
     private String display_name;
     private List<String> visits;
+    private String approx_time;
 
     public Itinerary() {
     }
 
-    public Itinerary(String itinerary_id, String display_name, List<String> visits) {
+    public Itinerary(String itinerary_id, String display_name, List<String> visits, String approx_time) {
         this.itinerary_id = itinerary_id;
         this.display_name = display_name;
         this.visits = visits;
+        this.approx_time = approx_time;
     }
 
     public String toJSONString() {
@@ -58,6 +60,13 @@ public class Itinerary {
         this.visits = visits;
     }
 
+    public String getApprox_time() {
+        return approx_time;
+    }
+
+    public void setApprox_time(String approx_time) {
+        this.approx_time = approx_time;
+    }
 
 
 
