@@ -1,25 +1,20 @@
-<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<title>LUME</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LUMEPlanner</title>
 
-
-    <!-- ALKET ADD -->
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
     <link rel="stylesheet" href="assets/css/jqm-demos.css">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-    <script src="js/jquery.min.js"></script>
-    <script src="assets/js/index.js"></script>
-    <script src="js/jquery.mobile-1.4.5.min.js"></script>
 
-<script src="js/global.js"></script>
-<script src="js/main/finish.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/main/finish.js"></script>
 
     <style>
 
@@ -62,43 +57,6 @@ p {
 
 </head>
 <body>
-<!--
-<div class="container-fluid text-center title">
-<h3>Your Visit is Over</h3>
-</div>
-
-<div class="container-fluid" style="height:96%;">
-    <div class="container-fluid row" style="height:50%;padding-top:5%;">
-        <div class="container-fluid row" style="height:auto;">
-            <div class="col-md-12">
-                <h2 class="hidden-xs hidden-sm">How do you like your Visiting Plan?</h2>
-                <h5 class="hidden-md hidden-lg">How do you like your Visiting Plan?</h5>
-                <div class="btn-group col-md-12" role="group" id="sequence"  style="width:100%">
-                    <button type="button" ng-class="{'active': like0}" class="btn btn-default" ng-click="seq(0)" style="width:50%">I Liked it</button>
-                    <button type="button" ng-class="{'active': like1}" class="btn btn-default" ng-click="seq(1)" style="width:50%">I Disliked it</button>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid row" style="height:auto;padding-top:1%;">
-            <div class="col-md-12">
-                <h2 class="hidden-xs hidden-sm">Has the crowding level met your expectations?</h2>
-                <h5 class="hidden-md hidden-lg">Has the crowding level met your expectations?</h5>
-                <div class="btn-group col-md-12" role="group" id="crowding" style="width:100%">
-                    <button type="button" ng-class="{'active': crowd0}" class="btn btn-default" ng-click="crowd(0)" style="width:50%">As expected</button>
-                    <button type="button" ng-class="{'active': crowd1}" class="btn btn-default" ng-click="crowd(1)" style="width:50%">Not satisfied</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid row text-center" style="height:30%;padding-top:5%;">
-        <div class="col-md-12" style="width:100%">
-            <button type="button" class="btn btn-info" id="restart" style="width:100%">Plan another tour!</button>
-            <img src = "img/logo-text.png" class="img-rounded img-responsive" style="margin-top:20px">
-        </div>
-    </div>
-</div>
--->
 
 <div data-role="page" id = "pageone" class="jqm-demos jqm-home">
 
@@ -106,22 +64,7 @@ p {
         <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
         <!--<p>Version <span class="jqm-version"></span></p> -->
         <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
-    </div><!-- /header -->
-
-    <div role="main" class="ui-content jqm-content">
-
-        <h1 align = "center">LUMEPlanner</h1>
-        <p align = "center"><strong>Your visit is over!</strong></p>
-
-        <!--
-        <label for="search-mini"></label>
-        <input type="search" name="search-mini" id="search-mini" value="" data-mini="true" />
-        -->
-
-
-
-        <button id="restart" class="btn btn-primary">Plan another tour!</button>
-    </div><!-- /content -->
+    </div>
     <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
 
         <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
@@ -134,10 +77,14 @@ p {
         </ul>
     </div><!-- /panel -->
 
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-        <p align = "center">LUMEPlanner</p>
+    <div role="main" class="ui-content jqm-content">
 
-    </div><!-- /footer -->
+        <h1 align = "center">LUMEPlanner</h1>
+        <p align = "center"><strong>Your visit is over!</strong></p>
+
+        <button id="map" class="btn btn-primary">Map!</button>
+        <button id="restart" class="btn btn-primary">Plan another tour!</button>
+    </div><!-- /content -->
 </div><!-- /page -->
 
 

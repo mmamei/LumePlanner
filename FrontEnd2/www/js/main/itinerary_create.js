@@ -17,14 +17,13 @@ function poiName2Obj(name,array) {
 
 $(document).ready(function() {
     var city = window.sessionStorage.getItem("city");
-    //$("#title").html("Plan your visit in "+city);
+    $("#title").html("Plan your visit in "+city);
 
 
 
     var time = window.sessionStorage.getItem("time");
-
     if(!time) time = new Date();
-    //$("#date-value1-1").val($.format.date(time, 'yyyy/MM/dd HH:mm:ss'));
+    $("#date-value1-1").val($.format.date(time, 'yyyy/MM/dd HH:mm:ss'));
 
 
     var pois  = JSON.parse(window.sessionStorage.getItem("pois"));
@@ -70,7 +69,6 @@ $(document).ready(function() {
 
     if(itineraries == null)
         $("#itineraries").hide();
-
     else {
         $("#select-itineraries").append("<option value=''>"+itineraries.length+" Itineraries Avaialble</option>");
         for (var i = 0; i < itineraries.length; i++)
@@ -78,6 +76,21 @@ $(document).ready(function() {
     }
 
 
+    $("#demo1-1").hide();
+    $('#demo1-1').datetimepicker({
+        date: new Date(),
+        viewMode: 'YMDHMS',
+        onDateUpdate: function () {
+            $('#date-value1-1').val(this.getValue().toString().split("GMT")[0]);
+            $("#demo1-1").hide();
+            window.sessionStorage.setItem("time",this.getValue().toString());
+        }
+    });
+
+
+    $("#time").click(function() {
+        $("#demo1-1").show()
+    });
 
 
     $("#departure").change(function() {

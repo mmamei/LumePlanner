@@ -78,6 +78,12 @@ $(document).ready(function() {
         $("#www").show()
     }
 
+
+    $("#www").click(function() {
+        window.location = $(this).attr("href")
+    });
+
+
     $("#close").click(function() {
         window.history.back()
     });
