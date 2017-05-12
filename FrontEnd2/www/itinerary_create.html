@@ -1,106 +1,146 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <title>LumePlanner</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="js/jquery.md5.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-        <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-        <script src="js/LeafletPlayback.min.js"></script>
-        <link rel="stylesheet" href="css/ionicons.min.css">
-        <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
-        <script src="js/leaflet.awesome-markers.min.js"></script>
-        <script src="js/global.js"></script>
-        <link rel="stylesheet" href="css/jquery.datetimepicker.min.css">
-        <script src="js/jquery.datetimepicker.js"></script>
-        <script src="js/jquery-dateFormat.min.js"></script>
-        <script src="js/main/itinerary_create.js"></script>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>LUMEPlanner</title>
 
-        <style>
-            .bg-blue {
-                background-color: #084265;
-                color: #ffffff;
-            }
-            .big-icon {
-                font-size: 60px;
-                vertical-align:middle;
-                margin-bottom: 10px;
-            }
+    <script src="js/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/main/itinerary_create.js"></script>
+    <link rel="shortcut icon" href="favicon.ico">
 
-        </style>
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
 
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
 
-    </head>
-    <body class="bg-blue">
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <!--
+    <link rel="stylesheet" type="text/css" href="js/jquery-ui.min.css" />
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    -->
+    <script src="js/jquery-dateFormat.min.js"></script>
+    <script src="js/jquery.datetimepicker.full.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/jquery.datetimepicker.css"/>
 
-        <div class="container-fluid text-center">
-        <p id="title"></p>
-        </div>
+    
+    <style>
+        .ui-grid-a .ui-grid-b img {
+            width  : 100%;
+            height : auto;
+        }
+    </style>
 
+    <script>
+        function initTime(time) {
+            $("#datetimepicker").val($.format.date(time, 'yyyy/MM/dd HH:mm:ss'));
+            $('#datetimepicker').datetimepicker({});
+            $('#datetimepicker').click(function () {
+                $('#datetimepicker').datetimepicker({})
+            })
+        }
 
+        function formatDepartureArrival(name, selected) {
+            return "<option value='" + name + "' "+(selected? "selected ": "")+">" + name + "</option>"
+        }
 
-
-        <div class="container-fluid">
-
-            <div class="form-group">
-                <label for="date-value1-1">Select Time:</label> <span id="time" class="glyphicon glyphicon-time big-icon"></span>
-                <input type="text" class="form-control" size="60"  id="date-value1-1">
-            </div>
-
-            <div id="demo1-1"></div>
-            <div class="form-group">
-                <label for="departure">Departure Location:</label>
-                <select class="form-control" id="departure">
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="arrival">Arrival Location:</label>
-                <select class="form-control" id="arrival">
-                </select>
-            </div>
-
-            <div id="itineraries" class="form-group">
-                <label for="select-itineraries">Preset Itineraries:</label>
-                <select class="form-control" id="select-itineraries">
-
-                </select>
-            </div>
+    </script>
 
 
-            <label for="activities">What to do:</label><br>
-                <div id="activities" class="btn-group">
-                    <p class="btn btn-default activities" id="attractions">Attractions</p>
-                    <p class="btn btn-default activities" id="museums">Museums</p>
-                    <p class="btn btn-default activities" id="historical">Historical</p>
-                    <p class="btn btn-default activities" id="religious">Religious</p>
-                    <p class="btn btn-default activities" id="monuments">Monuments</p>
-                    <p class="btn btn-default activities" id="parks">Parks</p>
-                </div>
+</head>
+<body>
+<div data-role="page" class="jqm-demos jqm-home">
+    <div data-role="header" class="jqm-header"  data-position="fixed" >
+        <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
+        <!--<p>Version <span class="jqm-version"></span></p> -->
+        <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    </div>
+    <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
+        <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
+            <li data-filtertext="homepage" data-icon="home"><a href="../" tkey="homepage">Pagina principale</a></li>
+            <li data-filtertext="luoghi" data-icon = "location"><a href="../myplaces/" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
+            <li data-filtertext="viaggi" data-icon = "camera"><a href="../mytravels/" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
+            <li data-filtertext="percorsi" data-icon = "star"><a href="../favoritepath/" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
+            <li data-filtertext="account" data-icon = "user"><a href="fb/fb.html" data-ajax="false" tkey="user">Utente</a></li>
+            <li data-filtertext="assistenza" data-icon = "phone"><a href="../assist/" data-ajax="false" tkey="help">Assistenza</a></li>
+        </ul>
+    </div>
 
 
-            <div class="form-group">
-                <label>Crowding preference:</label><br>
-
-                <div id="crowd" class="btn-group btn-group-justified text-center">
-                    <p style="background-color: LightGreen" id="crowd-fe" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span></p>
-                    <p id="crowd-me" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
-                    <p id="crowd-mc" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
-                    <p id="crowd-fc" class="btn btn-default crowdb"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span></p>
-                </div>
-            </div>
 
 
-            <a href="index.html" type="button" class="btn btn-primary btn-lg">Back</a>
-            <button id="go" class="btn btn-success btn-lg">Get Visit Plan</button>
+	 <div role="main" class="ui-content jqm-content">
+         <h3 align = "center" tkey="select_time"> Seleziona data </h3>
+         <input type="text" value="" id="datetimepicker"/>
+	<br>
+	
+<h3 align = "center" tkey="select_dep_arr"> Seleziona location di partenza e arrivo </h3>
+  <div class="ui-grid-a">
+    <div class="ui-block-a">
 
-        </div>
+            <select name="speed" id="departure">
+            </select>
+	</div>
+    <div class="ui-block-b">
 
+        <select name="speed" id="arrival">
+        </select>
+	</div>
+ </div>
+         <br>
 
-    </body>
+ <h3 align = "center" tkey="select_attractions"> Seleziona tra le categorie di attrazioni </h3>
+ <div class="ui-grid-b">
+    <div class="ui-block-a">
+	 <div id="museums" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="museums">Musei</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+	</div>
+    <div class="ui-block-b">
+	 <div id="historical" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="historical">Luoghi storici</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+	</div>
+    <div class="ui-block-c">
+	 <div id="religious" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="religious">Luoghi religiosi</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+	</div>
+</div>
+<form class="ui-grid-b">
+    <div class="ui-block-a">
+        <div id="monuments" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="monuments">Monumenti</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+    </div>
+    <div class="ui-block-b">
+        <div id="parks" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="parks">Parchi</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+    </div>
+    <div class="ui-block-c">
+         <div id="attractions" class="attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="attractions">Attrazioni</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+    </div>
+</form>
+<form>
+    <div class="ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="filters">Altri filtri</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+</form>
+
+<form>
+    <div id="go" class="ui-input-btn ui-btn ui-corner-all ui-shadow ui-btn-active ui-state-persist"><span tkey="itineraries_go">Vai all'itinerario</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+</form>
+
+	</div><!-- /content --> 
+
+</div><!-- /page -->
+
+</body>
 </html>

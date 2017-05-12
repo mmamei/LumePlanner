@@ -1,0 +1,43 @@
+{
+  "more_cities":"Show more cities",
+  "plan_title":"Plan your next visit in Emilia Romagna!",
+  "homepage":"Homepage",
+  "my_places":"My Places",
+  "my_itineraries":"My Itineraries",
+  "itineraries":"Top Itineraries",
+  "user":"User",
+  "help":"Help",
+  "itineraries_go":"Go to itinerary!",
+
+  "hotels":"Hotels",
+  "attractions":"Attractions",
+  "monuments":"Monuments",
+  "museums":"Museums",
+  "restaurants":"Restaurants",
+  "parks":"Parks",
+  "historical":"Historical",
+  "religious":"Religious",
+
+  "choose_itinerary":"Choose your Itinerary",
+  "create_itinerary":"Create a custom Itinerary",
+
+  "asis":"As-Is",
+  "crowd":"Optimized for crowd conditions",
+  "shortest":"Shortest",
+
+  "start":"Start",
+  "use_public_transport":"Use public transport",
+  "visit":"I'am arrived!",
+  "next_visit":"Next Visit",
+  "close_visit":"Close",
+  "more_info":"More Info",
+  "finish":"Your visit is over!",
+  "go_to_map":"Go to Map",
+  "plan_another_itinerary":"Plan another Itinerary",
+
+  "select_time":"Select date and time",
+  "select_dep_arr":"Select departura and arrival",
+  "select_attractions":"Select attractions to visit",
+  "filters":"Other filters"
+}
+

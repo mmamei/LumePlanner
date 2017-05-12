@@ -77,7 +77,7 @@ function POIS() {
 function format_name(name) {
     var name_array = name.split(',');
     var from = (name_array[1] && name_array[1].startsWith("from:")) ? name_array[1] : "from:nominatim";
-    return name_array[0]+"<br/>"+from+"<br/>"
+    return name_array[0];//+"<br/>"+from+"<br/>"
 }
 
 
@@ -98,3 +98,39 @@ function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
 function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
+
+
+var langCode = navigator.language.substr (0, 2);
+//langCode = "en"
+var langs = {"en":"","it":""};
+
+if (langCode in langs) {
+    console.log("here");
+    $.getJSON('lang/' + langCode + '.json', function (jsdata)  {
+        console.log(jsdata);
+        $("[tkey]").each (function (index) {
+            var strTr = jsdata [$(this).attr ('tkey')];
+            $(this).html (strTr);
+        });
+    });
+}
+
+
+function translateObjKeys(obj) {
+    if (langCode in langs) {
+        return $.getJSON('lang/' + langCode + '.json', function(jsdata) {
+            //console.log("++++++"+jsdata)
+            for(k in obj) {
+                //console.log("---"+k)
+                if (k in jsdata) {
+                    //console.log("found "+k+" => "+jsdata[k])
+                    obj[jsdata[k]] = obj[k];
+                    delete obj[k]
+                }
+            }
+        });
+    }
+}
+
+
+

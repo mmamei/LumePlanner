@@ -8,8 +8,8 @@ function parsePlan(items) {
         m[items.departure.place_id] = {
             lat : items.departure.geometry.coordinates[1],
             lng: items.departure.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Start:" + items.departure_time + "</b><br />" +
-            "<b>Finish:" + items.arrival_time + "</b><br />" +
+            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Partenza:" + items.departure_time + "</b><br />" +
+            "<b>Fine:" + items.arrival_time + "</b><br />" +
             format_name(items.arrival.display_name)+"</p>",
             icon: L.divIcon({
                 type: 'div',
@@ -23,7 +23,7 @@ function parsePlan(items) {
         m[items.arrival.place_id] = {
             lat : items.arrival.geometry.coordinates[1],
             lng: items.arrival.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Finish:" + items.arrival_time + "</b><br />" +
+            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Arrivo:" + items.arrival_time + "</b><br />" +
             format_name(items.arrival.display_name)+"</p>",
             icon: L.divIcon({
                 type: 'div',
@@ -35,7 +35,7 @@ function parsePlan(items) {
         m[items.departure.place_id] = {
             lat : items.departure.geometry.coordinates[1],
             lng: items.departure.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Departure:"+items.departure_time+"</b><br />" +
+            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Partenza:"+items.departure_time+"</b><br />" +
             format_name(items.departure.display_name)+"</p>",
             icon: L.divIcon({
                 type: 'div',
@@ -50,8 +50,8 @@ function parsePlan(items) {
         m[items.visited[j].visit.place_id] = {
             lat : items.visited[j].visit.geometry.coordinates[1],
             lng: items.visited[j].visit.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrival:"+items.visited[j].arrival_time +
-            "</b><br /><b>Departure:" + items.visited[j].departure_time
+            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrivo:"+items.visited[j].arrival_time +
+            "</b><br /><b>Partenza:" + items.visited[j].departure_time
             +"</b><br />"+format_name(items.visited[j].visit.display_name)+"</p>",
             icon: L.divIcon({
                 type: 'div',
@@ -68,8 +68,8 @@ function parsePlan(items) {
         m[items.to_visit[i-j-1].visit.place_id] = {
             lat : items.to_visit[i-j-1].visit.geometry.coordinates[1],
             lng: items.to_visit[i-j-1].visit.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrival:"+items.to_visit[i-j-1].arrival_time +
-            "</b><br /><b>Departure:" + items.to_visit[i-j-1].departure_time
+            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>"+"Arrivo:"+items.to_visit[i-j-1].arrival_time +
+            "</b><br /><b>Partenza:" + items.to_visit[i-j-1].departure_time
             +"</b><br />"+format_name(items.to_visit[i-j-1].visit.display_name)+"</p>",
             icon: L.divIcon({
                 type: 'div',
@@ -102,10 +102,11 @@ function parsePlan(items) {
 
 
     var desc = "";
-    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.departure.display_name)+"<br><strong> start at: </strong>"+items.departure_time+"</div>");
-    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.arrival.display_name)+"<br><strong> arrive at: </strong>"+items.arrival_time+"</div>");
+    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.departure.display_name)+"<br><strong>parti alle: </strong>"+items.departure_time+"</div>");
+    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.arrival.display_name)+"<br><strong>arrivi alle: </strong>"+items.arrival_time+"</div>");
     for(var i=0; i<items.to_visit.length;i++)
-        desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.to_visit[i].visit.display_name)+"<br><strong> arrive at: </strong>"+items.to_visit[i].arrival_time+"<strong> depart at: </strong>"+items.to_visit[i].departure_time+"</div>")
+        desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.to_visit[i].visit.display_name)+
+            "<br><span style='font-size: small'><strong> arrivi alle: </strong>"+items.to_visit[i].arrival_time+"<strong> parti alle: </strong>"+items.to_visit[i].departure_time+"</span></div>")
 
     return {"markers":markers,"desc":desc}
 }
@@ -134,7 +135,7 @@ $(document).ready(function() {
     var newplan = true; // used to resume plan
 
     visitplan.selected = type_of_plan;
-
+    //console.log(type_of_plan)
 
 
     //}
@@ -179,7 +180,6 @@ $(document).ready(function() {
     var lat  = visitplan.plans[type_of_plan].departure.geometry.coordinates[1];
     var lng  = visitplan.plans[type_of_plan].departure.geometry.coordinates[0];
 
-
     mymap = L.map('mapid',{
         attributionControl: false,
         scrollWheelZoom: true,
@@ -192,18 +192,12 @@ $(document).ready(function() {
 
 
     mymap.setView([lat, lng], 12);
-
-
-
-
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
-
-
-
     L.control.layers(plans_markers,null).addTo(mymap);
+    //$.when(translateObjKeys(plans_markers)).done(function(){L.control.layers(plans_markers,null).addTo(mymap)})
 
     mymap.on('baselayerchange', function(eo) {
+
         type_of_plan = eo.name
     });
 
@@ -223,7 +217,7 @@ $(document).ready(function() {
 
 
     $('#dialog-about').dialog({
-        modal: true, autoOpen: false, closeOnEsc: false, draggable: false,
+        modal: true, autoOpen: false, closeOnEsc: false, draggable: false, maxWidth:700,
     });
 
 

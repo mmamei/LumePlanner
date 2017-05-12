@@ -73,8 +73,8 @@ function init(position) {
 
         for(var i=0; i<data.length;i++) {
             var city = data[i].split(",")[0];
-            //$("#cities").append("<div class=\"container-fluid text-center\"><h2>"+data[i]+"</h2><img src=\""+conf.dita_server_img+"cities/"+data[i]+".jpg\" class=\"img-responsive img-rounded\" alt=\""+data[i]+"\" id=\""+data[i]+"\"></div>");
-            $("#cities").append("<div class=\"ui-block-a\"><h3 align = \"center\">"+city+"</h3><img src=\""+conf.dita_server_img+"cities/"+city+".jpg\" class=\"img-responsive img-rounded\" alt=\""+city+"\" id=\""+city+"\"></div>");
+            var img = conf.dita_server_img+"cities/"+city+".jpg";
+            $("#cities").append(formatCityBlock(city,img));
         }
 
 

@@ -23,26 +23,39 @@ function find_pic (picture_query) {
 
 $(document).ready(function() {
 
-
-
     $("#photo_url").hide();
     $("#description").hide();
     $("#www").hide();
 
     var type = getUrlParameter("type");
     var n = getUrlParameter("num");
-    if(type) {
+    var currentVisit = null;
+    if(type && n) {
         var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-        var currentVisit = pois[type][n]
+        currentVisit = pois[type][n]
     }
+
     var currentDestination = JSON.parse(window.sessionStorage.getItem("currentDestination"));
 
     var actualVisit = {};
-    if(currentDestination) actualVisit = currentDestination;
+
+    // currentVisit è dove lui a cliccato
+    // currentDestination è la porssima destinazione in itinerario
+
+    if(currentDestination && !currentVisit) {
+        actualVisit = currentDestination;
+        $("#close").hide()
+    }
 
     if(currentVisit) {
         actualVisit.place = currentVisit;
-        $("#next").hide()
+
+        //console.log(currentDestination.place.place_id)
+        //console.log(currentVisit.place_id)
+        if(!currentDestination || currentVisit.place_id != currentDestination.place.place_id)
+            $("#next").hide();
+        else
+            $("#close").hide()
     }
 
     console.log(actualVisit);
@@ -57,8 +70,8 @@ $(document).ready(function() {
     }
     else {
         // tyring looking for a picture in Flickr
-        var picture_query = actualVisit.place.display_name.split(',')[0] + " " + window.sessionStorage.getItem("city");
-        find_pic(picture_query);
+        // var picture_query = actualVisit.place.display_name.split(',')[0] + " " + window.sessionStorage.getItem("city");
+        // find_pic(picture_query);
     }
     $("#info").html(actualVisit.place.display_name.replace(",","<br/>"));
     if(actualVisit.place.description != null) {
@@ -71,8 +84,6 @@ $(document).ready(function() {
         if(href.startsWith("\""))
             href = href.split(",")[0].substring(1);
         console.log("www ==> " +href);
-
-
 
         $("#www").attr("href",href);
         $("#www").show()
@@ -89,7 +100,7 @@ $(document).ready(function() {
     });
 
     $("#next").click(function() {
-        if(!currentVisit) {
+        //if(!currentVisit) {
             var user = JSON.parse(window.sessionStorage.getItem("user"));
             var city = window.sessionStorage.getItem("city");
             var d = new Date().getTime();
@@ -108,6 +119,6 @@ $(document).ready(function() {
                 window.sessionStorage.setItem("visitplan", JSON.stringify(data));
                 window.location.href = "next_step.html"
             });
-        }
+       //}
     });
 });

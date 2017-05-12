@@ -1,0 +1,43 @@
+{
+  "more_cities":"Altre Città",
+  "plan_title":"Visita l'Emilia Romagna!",
+  "homepage":"Pagina principale",
+  "my_places":"I miei luoghi",
+  "my_itineraries":"I miei viaggi",
+  "itineraries":"I percorsi più visti",
+  "user":"Utente",
+  "help":"Assistenza",
+  "itineraries_go":"Fai un percorso!",
+
+  "hotels":"Hotel",
+  "attractions":"Attrazioni",
+  "monuments":"Monumenti",
+  "museums":"Musei",
+  "restaurants":"Ristoranti",
+  "parks":"Parchi",
+  "historical":"Luoghi storici",
+  "religious":"Luoghi religiosi",
+
+  "choose_itinerary":"Scegli un itinerario",
+  "create_itinerary":"Crea un Itinerario Personalizzato",
+
+  "asis":"Predefinito",
+  "crowd":"Ottimizzato",
+  "shortest":"Più breve",
+
+  "start":"Inizia il percorso",
+  "use_public_transport":"Usa i mezzi pubblici",
+  "visit":"Sono arrivato",
+  "next_visit":"Prossima visita",
+  "close_visit":"Chiudi",
+  "more_info":"Altre Informazioni",
+  "finish":"La tua visita è finita",
+  "go_to_map":"Vai alla mappa",
+  "plan_another_itinerary":"Pianifica un altro Itinerario",
+
+  "select_time":"Seleziona data e ora",
+  "select_dep_arr":"Seleziona punto di partenza e arrivo",
+  "select_attractions":"Seleziona i luoghi da visitare",
+  "filters":"Altri filtri"
+}
+

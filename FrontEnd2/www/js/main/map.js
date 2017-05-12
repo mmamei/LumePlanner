@@ -51,7 +51,7 @@ $(document).ready(function(){
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
                 var marker = L.marker([lat, lon], {icon: markerIcons[type]});
-                marker.bindPopup(format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
+                marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
                 minLat = Math.min(minLat, lat);
                 minLon = Math.min(minLon, lon);
                 maxLat = Math.max(maxLat, lat);
@@ -74,7 +74,8 @@ $(document).ready(function(){
         layers: layers
     });
 
-    L.control.layers(null,markers).addTo(mymap);
+    $.when(translateObjKeys(markers)).done(function(){L.control.layers(null,markers).addTo(mymap)});
+
 
     L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
         dragged = false;

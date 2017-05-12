@@ -12,41 +12,33 @@ $(document).ready(function(){
 
     pois[sel].forEach(function(item) {
         var name = (item.display_name.split(',')[0].length>25) ? item.display_name.split(',')[0].substring(0,25).trim()+"." : item.display_name.split(',')[0];
-
         var selected = false;
         spois[sel].forEach(function(sitem) {
-            var sname = (sitem.display_name.split(',')[0].length>25) ? sitem.display_name.split(',')[0].substring(0,25).trim()+"." : sitem.display_name.split(',')[0];
-            if(sname === name)
+            //var sname = (sitem.display_name.split(',')[0].length>25) ? sitem.display_name.split(',')[0].substring(0,25).trim()+"." : sitem.display_name.split(',')[0];
+            if(sitem.place_id === item.place_id)
                 selected = true;
         });
-
-
-        $("#select").append(" <option "+(selected ? "selected='selected'" : "")+">"+name+"</option>")
+        $("#arrayCreator").append(formatBlock(item.place_id,name,selected))
     });
 
 
 
-    $("option").mousedown(function(e) {
-        e.preventDefault();
-        $(this).attr('selected', $(this).attr('selected') ? false : true);
-        return false;
-    });
+
 
     $("#done").click(function(e) {
-
         spois[sel] = [];
-        $("option:selected").each(function() {
-
-            var x = $(this).text();
-
+        $("input:checked").each(function() {
+            var x = $(this).context.defaultValue;
+            //console.log(x)
             pois[sel].forEach(function(item) {
-                var name = (item.display_name.split(',')[0].length > 25) ? item.display_name.split(',')[0].substring(0, 25).trim() + "." : item.display_name.split(',')[0];
-                if(name == x) {
+                //var name = (item.display_name.split(',')[0].length > 25) ? item.display_name.split(',')[0].substring(0, 25).trim() + "." : item.display_name.split(',')[0];
+                if(item.place_id === x) {
                     spois[sel].push(item)
                 }
             });
         });
 
+        console.log(spois[sel]);
 
         window.sessionStorage.setItem("spois",JSON.stringify(spois));
         window.location.href = "itinerary_create.html";

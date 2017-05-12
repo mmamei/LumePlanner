@@ -51,8 +51,6 @@ $(document).ready(function(){
 
     var data;
 
-    $("#city").text(window.sessionStorage.getItem("city"));
-
 
     data = JSON.parse(window.sessionStorage.getItem("itineraries"));
     console.log(data);
@@ -60,8 +58,7 @@ $(document).ready(function(){
     if(data != null) {
         for (var i = 0; i < data.length; i++) {
             var name = data[i].display_name + "," + data[i].approx_time;
-
-            $("#itineraries").append("<button num=\""+i+"\" class=\"itiner btn btn-primary ui-btn ui-shadow ui-corner-all\">" + name + "</button>");
+            $("#itineraries").append(formatButton(i,name));
         }
     }
 
