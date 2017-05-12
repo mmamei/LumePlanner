@@ -80,6 +80,12 @@ function format_name(name) {
     return name_array[0];//+"<br/>"+from+"<br/>"
 }
 
+function format_name_from(name) {
+    var name_array = name.split(',');
+    var from = (name_array[1] && name_array[1].startsWith("from:")) ? name_array[1] : "from:nominatim";
+    return from
+}
+
 
 function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
     var R = 6371000; // Radius of the earth in m

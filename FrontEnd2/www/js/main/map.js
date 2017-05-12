@@ -33,7 +33,7 @@ function localize(position) {
 
 
 $(document).ready(function(){
-
+    $("#popup").hide();
     var pois = JSON.parse(window.sessionStorage.getItem("pois"));
     console.log(pois);
     var markers = new Markers();
@@ -50,14 +50,30 @@ $(document).ready(function(){
                 var x = pois[type][i];
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
-                var marker = L.marker([lat, lon], {icon: markerIcons[type]});
-                marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
+
+                var info = "<h3>"+format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a></h3>" +
+                    "<span onclick='$(\"#popup\").hide()' class='ui-btn-icon-right ui-icon-close'></span>" +
+                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span>";
+
+                var marker = L.marker([lat, lon], {icon: markerIcons[type], mypopup:info});
+                //marker.bindPopup("<h2>"+format_name(x.display_name)+"</h2><br><span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
+
+                marker.on('click',function(e) {
+                    //console.log(e.target.options.mypopup)
+                    $("#popup").html(e.target.options.mypopup);
+                    $("#popup").show()
+                });
+                marker.addTo(markers[type]);
+
                 minLat = Math.min(minLat, lat);
                 minLon = Math.min(minLon, lon);
                 maxLat = Math.max(maxLat, lat);
                 maxLon = Math.max(maxLon, lon)
             }
     }
+
+
+
 
 
     var layers = [];
@@ -73,6 +89,9 @@ $(document).ready(function(){
         dragging: true,
         layers: layers
     });
+
+
+
 
     $.when(translateObjKeys(markers)).done(function(){L.control.layers(null,markers).addTo(mymap)});
 
