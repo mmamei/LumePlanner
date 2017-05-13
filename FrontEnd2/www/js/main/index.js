@@ -2,37 +2,11 @@ function loadActivities(city,user) {
     console.log("get activities for city "+city+" from server");
     return  $.getJSON(conf.dita_server + 'activities?city=' + city + "&user="+user,
         function (data, status) {
-            var pois = new POIS();
+            var pois = {};
             //console.log("Data: " + data + "\nStatus: " + status);
             data.forEach(function (value) {
-                switch (value.category) {
-                    case "attractions":
-                        pois.attractions.push(value);
-                        break;
-                    case "monuments" :
-                        pois.monuments.push(value);
-                        break;
-                    case "museums" :
-                        pois.museums.push(value);
-                        break;
-                    case "eating" :
-                        pois.restaurants.push(value);
-                        break;
-                    case "parks" :
-                        pois.parks.push(value);
-                        break;
-                    case "resting" :
-                        pois.hotels.push(value);
-                        break;
-                    case "historical_sites" :
-                        pois.historical.push(value);
-                        break;
-                    case "religious_sites" :
-                        pois.religious.push(value);
-                        break;
-                    default :
-                        console.log("Invalid category:" + value.category);
-                }
+                if(!pois[value.category]) pois[value.category] = [];
+                pois[value.category].push(value)
             });
             window.sessionStorage.setItem("pois",JSON.stringify(pois));
             var departure = window.sessionStorage.getItem("departure");
@@ -87,7 +61,6 @@ function init(position) {
 
                 var city = event.target.id;
                 window.sessionStorage.setItem("city", event.target.id);
-                window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
                 $.when(loadActivities(city,user.email), loadItineraries(city,user.email)).done(function(){
                     window.location.href = "map.html";
                 });

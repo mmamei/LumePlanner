@@ -1,17 +1,7 @@
-function Markers() {
-    this.hotels  = new L.LayerGroup();
-    this.attractions  = new L.LayerGroup();
-    this.monuments = new L.LayerGroup();
-    this.museums = new L.LayerGroup();
-    this.restaurants = new L.LayerGroup();
-    this.parks = new L.LayerGroup();
-    this.historical = new L.LayerGroup();
-    this.religious = new L.LayerGroup();
-}
 
 
 var markerIcons = {};
-markerIcons["hotels"] = L.AwesomeMarkers.icon({
+markerIcons["resting"] = L.AwesomeMarkers.icon({
     //icon: 'glyphicon-cog',
     prefix: 'fa',
     icon: 'fa-bed',
@@ -23,19 +13,14 @@ markerIcons["attractions"] = L.AwesomeMarkers.icon({
     icon: 'fa-map-marker',
     markerColor: 'red'
 });
-markerIcons["monuments"] = L.AwesomeMarkers.icon({
+markerIcons["tree"] = L.AwesomeMarkers.icon({
     //icon: 'glyphicon-cog',
     prefix: 'fa',
     icon: 'fa-home',
     markerColor: 'darkred'
 });
-markerIcons["museums"] = L.AwesomeMarkers.icon({
-    //icon: 'glyphicon-cog',
-    prefix: 'fa',
-    icon: 'fa-home',
-    markerColor: 'blue'
-});
-markerIcons["restaurants"] = L.AwesomeMarkers.icon({
+
+markerIcons["eating"] = L.AwesomeMarkers.icon({
     //icon: 'glyphicon-cog',
     prefix: 'fa',
     icon: 'fa-cutlery',
@@ -47,15 +32,24 @@ markerIcons["parks"] = L.AwesomeMarkers.icon({
     icon: 'fa-tree',
     markerColor: 'green'
 });
-markerIcons["historical"] = L.AwesomeMarkers.icon({
+markerIcons["parking"] = L.AwesomeMarkers.icon({
     //icon: 'glyphicon-cog',
     prefix: 'fa',
-    icon: 'fa-history',
+    icon: 'fa-product-hunt',
     markerColor: 'purple'
 });
-markerIcons["religious"] = L.AwesomeMarkers.icon({
+
+
+markerIcons["medical"] = L.AwesomeMarkers.icon({
     //icon: 'glyphicon-cog',
     prefix: 'fa',
-    icon: 'fa-microchip',
+    icon: 'fa-ambulance',
+    markerColor: 'gray'
+});
+
+markerIcons["lifestyle"] = L.AwesomeMarkers.icon({
+    //icon: 'glyphicon-cog',
+    prefix: 'fa',
+    icon: 'fa-drink',
     markerColor: 'darkpuple'
 });

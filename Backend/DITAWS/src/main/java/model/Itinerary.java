@@ -14,15 +14,19 @@ public class Itinerary {
     private String display_name;
     private List<String> visits;
     private String approx_time;
+    private String img;
+    private String description;
 
     public Itinerary() {
     }
 
-    public Itinerary(String itinerary_id, String display_name, List<String> visits, String approx_time) {
+    public Itinerary(String itinerary_id, String display_name, List<String> visits, String approx_time, String img, String description) {
         this.itinerary_id = itinerary_id;
         this.display_name = display_name;
         this.visits = visits;
         this.approx_time = approx_time;
+        this.img = img;
+        this.description = description;
     }
 
     public String toJSONString() {
@@ -68,6 +72,19 @@ public class Itinerary {
         this.approx_time = approx_time;
     }
 
+    public String getImg() {
+        return img;
+    }
 
+    public void setImg(String img) {
+        this.img = img;
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescrption(String description) {
+        this.description = description;
+    }
 }

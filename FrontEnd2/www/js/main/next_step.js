@@ -52,7 +52,7 @@ function drawStartEndPlacemarks() {
     }
 
     var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-    var markers = new Markers();
+    var markers = {};
     for(var type in pois) {
         console.log(type);
         if (pois[type])
@@ -60,8 +60,13 @@ function drawStartEndPlacemarks() {
                 var x = pois[type][i];
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
-                var marker = L.marker([lat, lon], {icon: markerIcons[type]});
-                marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
+
+                var icon = markerIcons[type];
+                if(!icon) icon = markerIcons["attractions"];
+                var marker = L.marker([lat, lon], {icon: icon});
+                marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
+                if(!markers[type]) markers[type] = new L.LayerGroup();
+                marker.addTo(markers[type]);
             }
     }
     for(k in markers)

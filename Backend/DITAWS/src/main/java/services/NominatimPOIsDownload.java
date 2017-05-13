@@ -16,11 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static services.CategoriesDictionary.NOMINATIM_TO_CAT;
+
 /**
  * Created by marco on 14/04/2017.
  */
 public class NominatimPOIsDownload {
 
+    private static final boolean OVERWRITE = true;
     private static final String NOMINATIM_URL = "http://nominatim.openstreetmap.org/";
     private static final String NOMINATIM_KEYS = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\nominatimKeys.csv";
 
@@ -34,7 +37,7 @@ public class NominatimPOIsDownload {
 
         String bbox = cp.getBbox();
         String out_file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois\\nominatim.json";
-        if(new File(out_file).exists())
+        if(!OVERWRITE && new File(out_file).exists())
             System.out.println(out_file+" Already Exists");
         else
             download(cp.getName(),bbox,out_file);
@@ -68,14 +71,8 @@ public class NominatimPOIsDownload {
                         JSONObject currentJPOI = (JSONObject) parsed.get(j);
                         System.out.println(currentJPOI.toString());
                         POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
-                        currentPOI.setCategory(poi_category);
-                        if (!poi_category.equals("resting")) {
-                            currentPOI.setVisiting_time(visiting_time);
-                            //if (ratings.containsKey(currentPOI.getPlace_id())) {
-                            //    currentPOI.setRating(ratings.get(currentPOI.getPlace_id()));
-                            //}
-                            //to add: opening times and days
-                        }
+                        currentPOI.setCategory(NOMINATIM_TO_CAT.get(poi_category));
+                        currentPOI.setVisiting_time(visiting_time);
                         modified.add(currentPOI);
                     }
                     url_br.close();

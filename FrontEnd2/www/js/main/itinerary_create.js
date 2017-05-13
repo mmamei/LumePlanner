@@ -29,15 +29,56 @@ $(document).ready(function() {
 
 
     var pois  = JSON.parse(window.sessionStorage.getItem("pois"));
+
+
+
+    var matr = [[]];
+    var i = 0;
+    for(var k in pois) {
+        matr[matr.length-1].push(k);
+        i++;
+        if(i==3) {
+            i=0;
+            matr.push([])
+        }
+    }
+
+    var letters = ["a","b","c"];
+    var htmlbuttons = "";
+    for(var i=0; i<matr.length;i++) {
+        
+        htmlbuttons = htmlbuttons.concat("<div class='ui-grid-b'>");
+        
+        for(var j=0; j<matr[i].length;j++) {
+
+            htmlbuttons = htmlbuttons.concat("<div class='ui-block-"+letters[j]+"'>");
+            htmlbuttons = htmlbuttons.concat(" <div id='"+matr[i][j]+"' class='attractions ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini'><span tkey='"+matr[i][j]+"'>"+matr[i][j]+"</span>");
+            htmlbuttons = htmlbuttons.concat("<input type='button' data-enhanced='true' value='Input value'>");
+            htmlbuttons = htmlbuttons.concat("</div>");
+            htmlbuttons = htmlbuttons.concat("</div>")
+
+        }
+
+        htmlbuttons = htmlbuttons.concat("</div>");
+    }
+
+
+    $("#attraction_buttons").html(htmlbuttons);
+    translate();
+
+
+
+
+
+
     var spois  = JSON.parse(window.sessionStorage.getItem("spois"));
+    if(!spois) {
+        console.log("create spois");
+        spois = []
+    }
 
-
-    //console.log(pois);
-
-    var cont = 0;
-    for(k in spois)
-        cont += spois[k].length
-    console.log("selected attractions = "+cont);
+    //console.log(spois);
+    console.log("selected attractions = "+spois.length);
 
 
     console.log("get activties form cache");
@@ -59,9 +100,9 @@ $(document).ready(function() {
     $("#departure").append(formatDepartureArrival(curr_loc));
     $("#arrival").append(formatDepartureArrival(curr_loc));
     var i;
-    for (i = 0; i < pois.hotels.length; i++) {
+    for (i = 0; i < pois.resting.length; i++) {
         //console.log(hotels[i])
-        var name = pois.hotels[i].display_name.split(',')[0];
+        var name = pois.resting[i].display_name.split(',')[0];
         $("#departure").append(formatDepartureArrival(name, name===departure));
         $("#arrival").append(formatDepartureArrival(name, name===arrival));
     }
@@ -152,20 +193,12 @@ $(document).ready(function() {
         //console.log(JSON.stringify(start_place))
         //console.log(JSON.stringify(end_place))
 
+        if(spois.length == 0)
+            return;
 
         var visits = [];
-
-
-
-        for(k in spois) {
-            for(var i=0; i<spois[k].length;i++)
-                visits.push(spois[k][i].place_id)
-        }
-
-
-        if(visits.length == 0) {
-            return;
-        }
+        for(var i=0; i<spois.length;i++)
+            visits.push(spois[i].place_id)
 
         var request = {
             user :  JSON.parse(window.sessionStorage.getItem("user")).email,

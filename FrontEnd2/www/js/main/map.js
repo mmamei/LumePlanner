@@ -36,7 +36,7 @@ $(document).ready(function(){
     $("#popup").hide();
     var pois = JSON.parse(window.sessionStorage.getItem("pois"));
     console.log(pois);
-    var markers = new Markers();
+    var markers = {};//new Markers();
 
     var minLat = 1000;
     var minLon = 1000;
@@ -55,7 +55,13 @@ $(document).ready(function(){
                     "<span onclick='$(\"#popup\").hide()' class='ui-btn-icon-right ui-icon-close'></span>" +
                     "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span>";
 
-                var marker = L.marker([lat, lon], {icon: markerIcons[type], mypopup:info});
+
+
+                var icon = markerIcons[type];
+                if(!icon) icon = markerIcons["attractions"];
+
+
+                var marker = L.marker([lat, lon], {icon: icon, mypopup:info});
                 //marker.bindPopup("<h2>"+format_name(x.display_name)+"</h2><br><span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
 
                 marker.on('click',function(e) {
@@ -63,6 +69,8 @@ $(document).ready(function(){
                     $("#popup").html(e.target.options.mypopup);
                     $("#popup").show()
                 });
+
+                if(!markers[type]) markers[type]  = new L.LayerGroup();
                 marker.addTo(markers[type]);
 
                 minLat = Math.min(minLat, lat);

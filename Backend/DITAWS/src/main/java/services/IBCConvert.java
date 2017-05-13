@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static services.CategoriesDictionary.IBC_TO_CAT;
+
 /**
  * Created by marco on 21/04/2017.
  */
@@ -56,20 +58,7 @@ public class IBCConvert {
 
     public static void main(String[] args) throws Exception {
 
-        Map<String,String> ibc2nominatim = new HashMap<>();
 
-
-        // POI Categories
-        // attractions
-        // monuments
-        // museums
-        // parks
-        // historical
-        // religious
-
-        ibc2nominatim.put("HolderOfArchives","museums");
-        ibc2nominatim.put("Library","museums");
-        ibc2nominatim.put("Museum","museums");
 
         List<CityProperties> cities = CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
 
@@ -108,7 +97,7 @@ public class IBCConvert {
                         System.out.println(line);
                         String www = e[3];
                         if(www.isEmpty()) www = e[4];
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[0]+",from:IBC", ibc2nominatim.get(f), f, 10, "", 0, "ok", "ok", 0, null,null,www));
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[0]+",from:IBC", IBC_TO_CAT.get(f), f, 10, "", 0, "ok", "ok", 0, null,null,www));
                         tot++;
                     }
                 }
@@ -154,7 +143,8 @@ public class IBCConvert {
             for(CityProperties cp: cities) {
                 if (cp.contains(lonlat[1], lonlat[0])) {
                     String img = (String)v.get(3);
-                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", "parks", "parks", 10, "", 0, "ok", "ok", 0, img,null,null));
+                    String category = IBC_TO_CAT.get("Tree");
+                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", category, category, 10, "", 0, "ok", "ok", 0, img,null,null));
                     tot++;
                 }
             }

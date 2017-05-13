@@ -19,7 +19,7 @@ public class SaveItineraries2DB {
 
 	public static void main(String[] args) throws Exception  {
 		SaveItineraries2DB g = new SaveItineraries2DB();
-		String city = "ReggioEmilia";
+		String city = "Maranello";
 		Mongo dao = new Mongo();
 		String file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\itineraries.json";
 		g.run(city, dao,file);
@@ -32,11 +32,19 @@ public class SaveItineraries2DB {
 	public void run(String city, Mongo dao, String sfile) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		try {
 			File file = new File(sfile);
 			if (file.exists()) {
+
+				StringBuffer json = new StringBuffer();
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				JSONArray parsed = new JSONArray(br.readLine());
+				String line;
+				while((line=br.readLine())!=null)
+					json.append(line.trim());
+				br.close();
+
+				JSONArray parsed = new JSONArray(json.toString());
 				for (int j = 0; j < parsed.length(); j++) {
 					JSONObject currentJPOI = (JSONObject) parsed.get(j);
 					Itinerary currentIT = null;
@@ -49,7 +57,7 @@ public class SaveItineraries2DB {
 					if (currentIT != null)
 						dao.insertItinerary(city,currentIT);
 				}
-				br.close();
+
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

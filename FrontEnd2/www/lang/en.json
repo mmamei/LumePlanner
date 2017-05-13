@@ -9,14 +9,15 @@
   "help":"Help",
   "itineraries_go":"Go to itinerary!",
 
-  "hotels":"Hotels",
+  "resting":"Hotels",
   "attractions":"Attractions",
-  "monuments":"Monuments",
-  "museums":"Museums",
-  "restaurants":"Restaurants",
+  "tree":"Historical trees",
+  "lifestyle":"Nightlife",
+  "eating":"Restaurants",
   "parks":"Parks",
-  "historical":"Historical",
-  "religious":"Religious",
+  "medical":"Medical facilities",
+  "parking":"Parkings",
+
 
   "choose_itinerary":"Choose your Itinerary",
   "create_itinerary":"Create a custom Itinerary",

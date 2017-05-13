@@ -99,15 +99,6 @@ public class Mongo {
 		}
 	}
 
-	public void insertRestaurant(String city, POI poi) {
-		try {
-			if (db.getCollection(city+"restaurants").find(new Document("place_id", poi.getPlace_id())).first() == null)
-				db.getCollection(city+"restaurants").insertOne(Document.parse(poi.toJSONString()));
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-	}
-
 	public void insertItinerary(String city, Itinerary itinerary) {
 		try {
 			if (db.getCollection(city+"itineraries").find(new Document("itinerary_id", itinerary.getItinerary_id())).first() == null)
@@ -130,19 +121,6 @@ public class Mongo {
 		for (Iterator<Document> iter = cursor.iterator(); iter.hasNext();) {
 			System.out.println(iter.next());
 		}
-	}
-
-
-	public List<POI> retrieveRestaurants(String city) {
-		List<POI> result = new ArrayList<POI>();
-		try {
-			for (Iterator<Document> iter = db.getCollection(city+"restaurants").find().iterator(); iter.hasNext();) {
-				result.add(mapper.readValue(iter.next().toJson(), POI.class));
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 	public List<POI> retrieveActivities(String city) {

@@ -56,16 +56,6 @@ function getUrlParameter(sParam) {
         }
     }
 }
-function POIS() {
-    this.hotels = [];
-    this.attractions  = [];
-    this.monuments = [];
-    this.museums = [];
-    this.restaurants = [];
-    this.parks = [];
-    this.historical = [];
-    this.religious = []
-}
 
 
 
@@ -105,22 +95,20 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
-
 var langCode = navigator.language.substr (0, 2);
-//langCode = "en"
 var langs = {"en":"","it":""};
-
-if (langCode in langs) {
-    console.log("here");
-    $.getJSON('lang/' + langCode + '.json', function (jsdata)  {
-        console.log(jsdata);
-        $("[tkey]").each (function (index) {
-            var strTr = jsdata [$(this).attr ('tkey')];
-            $(this).html (strTr);
+function translate() {
+    if (langCode in langs) {
+        console.log("here");
+        $.getJSON('lang/' + langCode + '.json', function (jsdata) {
+            console.log(jsdata);
+            $("[tkey]").each(function (index) {
+                var strTr = jsdata [$(this).attr('tkey')];
+                $(this).html(strTr);
+            });
         });
-    });
+    }
 }
-
 
 function translateObjKeys(obj) {
     if (langCode in langs) {
@@ -137,6 +125,7 @@ function translateObjKeys(obj) {
         });
     }
 }
+translate();
 
 
 

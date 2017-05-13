@@ -14,7 +14,7 @@ $(document).ready(function(){
         $.postJSON(conf.dita_server + "finish", request, function (data, status) {
             console.log("User plan deleted:" + data);
         });
-        window.sessionStorage.setItem("spois",JSON.stringify(new POIS()));
+        window.sessionStorage.setItem("spois",JSON.stringify([]));
         window.sessionStorage.removeItem("time");
         window.sessionStorage.removeItem("departure");
         window.sessionStorage.removeItem("arrival");

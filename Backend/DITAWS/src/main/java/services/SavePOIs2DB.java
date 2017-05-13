@@ -56,13 +56,8 @@ public class SavePOIs2DB {
 						}
 							//logger.info("**** " + currentPOI.getDisplay_name());
 
-						if(currentPOI!=null) {
-							if (currentPOI.getCategory().equals("eating"))
-								dao.insertRestaurant(city, currentPOI);
-							else
-								dao.insertActivity(city, currentPOI);
-						}
-
+						if(currentPOI!=null)
+							dao.insertActivity(city, currentPOI);
 					}
 					br.close();
 				}

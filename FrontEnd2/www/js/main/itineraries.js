@@ -22,9 +22,8 @@ function submit(lat, lng, spois) {
 
     var visits = [];
 
-    for(k in spois) {
-        for(var i=0; i<spois[k].length;i++)
-            visits.push(spois[k][i].place_id)
+    for(var i=0; i<spois.length;i++) {
+            visits.push(spois[i].place_id)
     }
 
 
@@ -58,16 +57,17 @@ $(document).ready(function(){
     if(data != null) {
         for (var i = 0; i < data.length; i++) {
             var name = data[i].display_name + "," + data[i].approx_time;
-            $("#itineraries").append(formatButton(i,name));
+            $("#itineraries").append(formatButton(i,name,data[i].img,data[i].description));
         }
     }
 
     $(".itiner").click(function(){
-        var spois  = JSON.parse(window.sessionStorage.getItem("spois"));
+        var spois  = [];
+
         var i = $(this).attr("num");
 
         for(var j=0; j<data[i].visits.length;j++)
-            spois.attractions.push({place_id:data[i].visits[j]})
+            spois.push({place_id:data[i].visits[j]})
         //console.log(spois)
         window.sessionStorage.setItem("spois", JSON.stringify(spois));
         navigator.geolocation.getCurrentPosition(function(position) {

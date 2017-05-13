@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
+import static services.CategoriesDictionary.DEFAULT_CAT;
+import static services.CategoriesDictionary.MIBACT_TO_CAT;
+
 /**
  * Created by marco on 21/04/2017.
  */
@@ -55,7 +58,7 @@ public class MibactConvert {
 
     public static void main(String[] args) throws Exception {
 
-        Map<String,String> mibact2nominatim = new HashMap<>();
+
 
 
         // POI Categories
@@ -66,56 +69,7 @@ public class MibactConvert {
         // historical
         // religious
 
-        mibact2nominatim.put("Battistero","religious");
-        mibact2nominatim.put("Portico","historical");
-        mibact2nominatim.put("Monumento","monuments");
-        mibact2nominatim.put("Stazione","attractions");
-        mibact2nominatim.put("Borgo","historical");
-        mibact2nominatim.put("Convento","religious");
-        mibact2nominatim.put("Mercato","attractions");
-        mibact2nominatim.put("Oratorio","religious");
-        mibact2nominatim.put("Ospitale","historical");
-        mibact2nominatim.put("Colombaio","historical");
-        mibact2nominatim.put("Canonica","religious");
-        mibact2nominatim.put("Pubblica","attractions");
-        mibact2nominatim.put("Cisterna","attractions");
-        mibact2nominatim.put("Annesso","attractions");
-        mibact2nominatim.put("Ecclesiastica","religious");
-        mibact2nominatim.put("Palazzo","attractions");
-        mibact2nominatim.put("Rocca","historical");
-        mibact2nominatim.put("Scuola","historical");
-        mibact2nominatim.put("Fienile","parks");
-        mibact2nominatim.put("Parco","parks");
-        mibact2nominatim.put("Sacrestia","religious");
-        mibact2nominatim.put("Grotta","parks");
-        mibact2nominatim.put("Campanile","religious");
-        mibact2nominatim.put("Piazza","attractions");
-        mibact2nominatim.put("Barchessa","attractions");
-        mibact2nominatim.put("Villa","attractions");
-        mibact2nominatim.put("Edificio","attractions");
-        mibact2nominatim.put("Sinagoga","religious");
-        mibact2nominatim.put("Elemento","attractions");
-        mibact2nominatim.put("Cimitero","religious");
-        mibact2nominatim.put("Mulino","historical");
-        mibact2nominatim.put("Chiesa","religious");
-        mibact2nominatim.put("Casa","attractions");
-        mibact2nominatim.put("Mura","historical");
-        mibact2nominatim.put("Stalla","attractions");
-        mibact2nominatim.put("Teatro","attractions");
-        mibact2nominatim.put("Strada","attractions");
-        mibact2nominatim.put("Santuario","religious");
-        mibact2nominatim.put("Cinema","attractions");
-        mibact2nominatim.put("Ospedale","attractions");
-        mibact2nominatim.put("Bottega","attractions");
-        mibact2nominatim.put("Macello","attractions");
-        mibact2nominatim.put("Impianto","attractions");
-        mibact2nominatim.put("Carcere","attractions");
-        mibact2nominatim.put("Torre","attractions");
-        mibact2nominatim.put("Cappella","religious");
-        mibact2nominatim.put("Ponte","monuments");
-        mibact2nominatim.put("Porta","monuments");
-        mibact2nominatim.put("Fabbricato","attractions");
-        mibact2nominatim.put("Caserma","attractions");
+
 
 
         List<CityProperties> cities = CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
@@ -159,9 +113,8 @@ public class MibactConvert {
                     if(!GUIDA_ROSSA_ONLY || (GUIDA_ROSSA_ONLY && e.length > 26 && !e[26].isEmpty())) {
                         String www = e.length > 27 && !e[27].isEmpty() ? e[27] : e.length > 20 && !e[20].isEmpty() ? e[20] : null;
 
-                        String category = mibact2nominatim.get(cat);
-                        if(category == null) category = "attractions";
-
+                        String category = MIBACT_TO_CAT.get(cat);
+                        if(category == null) category = DEFAULT_CAT;
 
                         hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", category, cat, 10, "", 0, "ok", "ok", 0, null,null,www));
                         tot ++;
