@@ -52,7 +52,7 @@ $(document).ready(function(){
 
 
     data = JSON.parse(window.sessionStorage.getItem("itineraries"));
-    console.log(data);
+    //console.log(data);
 
     if(data != null) {
         for (var i = 0; i < data.length; i++) {

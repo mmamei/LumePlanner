@@ -1,0 +1,10 @@
+{
+    "resting": "fa,fa-bed,orange",
+    "attractions":"fa,fa-map-marker,red",
+    "tree":"fa,fa-home,darkred",
+    "eating":"fa,fa-cutlery,darkgreen",
+    "parks":"fa,fa-tree,green",
+    "parking":"fa,fa-product-hunt,purple",
+    "medical":"fa,fa-ambulance,gray",
+    "lifestyle":"fa,fa-drink,darkpurple"
+}

@@ -1,5 +1,6 @@
 
 conf = {
+    "dita_server_files" : "http://lume.morselli.unimore.it/DITA/files/",
     "dita_server_img" : "http://lume.morselli.unimore.it/DITA/img/",
     "dita_server" : "http://lume.morselli.unimore.it/DITA/WS/",
     "osm_tile" : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -95,37 +96,47 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
+
+var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+console.log(mIcons);
+if(!mIcons) {
+    $.getJSON(conf.dita_server_files + 'markerIcons.json', function (jsdata) {
+        mIcons = jsdata;
+        window.sessionStorage.setItem("mIcons", JSON.stringify(mIcons));
+        console.log(mIcons)
+    })
+}
+
 var langCode = navigator.language.substr (0, 2);
-var langs = {"en":"","it":""};
+var dictionary = JSON.parse(window.sessionStorage.getItem("dictionary"));
+if(!dictionary) {
+    $.getJSON(conf.dita_server_files+'lang/' + langCode + '.json', function (jsdata) {
+        dictionary = jsdata;
+        console.log(dictionary);
+        window.sessionStorage.setItem("dictionary", JSON.stringify(dictionary));
+    })
+}
+translate();
+
 function translate() {
-    if (langCode in langs) {
-        console.log("here");
-        $.getJSON('lang/' + langCode + '.json', function (jsdata) {
-            console.log(jsdata);
-            $("[tkey]").each(function (index) {
-                var strTr = jsdata [$(this).attr('tkey')];
-                $(this).html(strTr);
-            });
-        });
-    }
+    $("[tkey]").each(function (index) {
+        var strTr = dictionary [$(this).attr('tkey')];
+        $(this).html(strTr);
+    });
 }
 
 function translateObjKeys(obj) {
-    if (langCode in langs) {
-        return $.getJSON('lang/' + langCode + '.json', function(jsdata) {
-            //console.log("++++++"+jsdata)
-            for(k in obj) {
-                //console.log("---"+k)
-                if (k in jsdata) {
-                    //console.log("found "+k+" => "+jsdata[k])
-                    obj[jsdata[k]] = obj[k];
-                    delete obj[k]
-                }
-            }
-        });
+    console.log(dictionary);
+    for(k in obj) {
+        //console.log("---"+k)
+        if (k in dictionary) {
+            //console.log("found "+k+" => "+jsdata[k])
+            obj[dictionary[k]] = obj[k];
+            delete obj[k]
+        }
     }
 }
-translate();
+
 
 
 
