@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phone</title>
+    <style>
+
+        body {
+            overflow-y: hidden;
+        }
+
+        #phone {
+            width:500px;
+            height:1100px;
+            background: url("img/phone.jpg");
+            background-size: 100%;
+            background-repeat: no-repeat;
+
+            margin: 0 auto;
+            text-align:center;
+        }
+        #screen {
+            width: 430px;
+            height: 700px;
+
+            position: relative;
+            margin: 0 auto 0 auto;
+            top: 130px;
+        }
+        #back{
+            position: relative;
+            width:30px;
+            height:30px;
+            top: 140px;
+            left:110px;
+        }
+    </style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <script>
+        $(document).ready(function(){
+            var i = window.location.href.indexOf("page=");
+            if(i > 0) {
+                var url = window.location.href.substr(i+"page=".length);
+                console.log(url);
+                $("#screen").attr("src", url)
+            }
+        })
+    </script>
+</head>
+<body>
+<div id="phone">
+    <iframe id="screen" src="index.html"></iframe>
+    <div id="back" onclick="window.history.back()"></div>
+</div>
+</body>
+</div>
+</html>

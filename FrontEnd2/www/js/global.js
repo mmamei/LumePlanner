@@ -3,11 +3,16 @@ conf = {
     "dita_server_files" : "http://lume.morselli.unimore.it/DITA/files/",
     "dita_server_img" : "http://lume.morselli.unimore.it/DITA/img/",
     "dita_server" : "http://lume.morselli.unimore.it/DITA/WS/",
+
     "osm_tile" : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     "home_gg_marker" : "https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|0099ff",
     "pin_gg_marker" : "https://chart.googleapis.com/chart?chst=d_map_pin_letter",
     "localize" : true
 };
+
+if(navigator.platform == "Win32")
+    conf.localize = false;
+
 
 
 var LOCALIZE_EVERY = 1000;
@@ -48,7 +53,6 @@ function getUrlParameter(sParam) {
         sURLVariables = sPageURL.split('&'),
         sParameterName,
         i;
-
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
 
@@ -112,13 +116,16 @@ var dictionary = JSON.parse(window.sessionStorage.getItem("dictionary"));
 if(!dictionary) {
     $.getJSON(conf.dita_server_files+'lang/' + langCode + '.json', function (jsdata) {
         dictionary = jsdata;
+        translate();
         console.log(dictionary);
         window.sessionStorage.setItem("dictionary", JSON.stringify(dictionary));
+
     })
 }
-translate();
+
 
 function translate() {
+    if(dictionary)
     $("[tkey]").each(function (index) {
         var strTr = dictionary [$(this).attr('tkey')];
         $(this).html(strTr);
@@ -128,14 +135,24 @@ function translate() {
 function translateObjKeys(obj) {
     console.log(dictionary);
     for(k in obj) {
-        //console.log("---"+k)
-        if (k in dictionary) {
+        //console.log(k)
+        var n = k.lastIndexOf(">");
+        var prefix = k.substring(0,n+1);
+        var name = k.substring(n+1).trim();
+        //console.log(prefix)
+        //console.log(name)
+        if (name in dictionary) {
             //console.log("found "+k+" => "+jsdata[k])
-            obj[dictionary[k]] = obj[k];
+            obj[prefix+dictionary[name]] = obj[k];
             delete obj[k]
         }
     }
 }
+
+
+$(document).ready(function(){
+    translate()
+});
 
 
 

@@ -142,7 +142,7 @@ public class IBCConvert {
             double[] lonlat = new double[]{(double)v.get(2),(double)v.get(1)};
             for(CityProperties cp: cities) {
                 if (cp.contains(lonlat[1], lonlat[0])) {
-                    String img = (String)v.get(3);
+                    String img = v.size() > 3 ? (String)v.get(3) : null;
                     String category = IBC_TO_CAT.get("Tree");
                     hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", category, category, 10, "", 0, "ok", "ok", 0, img,null,null));
                     tot++;

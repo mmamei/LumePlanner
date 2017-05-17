@@ -99,9 +99,18 @@ $(document).ready(function(){
     });
 
 
+    var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+    console.log(mIcons);
+    for(k in markers) {
+        var x = mIcons[k].split(",");
+        //console.log(k+"=>"+x)
+        markers["<span style='font-size:30px;color:white;background-color:"+x[2]+"'>&nbsp;<i style='font-size:20px;'class='fa "+x[1]+"'></i>&nbsp;</span> "+k] = markers[k];
+            delete markers[k]
+    }
 
-
-    $.when(translateObjKeys(markers)).done(function(){L.control.layers(null,markers).addTo(mymap)});
+    $.when(translateObjKeys(markers)).done(function(){
+        L.control.layers(null,markers).addTo(mymap)}
+    );
 
 
     L.easyButton('fa-crosshairs fa-lg', function(btn, map) {

@@ -19,6 +19,8 @@ public class CategoriesDictionary {
         CSV_TO_CAT.put("attractions", "attractions");
         CSV_TO_CAT.put("parking", "parking");
         CSV_TO_CAT.put("medical", "medical");
+        CSV_TO_CAT.put("religious_sites","attractions");
+        CSV_TO_CAT.put("eating","eating");
 
         IBC_TO_CAT.put("HolderOfArchives","attractions");
         IBC_TO_CAT.put("Library","attractions");

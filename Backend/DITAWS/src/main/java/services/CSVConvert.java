@@ -22,7 +22,7 @@ public class CSVConvert {
 
 
     public static void main(String[] args) throws Exception {
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.txt");
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv");
         System.out.println("Done");
     }
 
@@ -50,10 +50,17 @@ public class CSVConvert {
 
         //mrnl3,attractions,Museo Ferrari,10.861428,44.529739,http://museo.ferrari.com/it/
         while((line = br.readLine())!=null) {
+            line = line.trim();
+            if(line.startsWith("//") || line.isEmpty()) continue;
+            //System.out.println(line);
             String[] e = line.split(",");
             String id = e[0];
             String type = e[1];
             String category = CSV_TO_CAT.get(type);
+
+            if(category == null)
+                System.out.println(line);
+
             String name = e[2];
             double lon = Double.parseDouble(e[3]);
             double lat = Double.parseDouble(e[4]);

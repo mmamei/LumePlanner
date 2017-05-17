@@ -27,6 +27,9 @@ $(document).ready(function() {
     $("#description").hide();
     $("#www").hide();
 
+    console.log("------------------------------");
+    console.log(window.location.href);
+
     var type = getUrlParameter("type");
     var n = getUrlParameter("num");
     var currentVisit = null;

@@ -17,11 +17,17 @@
     <script src="js/main/index.js"></script>
 
     <script>
+        // if(window.self == window.top) I am not in an iframe
+        if(navigator.platform == "Win32" && window.self == window.top){
+            window.location = "phone.html"
+        }
+
         function  formatCityBlock(name,img) {
+            if(name == "Forli") name = "Forlì";
+            if(name == "ReggioEmilia") name = "Reggio Emilia";
             return "<div class=\"ui-block-a\"><h3 align = \"center\">"+name+"</h3><img src=\""+img+"\" class=\"img-responsive img-rounded\" alt=\""+name+"\" id=\""+name+"\"></div>"
         }
     </script>
-
 
 
     <style>
@@ -54,12 +60,12 @@
 
     <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
         <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
-            <li data-filtertext="homepage" data-icon="home"><a href="../" tkey="homepage">Pagina principale</a></li>
-            <li data-filtertext="luoghi" data-icon = "location"><a href="../myplaces/" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
-            <li data-filtertext="viaggi" data-icon = "camera"><a href="../mytravels/" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
-            <li data-filtertext="percorsi" data-icon = "star"><a href="../favoritepath/" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
-            <li data-filtertext="account" data-icon = "user"><a href="fb/fb.html" data-ajax="false" tkey="user">Utente</a></li>
-            <li data-filtertext="assistenza" data-icon = "phone"><a href="../assist/" data-ajax="false" tkey="help">Assistenza</a></li>
+            <li data-filtertext="homepage" data-icon="home"><a href="index.html" tkey="homepage">Pagina principale</a></li>
+            <li data-filtertext="luoghi" data-icon = "location"><a href="index.html" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
+            <li data-filtertext="viaggi" data-icon = "camera"><a href="index.html" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
+            <li data-filtertext="percorsi" data-icon = "star"><a href="index.html" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
+            <li data-filtertext="account" data-icon = "user"><a href="index.html" data-ajax="false" tkey="user">Utente</a></li>
+            <li data-filtertext="assistenza" data-icon = "phone"><a href="index.html" data-ajax="false" tkey="help">Assistenza</a></li>
         </ul>
     </div>
 

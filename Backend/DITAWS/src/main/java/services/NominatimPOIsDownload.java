@@ -23,7 +23,7 @@ import static services.CategoriesDictionary.NOMINATIM_TO_CAT;
  */
 public class NominatimPOIsDownload {
 
-    private static final boolean OVERWRITE = true;
+    private static final boolean OVERWRITE = false;
     private static final String NOMINATIM_URL = "http://nominatim.openstreetmap.org/";
     private static final String NOMINATIM_KEYS = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\nominatimKeys.csv";
 
@@ -34,6 +34,9 @@ public class NominatimPOIsDownload {
     }
 
     public static void go(CityProperties cp) {
+
+        new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois").mkdirs();
+
 
         String bbox = cp.getBbox();
         String out_file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois\\nominatim.json";

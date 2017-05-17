@@ -138,10 +138,25 @@ $(document).ready(function() {
         var arr = window.sessionStorage.getItem("arrival");
 
         if(dep === curr_loc || arr === curr_loc) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                submit(position.coords.latitude,position.coords.longitude);
-                //submit(44.695246, 10.629712)
-            });
+
+            if(conf.localize)
+                if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    submit(position.coords.latitude, position.coords.longitude);
+                });
+            }
+            if(!conf.localize) {
+                var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+                //console.log(pois)
+                //console.log(spois)
+                for(k in pois) {
+                    for(var i=0; i<pois[k].length;i++)
+                        if(pois[k][i].place_id == spois[0].place_id) {
+                            submit(pois[k][i].geometry.coordinates[1],pois[k][i].geometry.coordinates[0]);
+                        }
+                }
+                //submit(pois.hotels[0].geometry.coordinates[1],pois.hotels[0].geometry.coordinates[0]);
+            }
         }
         else submit()
 

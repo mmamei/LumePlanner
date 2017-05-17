@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class VisitPlanAlternatives {
 
@@ -46,14 +47,14 @@ public class VisitPlanAlternatives {
 	}
 
 	public VisitPlanAlternatives() {
-		plans = new HashMap<>();
+		plans = new TreeMap<>();
 		this.selected = "null";
 	}
 
 	public VisitPlanAlternatives(String city, String user) {
 		this.city = city;
 		this.user = user;
-		plans = new HashMap<>();
+		plans = new TreeMap<>();
 		this.selected = "null";
 	}
 

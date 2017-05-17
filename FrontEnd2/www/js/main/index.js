@@ -27,7 +27,7 @@ function loadItineraries(city, user) {
 
 var showall = false;
 function init(position) {
-    console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+    //console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
     $.getJSON(conf.dita_server+"cities",function(data, status){
 
         if(position != null) {
@@ -46,6 +46,7 @@ function init(position) {
             data = data.slice(0,3);
 
         for(var i=0; i<data.length;i++) {
+            console.log("-----"+data[i]);
             var city = data[i].split(",")[0];
             var img = conf.dita_server_img+"cities/"+city+".jpg";
             $("#cities").append(formatCityBlock(city,img));
