@@ -28,7 +28,7 @@ function submit(lat, lng, spois) {
 
 
     var request = {
-        user :  JSON.parse(window.sessionStorage.getItem("user")).email,
+        user :  JSON.parse(window.localStorage.getItem("user")).email,
         city: window.sessionStorage.getItem("city"),
         start_time : "09:00", //new Date($("#date-value1-1").val()).getHours(),
         visits : visits,

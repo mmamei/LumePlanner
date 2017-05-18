@@ -93,7 +93,7 @@ $(document).ready(function(){
 
 
     // login user
-    user = window.sessionStorage.getItem("user");
+    user = window.localStorage.getItem("user");
     if(!user) {
         console.log("user must be created");
         var r = ""+Math.random();
@@ -104,7 +104,7 @@ $(document).ready(function(){
                 console.log("Data: " + data + "\nStatus: " + status);
                 if (data === "true" || data === true) {
                     console.log("registration succedded");
-                    window.sessionStorage.setItem("user",JSON.stringify(user))
+                    window.localStorage.setItem("user",JSON.stringify(user))
                 }
                 else console.log("registration failed");
 

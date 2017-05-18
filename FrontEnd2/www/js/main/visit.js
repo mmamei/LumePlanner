@@ -63,7 +63,7 @@ $(document).ready(function() {
 
     console.log(actualVisit);
 
-    $.getJSON(conf.dita_server + 'look?poi=' + actualVisit.place.place_id + "&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
+    $.getJSON(conf.dita_server + 'look?poi=' + actualVisit.place.place_id + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {});
 
 
     $("#title").text(actualVisit.place.display_name.split(",")[0]);
@@ -104,7 +104,7 @@ $(document).ready(function() {
 
     $("#next").click(function() {
         //if(!currentVisit) {
-            var user = JSON.parse(window.sessionStorage.getItem("user"));
+            var user = JSON.parse(window.localStorage.getItem("user"));
             var city = window.sessionStorage.getItem("city");
             var d = new Date().getTime();
             var request = {

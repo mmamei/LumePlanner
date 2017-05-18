@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 
     function cleanup() {
-        var user = JSON.parse(window.sessionStorage.getItem("user"));
+        var user = JSON.parse(window.localStorage.getItem("user"));
         var city = window.sessionStorage.getItem("city");
 
         var request = {
