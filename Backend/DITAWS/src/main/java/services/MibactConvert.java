@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import model.CityProperties;
 import model.POI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 import static services.CategoriesDictionary.DEFAULT_CAT;
@@ -78,8 +76,7 @@ public class MibactConvert {
         for(CityProperties city : cities)
             hm.put(city.getName(),new ArrayList<POI>());
 
-
-        BufferedReader br = new BufferedReader(new FileReader("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\patrimonioculturale-er.csv"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\patrimonioculturale-er.csv"), "UTF8"));
         String line;
 
         String[] header = br.readLine().split("\t"); // skip header

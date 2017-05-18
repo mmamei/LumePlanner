@@ -2,12 +2,9 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by marco on 19/10/2016.

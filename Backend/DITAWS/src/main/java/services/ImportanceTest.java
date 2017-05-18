@@ -10,9 +10,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 public class ImportanceTest {
 
@@ -37,7 +35,7 @@ public class ImportanceTest {
 		try {
 
 			DescriptiveStatistics ds = new DescriptiveStatistics();
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 			JSONArray parsed = new JSONArray(br.readLine());
 			for (int j = 0; j < parsed.length(); j++) {
 				JSONObject currentJPOI = (JSONObject) parsed.get(j);

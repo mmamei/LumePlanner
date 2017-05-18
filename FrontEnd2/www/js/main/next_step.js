@@ -61,17 +61,47 @@ function drawStartEndPlacemarks() {
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
 
+                var info = "<span class='popcontent'>"+format_name(x.display_name)+"<br></span>" +
+                    "<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a><br>" +
+                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br>"+
+                    "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
+
+
+
                 var icon = markerIcons[type];
                 if(!icon) icon = markerIcons["attractions"];
-                var marker = L.marker([lat, lon], {icon: icon});
-                marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
+                var marker = L.marker([lat, lon], {icon: icon, mypopup:info});
+                //marker.bindPopup(format_name(x.display_name)+"<br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup();
+
+                marker.on('click',function(e) {
+                    //console.log(e.target.options.mypopup)
+                    $("#popup").html(e.target.options.mypopup);
+                    $("#popup").show()
+                });
+
                 if(!markers[type]) markers[type] = new L.LayerGroup();
                 marker.addTo(markers[type]);
             }
     }
     for(k in markers)
         mymap.addLayer(markers[k])
-    L.control.layers(null,markers).addTo(mymap);
+
+
+    var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+    console.log(mIcons);
+    for(k in markers) {
+        var x = mIcons[k].split(",");
+        //console.log(k+"=>"+x)
+        markers["<span style='font-size:30px;color:white;background-color:"+x[2]+"'>&nbsp;<i style='font-size:20px;'class='fa "+x[1]+"'></i>&nbsp;</span> "+k] = markers[k];
+        delete markers[k]
+    }
+    $.when(translateObjKeys(markers)).done(function(){
+        L.control.layers(null,markers).addTo(mymap)}
+    );
+
+
+
+    //L.control.layers(null,markers).addTo(mymap);
 }
 
 
@@ -276,7 +306,7 @@ function localize(position) {
 
 
 $(document).ready(function(){
-
+    $("#popup").hide();
     var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
     var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
 

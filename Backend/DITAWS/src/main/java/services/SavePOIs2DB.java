@@ -2,9 +2,7 @@ package services;
 
 import io.Mongo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 import io.RESTController;
 import model.POI;
@@ -42,7 +40,7 @@ public class SavePOIs2DB {
 
 				String file = f.getAbsolutePath();
 				if(file.endsWith("json")) {
-					BufferedReader br = new BufferedReader(new FileReader(file));
+					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 					JSONArray parsed = new JSONArray(br.readLine());
 					for (int j = 0; j < parsed.length(); j++) {
 						JSONObject currentJPOI = (JSONObject) parsed.get(j);

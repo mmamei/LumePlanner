@@ -56,7 +56,7 @@ public class NominatimPOIsDownload {
 
             List<POI> modified = new ArrayList<>();
 
-            BufferedReader file_br = new BufferedReader(new FileReader(NOMINATIM_KEYS));
+            BufferedReader file_br = new BufferedReader(new InputStreamReader(new FileInputStream(NOMINATIM_KEYS), "UTF8"));
             String line;
             while((line = file_br.readLine())!=null) {
                 if(line.startsWith("//")) continue;

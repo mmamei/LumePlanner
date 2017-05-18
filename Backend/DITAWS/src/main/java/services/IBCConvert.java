@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import model.CityProperties;
 import model.POI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -72,7 +70,7 @@ public class IBCConvert {
         String[] files = new String[]{"HolderOfArchives","Library","Museum"};
         for(String f: files) {
             System.out.println("Processing IBC: "+f);
-            BufferedReader br = new BufferedReader(new FileReader(ibc_dir+f+".csv"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(ibc_dir+f+".csv"), "UTF8"));
             String line;
 
             String[] header = br.readLine().split("\t"); // skip header
@@ -112,7 +110,7 @@ public class IBCConvert {
         // Processing tree file
         int tot = 0;
         Map<String,List<Object>> trees = new HashMap<>();
-        BufferedReader br = new BufferedReader(new FileReader(ibc_dir+"Tree.csv"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(ibc_dir+"Tree.csv"), "UTF8"));
         String line;
         br.readLine(); // skip header
         while ((line = br.readLine()) != null) {

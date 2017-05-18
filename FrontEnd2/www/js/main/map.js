@@ -51,9 +51,10 @@ $(document).ready(function(){
                 var lat = x.geometry.coordinates[1];
                 var lon = x.geometry.coordinates[0];
 
-                var info = "<h3>"+format_name(x.display_name)+"<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a></h3>" +
-                    "<span onclick='$(\"#popup\").hide()' class='ui-btn-icon-right ui-icon-close'></span>" +
-                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span>";
+                var info = "<span class='popcontent'>"+format_name(x.display_name)+"<br></span>" +
+                           "<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a><br>" +
+                           "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br>"+
+                           "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
 
 
 
@@ -107,7 +108,6 @@ $(document).ready(function(){
         markers["<span style='font-size:30px;color:white;background-color:"+x[2]+"'>&nbsp;<i style='font-size:20px;'class='fa "+x[1]+"'></i>&nbsp;</span> "+k] = markers[k];
             delete markers[k]
     }
-
     $.when(translateObjKeys(markers)).done(function(){
         L.control.layers(null,markers).addTo(mymap)}
     );

@@ -9,9 +9,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 public class SaveItineraries2DB {
 
@@ -38,7 +36,7 @@ public class SaveItineraries2DB {
 			if (file.exists()) {
 
 				StringBuffer json = new StringBuffer();
-				BufferedReader br = new BufferedReader(new FileReader(file));
+				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 				String line;
 				while((line=br.readLine())!=null)
 					json.append(line.trim());
