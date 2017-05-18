@@ -198,6 +198,7 @@ $(document).ready(function() {
 
 
     $("#start").click(function(){
+        $(this).css("opacity","0.5");
         window.sessionStorage.setItem("type_of_plan",JSON.stringify(type_of_plan));
 
         if(newplan) {

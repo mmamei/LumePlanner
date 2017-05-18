@@ -374,6 +374,7 @@ $(document).ready(function(){
 
 
     $("#visit").click(function(){
+        $(this).css("opacity","0.5");
         if (items.to_visit.length > 0) {
             window.location.href = "visit.html"
         } else {

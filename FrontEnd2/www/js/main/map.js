@@ -149,6 +149,7 @@ $(document).ready(function(){
             alert("Turn on GPS");
 
     $("#itinerary").click(function(){
+        $(this).css("opacity","0.5");
         var data = JSON.parse(window.sessionStorage.getItem("itineraries"));
         if(data == null)
             window.location.href = "itinerary_create.html";

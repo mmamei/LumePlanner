@@ -103,6 +103,7 @@ $(document).ready(function() {
     });
 
     $("#next").click(function() {
+        $(this).css("opacity","0.5");
         //if(!currentVisit) {
             var user = JSON.parse(window.localStorage.getItem("user"));
             var city = window.sessionStorage.getItem("city");

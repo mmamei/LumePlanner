@@ -22,11 +22,13 @@ $(document).ready(function(){
     }
 
     $("#restart").click(function() {
+        $(this).css("opacity","0.5");
         cleanup();
         window.location.href = "itineraries.html";
     });
 
     $("#map").click(function() {
+        $(this).css("opacity","0.5");
         cleanup();
         window.location.href = "map.html";
     });

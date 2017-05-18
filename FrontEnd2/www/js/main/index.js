@@ -55,6 +55,8 @@ function init(position) {
 
         $("img").click(function(event) {
 
+            $(this).css("opacity","0.5");
+
             console.log("the user selected "+event.target.id);
             // update city
             if(window.sessionStorage.getItem("city") !== event.target.id) {

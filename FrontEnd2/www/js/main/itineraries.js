@@ -62,6 +62,7 @@ $(document).ready(function(){
     }
 
     $(".itiner").click(function(){
+        $(this).css("opacity","0.5");
         var spois  = [];
 
         var i = $(this).attr("num");

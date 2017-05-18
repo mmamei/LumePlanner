@@ -33,7 +33,7 @@ $(document).ready(function(){
 
 
     $("#done").click(function(e) {
-
+        $(this).css("opacity","0.5");
         $("input:checked").each(function() {
             var x = $(this).context.defaultValue;
             //console.log(x)

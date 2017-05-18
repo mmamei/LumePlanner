@@ -139,7 +139,7 @@ $(document).ready(function() {
     });
 
     $("#go").click(function(){
-
+        $(this).css("opacity","0.5");
         var dep = window.sessionStorage.getItem("departure");
         var arr = window.sessionStorage.getItem("arrival");
 
