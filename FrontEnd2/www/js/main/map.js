@@ -4,29 +4,39 @@ var mymap;
 
 var dragged = false;
 var centerMarker = null;
+var prevLat = 0;
+var prevLon = 0;
 function localize(position) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon="+ position.coords.longitude+"&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
+
+    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > 50) {
+        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
+        });
         console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
-        if(!dragged)
-            mymap.panTo([position.coords.latitude, position.coords.longitude]);
-        if (centerMarker == null) {
+    }
 
-            var icon = L.divIcon({
-                type: 'div',
-                className: 'marker',
-                html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-            });
-            centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
-            mymap.setZoom(15)
-        }
+    prevLat = position.coords.latitude;
+    prevLon = position.coords.longitude;
+
+    if(!dragged)
+        mymap.panTo([position.coords.latitude, position.coords.longitude]);
+    if (centerMarker == null) {
+
+        var icon = L.divIcon({
+            type: 'div',
+            className: 'marker',
+            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+        });
+        centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
+        mymap.setZoom(15)
+    }
 
 
-        centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
+    centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
 
 
-        window.setTimeout(function () {
-            navigator.geolocation.getCurrentPosition(localize)
-        }, LOCALIZE_EVERY)
+    window.setTimeout(function () {
+        navigator.geolocation.getCurrentPosition(localize)
+    }, LOCALIZE_EVERY)
 }
 
 

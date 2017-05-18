@@ -4,19 +4,6 @@ function PlaceTime(place,time) {
     this.time = time;
 }
 
-function computeDistance(lat1, lng1, lat2, lng2) {
-    var earthRadius = 6371000; //meters
-    var dLat = (lat2-lat1) * Math.PI / 180;
-    var dLng = (lng2-lng1) * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) *
-        Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var dist = (earthRadius * c);
-    return dist;
-}
-
 
 var items;
 var mymap;
@@ -244,40 +231,53 @@ var centerMarker = null;
 
 
 var path=null;
-function computeRoute() {
-    console.log("recomute route");
-    var newstart = centerMarker.getLatLng();
-    newstart = newstart.lat+","+newstart.lng;
-    //$.getJSON('https://graphhopper.com/api/1/route?' +
-    //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
-    //        '&point=' + newstart + '&point=' + end, function (data, status) {
-    $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end='+end,function (data, status) {
-        //console.log(data)
-        var geojson = {
-            //data: data.paths[0].points, // <--- use this if calling graphhopper.com
-            data: data.points,
-            style: {
-                fillColor: "green",
-                weight: 2,
-                opacity: 1,
-                color: 'blue',
-                dashArray: '3',
-                fillOpacity: 0.7
-            }
-        };
-        if(path!=null)
-            mymap.removeLayer(path);
-        path = L.geoJSON(geojson.data, {style: geojson.style});
-        path.addTo(mymap);
 
-    });
+var prevStart = "0,0";
+function computeRoute() {
+    if(getDistanceFromLatLonInM(start.split(",")[0],start.split(",")[1],prevStart.split(",")[0],prevStart.split(",")[1]) > 100) {
+        console.log("recompute route");
+        //$.getJSON('https://graphhopper.com/api/1/route?' +
+        //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+        //        '&point=' + newstart + '&point=' + end, function (data, status) {
+        $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
+            prevStart = start;
+            var geojson = {
+                //data: data.paths[0].points, // <--- use this if calling graphhopper.com
+                data: data.points,
+                style: {
+                    fillColor: "green",
+                    weight: 2,
+                    opacity: 1,
+                    color: 'blue',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                }
+            };
+            if (path != null)
+                mymap.removeLayer(path);
+            path = L.geoJSON(geojson.data, {style: geojson.style});
+            path.addTo(mymap);
+
+        });
+    }
     window.setTimeout(computeRoute,REROUTE_EVERY)
 }
 
 var dragged = false;
+var prevLat = 0;
+var prevLon = 0;
 function localize(position) {
-    $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon="+ position.coords.longitude+"&user=" + JSON.parse(window.sessionStorage.getItem("user")).email, function (data, status) {});
-    console.log("localized at "+position.coords.latitude+","+position.coords.longitude);
+
+    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > 50) {
+        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
+        });
+        console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+    }
+
+    prevLat = position.coords.latitude;
+    prevLon = position.coords.longitude;
+    start = prevLat+","+prevLon;
+
     if(!dragged)
         mymap.panTo([position.coords.latitude, position.coords.longitude]);
     if(centerMarker == null) {
@@ -310,12 +310,12 @@ $(document).ready(function(){
     var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
     var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
 
-    console.log(JSON.stringify(visitplan));
-    console.log(type_of_plan);
+    //console.log(JSON.stringify(visitplan));
+    //console.log(type_of_plan);
 
 
     items = visitplan.plans[type_of_plan];
-    console.log(items);
+    //console.log(items);
 
 
     var currentDeparture = {};

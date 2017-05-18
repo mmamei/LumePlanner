@@ -10,15 +10,17 @@ conf = {
     "localize" : true
 };
 
-if(navigator.platform == "Win32")
+var platform = "xxx";//navigator.platform;
+
+if(platform == "Win32")
     conf.localize = false;
 
 
-var platform = "xxx";//navigator.platform;
+
 
 
 var LOCALIZE_EVERY = 1000;
-var REROUTE_EVERY = 10000;
+var REROUTE_EVERY = 20000;
 
 
 

@@ -23,9 +23,10 @@
         }
 
         function  formatCityBlock(name,img) {
-            if(name == "Forli") name = "Forlì";
-            if(name == "ReggioEmilia") name = "Reggio Emilia";
-            return "<div class=\"ui-block-a\"><h3 align = \"center\">"+name+"</h3><img src=\""+img+"\" class=\"img-responsive img-rounded\" alt=\""+name+"\" id=\""+name+"\"></div>"
+            var lname = name;
+            if(lname == "Forli") lname = "Forlì";
+            if(lname == "ReggioEmilia") lname = "Reggio Emilia";
+            return "<div class=\"ui-block-a\"><h3 align = \"center\">"+lname+"</h3><img src=\""+img+"\" class=\"img-responsive img-rounded\" alt=\""+name+"\" id=\""+name+"\"></div>"
         }
     </script>
 
