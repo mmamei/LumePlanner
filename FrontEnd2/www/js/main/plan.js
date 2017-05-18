@@ -106,7 +106,7 @@ function parsePlan(items) {
     desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.arrival.display_name)+"<br><strong>arrivi alle: </strong>"+items.arrival_time+"</div>");
     for(var i=0; i<items.to_visit.length;i++)
         desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.to_visit[i].visit.display_name)+
-            "<br><span style='font-size: small'><strong> arrivi alle: </strong>"+items.to_visit[i].arrival_time+"<strong> parti alle: </strong>"+items.to_visit[i].departure_time+"</span></div>")
+            "<br><span style='font-size: small'><strong> arrivi alle: </strong>"+items.to_visit[i].arrival_time+"<br><strong> parti alle: </strong>"+items.to_visit[i].departure_time+"</span></div>")
 
     return {"markers":markers,"desc":desc}
 }
@@ -138,45 +138,6 @@ $(document).ready(function() {
     visitplan.selected = type_of_plan;
     //console.log(type_of_plan)
 
-
-    //}
-
-
-    /*
-     Questa è utile
-     ad esempio un utente spegne l'applicazione quando entra in un museo e può riprendere il tragitto da dove si era fermato.
-     Magari mettere un pulasnate di resume in index.
-
-
-     if (visitplan==='2' || visitplan === 2) { // user comes from 'sign' view --> a visiting plan exists already
-
-     newplan = false;
-
-     $.postJSON(conf.dita_server+"plan",user,function(data, status){
-
-     console.log(data);
-
-     var city = data.city;
-     window.sessionStorage.setItem("city",city);
-
-     visitplan = {
-     city:city,
-     asis: data.asis,
-     shortest: data.shortest,
-     crowd:data.crowd,
-     };
-     window.sessionStorage.setItem("visitplan",JSON.stringify(visitplan));
-     //console.log(JSON.stringify(visitplan))
-
-     var mymap = L.map('mapid');
-     drawMapAndTable(mymap, visitplan[type_of_plan]);
-
-     });
-
-     }
-     */
-    //else {
-    //console.log(JSON.stringify(visitplan))
 
     var lat  = visitplan.plans[type_of_plan].departure.geometry.coordinates[1];
     var lng  = visitplan.plans[type_of_plan].departure.geometry.coordinates[0];

@@ -30,7 +30,7 @@ function submit(lat, lng, spois) {
     var request = {
         user :  JSON.parse(window.localStorage.getItem("user")).email,
         city: window.sessionStorage.getItem("city"),
-        start_time : "09:00", //new Date($("#date-value1-1").val()).getHours(),
+        start_time : $.format.date(new Date(), 'yyyy/MM/dd HH:mm:ss'),
         visits : visits,
         start_place: start_place,
         end_place : end_place,
@@ -52,12 +52,12 @@ $(document).ready(function(){
 
 
     data = JSON.parse(window.sessionStorage.getItem("itineraries"));
-    //console.log(data);
+    console.log(data);
 
     if(data != null) {
         for (var i = 0; i < data.length; i++) {
             var name = data[i].display_name + "," + data[i].approx_time;
-            $("#itineraries").append(formatButton(i,name,data[i].img,data[i].description));
+            $("#itineraries").append(formatButton(i,name,conf.dita_server_img+"itineraries/"+data[i].img,data[i].description));
         }
     }
 

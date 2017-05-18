@@ -6,25 +6,33 @@
     <title>LUMEPlanner</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="js/jquery-ui.min.css">
     <link rel="stylesheet" href="assets/css/jqm-demos.css">
 
     <script src="js/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/main/itineraries.js"></script>
     <script src="assets/js/modernizr-custom.js"></script>
     <script src="assets/js/index.js"></script>
-    <script src="js/global.js"></script>
+    <script src="js/jquery-dateFormat.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
-    <script src="js/main/itineraries.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+
 
 
     <script>
-        function formatButton(index,name) {
-            return "<button num=\""+index+"\" class=\"itiner btn btn-primary ui-btn ui-shadow ui-corner-all\">" + name + "</button>"
+        function formatButton(index,name,img,description) {
+            if(description)
+            return "<div data-role='collapsible'><h4>"+name+"</h4>" +
+                    "<div style='font-size: 10pt; text-align: justify;'><img style='margin-right:5px; float: left' width='200px' src='"+img+"'>"+
+                    description+"<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>Inizia il percorso</div></div>" +
+                    "</div>";
+            else
+                return "<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>"+name+"</div>";
         }
     </script>
 
     <style>
-
-
 
         .ui-grid-a img {
             width  : 100%;

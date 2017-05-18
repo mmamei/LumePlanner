@@ -132,6 +132,12 @@ $(document).ready(function() {
         window.location.href = "attractions.html";
     });
 
+    $("#delete").click(function(){
+        console.log("create spois");
+        spois = [];
+        window.sessionStorage.removeItem("spois")
+    });
+
     $("#go").click(function(){
 
         var dep = window.sessionStorage.getItem("departure");
@@ -215,10 +221,12 @@ $(document).ready(function() {
         for(var i=0; i<spois.length;i++)
             visits.push(spois[i].place_id)
 
+
+        var time = $("#datetimepicker").val();
         var request = {
             user :  JSON.parse(window.localStorage.getItem("user")).email,
             city: city,
-            start_time : "09:00", //new Date($("#date-value1-1").val()).getHours(),
+            start_time : time,
             visits : visits,
             start_place: start_place,
             end_place : end_place,

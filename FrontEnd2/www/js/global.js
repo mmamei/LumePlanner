@@ -10,18 +10,14 @@ conf = {
     "localize" : true
 };
 
-var platform = "xxx";//navigator.platform;
+var platform = navigator.platform;
 
 if(platform == "Win32")
     conf.localize = false;
 
 
-
-
-
 var LOCALIZE_EVERY = 1000;
 var REROUTE_EVERY = 20000;
-
 
 
 $.postJSON = function(url, data, callback) {

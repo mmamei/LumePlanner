@@ -5,8 +5,12 @@ import model.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -16,13 +20,14 @@ import static util.Misc.haverDist;
  * Created by marco on 19/04/2017.
  */
 public class FindShortestPath {
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static void main(String[] args) throws IOException {
 
         Mongo dao = new Mongo();
         POI departure = new POI("0", 44.6290051, 10.8701162, "Current Location");
         POI arrival = new POI("00", 44.6290051, 10.8701162, "Current Location");
-        String start_time = "09:00";
+        String start_time = "2017/05/18 18:46:58";
         List<String> POIsList = new ArrayList<>();
         POIsList.add("00");
         POIsList.add("44,64555122643570");
@@ -39,6 +44,16 @@ public class FindShortestPath {
     private List<String> to_visit;
 
     public VisitPlan newPlan(String city, Mongo dao, String user, POI departure, POI arrival, String start_time, List<String> POIsList) {
+
+
+        Calendar cal = null;
+        try {
+            cal = new GregorianCalendar();
+            cal.setTime(SDF.parse(start_time));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         to_visit = new ArrayList<>();
         for (String poi : POIsList) {
             to_visit.add(poi);
@@ -99,14 +114,18 @@ public class FindShortestPath {
             } else {
                 p = dao.retrieveActivity(city,ps);
             }
-            current.setDeparture_time("10:00");
-            current.setArrival_time("10:00");
+            cal.add(Calendar.MINUTE,20);
+            current.setDeparture_time(SDF.format(cal.getTime()));
+            cal.add(Calendar.MINUTE,20);
+            current.setArrival_time(SDF.format(cal.getTime()));
             current.setVisit(p);
             activities.add(current);
         }
 
+        cal.add(Calendar.MINUTE,20);
+
         logger.info("poi_sequence: "+poi_sequence_string+" tot_distance: "+tot_distance);
-        return new VisitPlan(user, departure, arrival, start_time, start_time, activities, new ArrayList<Activity>(), 1);
+        return new VisitPlan(user, departure, arrival, start_time, SDF.format(cal.getTime()), activities, new ArrayList<Activity>(), 1);
 
 
 
