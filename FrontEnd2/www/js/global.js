@@ -14,6 +14,8 @@ if(navigator.platform == "Win32")
     conf.localize = false;
 
 
+var platform = "xxx";//navigator.platform;
+
 
 var LOCALIZE_EVERY = 1000;
 var REROUTE_EVERY = 10000;

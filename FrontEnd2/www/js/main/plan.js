@@ -1,5 +1,5 @@
 function parsePlan(items) {
-    console.log(items);
+    //console.log(items);
 
     var m = {};
     if ((items.departure.place_id === "0" && items.arrival.place_id === "00")
@@ -82,7 +82,7 @@ function parsePlan(items) {
 
 
     var markers = new L.LayerGroup();
-    console.log(m);
+    //console.log(m);
     for(x in m)
         L.marker(m[x],{icon:m[x].icon}).bindPopup(m[x].message).addTo(markers)
 
@@ -121,7 +121,8 @@ $(document).ready(function() {
     var user = JSON.parse(window.sessionStorage.getItem("user"));
     visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
     var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
-    type_of_plan = Object.keys(visitplan.plans)[0];
+    //console.log(visitplan.plans)
+    type_of_plan = Object.keys(visitplan.plans)[2];
     console.log(visitplan);
 
     for (k in visitplan.plans) {

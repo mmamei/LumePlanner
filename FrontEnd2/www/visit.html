@@ -19,7 +19,7 @@
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
 
     <script>
-        if(navigator.platform == "Win32" && window.self == window.top) {
+        if(platform == "Win32" && window.self == window.top) {
             var type = getUrlParameter("type");
             var n = getUrlParameter("num");
             //window.location = "phone.html?page="+window.location.href
@@ -85,12 +85,12 @@ p {
 
     <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
         <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
-            <li data-filtertext="homepage" data-icon="home"><a href="index.html" tkey="homepage">Pagina principale</a></li>
-            <li data-filtertext="luoghi" data-icon = "location"><a href="map.html" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
-            <li data-filtertext="viaggi" data-icon = "camera"><a href="itineraries.html" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
-            <li data-filtertext="percorsi" data-icon = "star"><a href="itineraries.html" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
-            <li data-filtertext="account" data-icon = "user"><a href="index.html" data-ajax="false" tkey="user">Utente</a></li>
-            <li data-filtertext="assistenza" data-icon = "phone"><a href="index.html" data-ajax="false" tkey="help">Assistenza</a></li>
+            <li data-filtertext="homepage" data-icon="home"><a href="index.html" target="_top" tkey="homepage">Pagina principale</a></li>
+            <li data-filtertext="luoghi" data-icon = "location"><a href="map.html" target="_top" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
+            <li data-filtertext="viaggi" data-icon = "camera"><a href="itineraries.html" target="_top" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
+            <li data-filtertext="percorsi" data-icon = "star"><a href="itineraries.html" target="_top" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
+            <li data-filtertext="account" data-icon = "user"><a href="index.html" target="_top" data-ajax="false" tkey="user">Utente</a></li>
+            <li data-filtertext="assistenza" data-icon = "phone"><a href="index.html" target="_top" data-ajax="false" tkey="help">Assistenza</a></li>
         </ul>
     </div>
 
@@ -107,53 +107,6 @@ p {
         <button id="next" class="btn btn-primary" tkey="next_visit">Prossima Visita</button>
         <button id="close" class="btn btn-primary" tkey="close_visit">Chiudi</button>
     </div><!-- /content -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--
-
-
-
-    <div class="container-fluid text-center title">
-<h3 id="title"></h3>
-</div>
-
-<div class="container-fluid text-center">
-    <img id="photo_url" src="" class="img-responsive center">
-    <h2 id="info"></h2>
-    <p id="description" class="center"></p>
-    <a id="www" href="#"class="btn btn-info btn-lg" role="button">More info</a>
-</div>
-
-
-
-
-<div class="container-fluid">
-<p>Share your visit</p>
-<p>
-<img src="img/like.png" class="img-rounded" width="50px">
-<span style="color:orange">Like in Facebook!</span>
-</p>
-</div>
-
-
-<div class="container-fluid">
-    <button id="next" style="margin-left:20px" class="btn btn-info btn-lg">Next Visit</button>
-    <button id="close" style="margin-left:20px" class="btn btn-info btn-lg">Close</button>
-</div>
-
-
--->
 
 </body>
 </html>
