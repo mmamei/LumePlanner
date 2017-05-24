@@ -39,6 +39,11 @@
             bottom:20px;
             right:10px;
         }
+        #lang {
+            position:absolute;
+            top:20px;
+            right:10px;
+        }
 
         .foot,a {
             color:gray;
@@ -57,7 +62,15 @@
                 console.log(url);
                 $("#screen").attr("src", url)
             }
-        })
+        });
+
+        function change_lang(l) {
+            langCode = l;
+            loadDictionary();
+            location.reload()
+        }
+
+
     </script>
 </head>
 <body>
@@ -65,6 +78,12 @@
     <iframe id="screen" src="index.html"></iframe>
     <div id="back" onclick="window.history.back()"></div>
 </div>
+
+<div id="lang">
+    <img onclick="change_lang('it')" src="img/IT.png" width="50px">&emsp;
+    <img onclick="change_lang('en')" src="img/EN.png" width="50px">
+</div>
+
 <div id="footer">
     <a href="http://www.lumeplanner.it/"><i class="foot fa fa-home" aria-hidden="true"></i></a>&emsp;
     <a href="https://twitter.com/lumeplannerit"><i class="foot fa fa-twitter" aria-hidden="true"></i></a>&emsp;

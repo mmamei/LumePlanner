@@ -114,6 +114,10 @@ if(!mIcons) {
 var langCode = navigator.language.substr (0, 2);
 var dictionary = JSON.parse(window.sessionStorage.getItem("dictionary"));
 if(!dictionary) {
+    loadDictionary()
+}
+
+function loadDictionary() {
     $.getJSON(conf.dita_server_files+'lang/' + langCode + '.json', function (jsdata) {
         dictionary = jsdata;
         translate();
