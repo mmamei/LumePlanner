@@ -116,6 +116,16 @@ function parsePlan(items) {
 var plans_desc = {};
 var plans_markers = {};
 
+
+function markerKey2Name(key) {
+    return "<i>"+key+"</i>"
+}
+
+function markerName2Key(name) {
+    return name.substring(3,name.length-4);
+}
+
+
 $(document).ready(function() {
 
     var user = JSON.parse(window.localStorage.getItem("user"));
@@ -127,9 +137,14 @@ $(document).ready(function() {
 
     for (k in visitplan.plans) {
         var info = parsePlan(visitplan.plans[k]);
-        plans_desc[k] = info.desc;
-        plans_markers[k] = info.markers
+        var newKey = markerKey2Name(k);
+
+        plans_desc[newKey] = info.desc;
+        plans_markers[newKey] = info.markers
     }
+
+    console.log("------");
+    console.log(plans_markers);
 
 
 
@@ -138,10 +153,9 @@ $(document).ready(function() {
     visitplan.selected = type_of_plan;
     //console.log(type_of_plan)
 
-
     var lat  = visitplan.plans[type_of_plan].departure.geometry.coordinates[1];
     var lng  = visitplan.plans[type_of_plan].departure.geometry.coordinates[0];
-
+    console.log(type_of_plan+" --> "+markerName2Key(type_of_plan));
     mymap = L.map('mapid',{
         attributionControl: false,
         scrollWheelZoom: true,
@@ -149,7 +163,7 @@ $(document).ready(function() {
         zoomControl: true,
         touchZoom: true,
         dragging: true,
-        layers: [plans_markers[type_of_plan]]
+        layers: [plans_markers[markerKey2Name(type_of_plan)]]
     });
 
 
@@ -159,8 +173,8 @@ $(document).ready(function() {
     //$.when(translateObjKeys(plans_markers)).done(function(){L.control.layers(plans_markers,null).addTo(mymap)})
 
     mymap.on('baselayerchange', function(eo) {
-
-        type_of_plan = eo.name
+        console.log(markerName2Key(eo.name));
+        type_of_plan = markerName2Key(eo.name)
     });
 
     /*
