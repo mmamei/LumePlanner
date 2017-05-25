@@ -22,9 +22,12 @@
   "choose_itinerary":"Choose your Itinerary",
   "create_itinerary":"Create a custom Itinerary",
 
-  "asis":"As-Is",
+  "asis":"Predefined",
   "crowd":"Optimized for crowd conditions",
-  "shortest":"Shortest",
+  "shortest":"Closer places first",
+  "Predefined":"asis",
+  "Optimized for crowd conditions":"crowd",
+  "Closer places first":"shortest",
 
   "start":"Start",
   "use_public_transport":"Use public transport",

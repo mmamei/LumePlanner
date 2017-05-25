@@ -117,13 +117,7 @@ var plans_desc = {};
 var plans_markers = {};
 
 
-function markerKey2Name(key) {
-    return "<i>"+key+"</i>"
-}
 
-function markerName2Key(name) {
-    return name.substring(3,name.length-4);
-}
 
 
 $(document).ready(function() {

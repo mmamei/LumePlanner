@@ -22,8 +22,12 @@
   "create_itinerary":"Crea un Itinerario Personalizzato",
 
   "asis":"Predefinito",
-  "crowd":"Ottimizzato",
-  "shortest":"Più breve",
+  "crowd":"Evita l'affollamento",
+  "shortest":"Prima i posti più vicini",
+
+  "Predefinito":"asis",
+  "Evita l'affollamento":"crowd",
+  "Prima i posti più vicini":"shortest",
 
   "start":"Inizia il percorso",
   "use_public_transport":"Usa i mezzi pubblici",

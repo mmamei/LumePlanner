@@ -115,7 +115,7 @@ function simulatedMovement() {
         for (i = 0; i < geoJsonPoints.length - 1; i += 1) {
             p_from = geoJsonPoints[i];
             p_to = geoJsonPoints[i + 1];
-            d = computeDistance(p_from[1], p_from[0], p_to[1], p_to[0]);
+            d = getDistanceFromLatLonInM(p_from[1], p_from[0], p_to[1], p_to[0]);
             distances.push(d);
             d_tot += d;
         }
@@ -178,7 +178,7 @@ function simulatedMovement() {
                     console.log("qui");
                 }
                 old_position = latlng;
-                var dist =  computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
+                var dist =  getDistanceFromLatLonInM(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
                 //console.log(dist);
                 if ( dist < 50) {
                     //changeView

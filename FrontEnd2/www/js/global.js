@@ -137,7 +137,7 @@ function translate() {
 }
 
 function translateObjKeys(obj) {
-    console.log(dictionary);
+    //console.log(dictionary);
     for(k in obj) {
         //console.log(k)
         var n = k.lastIndexOf(">");
@@ -151,6 +151,16 @@ function translateObjKeys(obj) {
             delete obj[k]
         }
     }
+}
+
+function markerKey2Name(key) {
+    if(key in dictionary) return  dictionary[key];
+    else return key
+}
+
+function markerName2Key(name) {
+    if(name in dictionary) return  dictionary[name];
+    else return name
 }
 
 
