@@ -111,7 +111,10 @@ if(!mIcons) {
     })
 }
 
-var langCode = navigator.language.substr (0, 2);
+
+var langCode = window.sessionStorage.getItem("langCode");
+if(langCode == null) langCode = navigator.language.substr (0, 2);
+
 var dictionary = JSON.parse(window.sessionStorage.getItem("dictionary"));
 if(!dictionary) {
     loadDictionary()

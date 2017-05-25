@@ -57,7 +57,8 @@ $(document).ready(function(){
     if(data != null) {
         for (var i = 0; i < data.length; i++) {
             var name = data[i].display_name + "," + data[i].approx_time;
-            $("#itineraries").append(formatButton(i,name,conf.dita_server_img+"itineraries/"+data[i].img,data[i].description));
+            var img = data[i].img ? conf.dita_server_img+"itineraries/"+data[i].img : null;
+            $("#itineraries").append(formatButton(i,name,img,data[i].description));
         }
     }
 

@@ -32,6 +32,7 @@
   "start":"Start",
   "use_public_transport":"Use public transport",
   "visit":"I'am arrived!",
+  "quit":"Quit Itinerary",
   "next_visit":"Next Visit",
   "close_visit":"Close",
   "more_info":"More Info",

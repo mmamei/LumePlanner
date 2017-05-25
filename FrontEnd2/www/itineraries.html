@@ -22,14 +22,16 @@
 
     <script>
         function formatButton(index,name,img,description) {
-            if(description)
-            return "<div data-role='collapsible'><h4>"+name+"</h4>" +
-                    "<div style='font-size: 10pt; text-align: justify;'><img style='margin-right:5px; float: left' width='200px' src='"+img+"'>"+
-                    description+"<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>Inizia il percorso</div></div>" +
+            console.log(img);
+            return  "<div data-role='collapsible'><h4>"+name+"</h4>" +
+                    "<div style='font-size: 10pt; text-align: justify;'>"+
+                    (img ? "<img style='margin-right:5px; float: left' width='200px' src='"+img+"'>" : "")+
+                    (description ? description+"<br>" : "")+
+                    "<span style='font-weight:bold'>Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate</span>"+
+                    "<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>Inizia il percorso</div>"+
+                    "</div>" +
                     "</div>";
-            else
-                return "<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>"+name+"</div>";
-        }
+            }
     </script>
 
     <style>

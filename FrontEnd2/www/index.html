@@ -13,8 +13,9 @@
     <script src="assets/js/modernizr-custom.js"></script>
     <script src="assets/js/index.js"></script>
     <script src="js/global.js"></script>
-    <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="js/main/index.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+
 
     <script>
         // if(window.self == window.top) I am not in an iframe
@@ -51,6 +52,7 @@
 <body>
 
 
+
 <div data-role="page" id = "pageone" class="jqm-demos jqm-home">
 
     <div data-role="header" class="jqm-header"  data-position="fixed" >
@@ -70,9 +72,15 @@
         </ul>
     </div>
 
+
+
     <div role="main" class="ui-content jqm-content">
 
         <p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>
+
+
+
+
 
         <!--
         <label for="search-mini"></label>
@@ -81,9 +89,17 @@
 
         <div id="cities" class="ui-grid-a ui-responsive"></div>
         <button id="more" class="btn btn-primary" tkey="more_cities">Altre Città</button>
+
+        <div data-role="popup" id="infoPopup" style="max-width:350px;text-align: center" class="ui-corner-all">
+        </div>
+
+
     </div><!-- /content -->
 
 </div><!-- /page -->
+
+
+
 
 </body>
 </html>

@@ -53,6 +53,20 @@ function init(position) {
         }
 
 
+        $.getJSON(conf.dita_server_files+'alert.json', function (alertdata, status) {
+            if(alertdata && alertdata.id !== window.localStorage.getItem("last_seen_alert")) {
+                //console.log(alertdata)
+                var content = alertdata.it;
+                if(langCode == "en") content = alertdata.en;
+                //console.log(langCode)
+                $("#infoPopup").html(content);
+                $("#infoPopup").popup("open");
+                window.localStorage.setItem("last_seen_alert",alertdata.id);
+            }
+
+        });
+
+
         $("img").click(function(event) {
 
             $(this).css("opacity","0.5");
@@ -72,14 +86,22 @@ function init(position) {
                 window.location.href = "map.html";
             }
         });
+
+
+
+
     });
+
+
+
+
+
+
 }
 
 var user;
 
 $(document).ready(function(){
-
-    console.log("-----");
 
     if(conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init);
     else init(null);
@@ -115,6 +137,9 @@ $(document).ready(function(){
     else {
         user = JSON.parse(user);
     }
+
+
+
     // login was used only to retrieve an existing unfinished plan.
     // for now, we just remove it
 

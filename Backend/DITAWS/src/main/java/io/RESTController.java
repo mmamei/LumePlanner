@@ -89,6 +89,7 @@ public class RESTController {
 		return dao.retrieveItineraries(city);
 	}
 
+
 	@RequestMapping(value = "route", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody Path route(@RequestParam(value="vechicle", defaultValue="foot") String vechicle,
 									@RequestParam(value="start", defaultValue="unknown") String start,

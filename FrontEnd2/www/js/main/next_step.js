@@ -180,13 +180,13 @@ function simulatedMovement() {
                 old_position = latlng;
                 var dist =  getDistanceFromLatLonInM(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng);
                 //console.log(dist);
-                if ( dist < 50) {
+                if ( dist < 0) {
                     //changeView
                     clearInterval(timed_update);
                     if (items.to_visit.length > 0) {
                         window.location.href = "visit.html"
                     } else {
-                        window.location.href = "overview.html"
+                        window.location.href = "finish.html"
                     }
                 } else {
                     //console.log("moving:"+computeDistance(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), latlng.lat, latlng.lng));
@@ -382,7 +382,10 @@ $(document).ready(function(){
         }
     });
 
-
+    $("#quit").click(function(){
+        $(this).css("opacity","0.5");
+        window.location.href = "finish.html"
+    });
 
 
 

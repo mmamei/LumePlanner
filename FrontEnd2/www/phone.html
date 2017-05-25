@@ -66,6 +66,7 @@
 
         function change_lang(l) {
             langCode = l;
+            window.sessionStorage.setItem("langCode",langCode);
             loadDictionary();
             location.reload()
         }
