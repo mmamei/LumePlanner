@@ -180,8 +180,8 @@ $(document).ready(function() {
     */
 
     L.easyButton('fa-book fa-lg', function(btn, map) {
-        $("#dialog-about").dialog('option', 'title', type_of_plan);
-        $("#dialog-about").html(plans_desc[type_of_plan]);
+        $("#dialog-about").dialog('option', 'title', markerKey2Name(type_of_plan));
+        $("#dialog-about").html(plans_desc[markerKey2Name(type_of_plan)]);
         $('#dialog-about').dialog('open');
     }).addTo(mymap);
 
