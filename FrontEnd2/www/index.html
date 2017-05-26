@@ -27,8 +27,18 @@
             var lname = name;
             if(lname == "Forli") lname = "Forlì";
             if(lname == "ReggioEmilia") lname = "Reggio Emilia";
-            return "<div class=\"ui-block-a\"><h3 align = \"center\">"+lname+"</h3><img src=\""+img+"\" class=\"img-responsive img-rounded\" alt=\""+name+"\" id=\""+name+"\"></div>"
+            return "<div class='ui-block-a show-page-loading-msg' data-textonly='false' data-textvisible='true' data-msgtext='' data-inline='true'>"+
+                    "<h3 align = 'center'>"+lname+"</h3><img src='"+img+"' class='img-responsive img-rounded' alt='"+name+"' id='"+name+"'>"+
+                    "</div>"
         }
+
+
+
+
+
+
+
+
     </script>
 
 
@@ -77,9 +87,6 @@
     <div role="main" class="ui-content jqm-content">
 
         <p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>
-
-
-
 
 
         <!--

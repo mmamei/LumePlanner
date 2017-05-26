@@ -67,8 +67,12 @@
         function change_lang(l) {
             langCode = l;
             window.sessionStorage.setItem("langCode",langCode);
-            loadDictionary();
-            location.reload()
+
+            $.when(loadDictionary(langCode)).done(function(){
+                location.reload()
+            });
+
+
         }
 
 
@@ -92,5 +96,4 @@
     <a href="privacy.html"><span class="foot" style="padding:0px 2px 0px 2px;color:white;background-color:gray">Privacy Policy</span></a>
 </div>
 </body>
-</div>
 </html>

@@ -103,6 +103,8 @@ var user;
 
 $(document).ready(function(){
 
+
+
     if(conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init);
     else init(null);
 
