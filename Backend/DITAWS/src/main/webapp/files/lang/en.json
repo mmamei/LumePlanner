@@ -11,7 +11,7 @@
 
   "resting":"Hotels",
   "attractions":"Attractions",
-  "tree":"Historical trees",
+  "tree":"Monumental trees",
   "lifestyle":"Nightlife",
   "eating":"Restaurants",
   "parks":"Parks",
@@ -41,8 +41,10 @@
   "plan_another_itinerary":"Plan another Itinerary",
 
   "select_time":"Select date and time",
-  "select_dep_arr":"Select departura and arrival",
+  "select_dep_arr":"Select departure and arrival",
   "select_attractions":"Select attractions to visit",
-  "filters":"Other filters"
+  "filters":"Other filters",
+  "delete":"Delete selection",
+  "check_time_price":"Check entrance time and price with selected activities"
 }
 

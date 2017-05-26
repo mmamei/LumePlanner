@@ -12,7 +12,7 @@
   "resting":"Hotel",
   "attractions":"Attrazioni",
   "lifestyle":"Divertimenti",
-  "tree":"Alberi storici",
+  "tree":"Alberi monumentali",
   "eating":"Ristoranti",
   "parks":"Parchi",
   "medical":"Presidi medici",
@@ -43,6 +43,8 @@
   "select_time":"Seleziona data e ora",
   "select_dep_arr":"Seleziona punto di partenza e arrivo",
   "select_attractions":"Seleziona i luoghi da visitare",
-  "filters":"Altri filtri"
+  "filters":"Altri filtri",
+  "delete":"Cancella Selezione",
+  "check_time_price":"Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate"
 }
 

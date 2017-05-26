@@ -60,6 +60,7 @@ $(document).ready(function(){
             var img = data[i].img ? conf.dita_server_img+"itineraries/"+data[i].img : null;
             $("#itineraries").append(formatButton(i,name,img,data[i].description));
         }
+        translate()
     }
 
     $(".itiner").click(function(){

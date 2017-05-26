@@ -113,6 +113,7 @@ $(document).ready(function() {
         //console.log("----"+v)
         //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
         $("#arrival option[value='"+v+"']").prop('selected', true);
+        $('#arrival').selectmenu('refresh', true);
         //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
 
 
@@ -182,7 +183,7 @@ $(document).ready(function() {
             };
         }
         else {
-            var start_obj = poiName2Obj(dep, pois.hotels);
+            var start_obj = poiName2Obj(dep, pois.resting);
             start_place = {
                 display_name: start_obj.display_name,
                 place_id: start_obj.place_id,
@@ -203,7 +204,7 @@ $(document).ready(function() {
             };
         }
         else {
-            var end_obj = poiName2Obj(arr, pois.hotels);
+            var end_obj = poiName2Obj(arr, pois.resting);
             end_place = {
                 display_name: end_obj.display_name,
                 place_id: end_obj.place_id,
