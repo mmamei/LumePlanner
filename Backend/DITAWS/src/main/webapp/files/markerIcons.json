@@ -6,5 +6,6 @@
     "parks":"fa,fa-tree,green",
     "parking":"fa,fa-product-hunt,purple",
     "medical":"fa,fa-ambulance,gray",
-    "lifestyle":"fa,fa-glass,black"
+    "lifestyle":"fa,fa-glass,black",
+    "notterossa":"fa,fa-moon-o,red"
 }

@@ -22,11 +22,11 @@ public class CSVConvert {
 
 
     public static void main(String[] args) throws Exception {
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv");
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\notterossa.csv",",from:Maranello");
         System.out.println("Done");
     }
 
-    public static void convert(String file) throws Exception {
+    public static void convert(String file, String source) throws Exception {
 
 
 
@@ -58,8 +58,10 @@ public class CSVConvert {
             String type = e[1];
             String category = CSV_TO_CAT.get(type);
 
-            if(category == null)
+            if(category == null) {
                 System.out.println(line);
+                category = type;
+            }
 
             String name = e[2];
             double lon = Double.parseDouble(e[3]);
@@ -82,7 +84,7 @@ public class CSVConvert {
 
                 }
             }
-            list.add(new POI(id, lat, lon, name, category, type, 10, "", 0, "ok", "ok", 0, null, desc, www));
+            list.add(new POI(id, lat, lon, name+source, category, type, 10, "", 0, "ok", "ok", 0, null, desc, www));
         }
         br.close();
 

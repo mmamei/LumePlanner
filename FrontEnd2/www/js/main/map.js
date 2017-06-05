@@ -155,6 +155,13 @@ $(document).ready(function(){
             window.location.href = "itinerary_create.html";
         else
             window.location.href = "itineraries.html";
+    });
+
+
+    $("#bus").click(function(){
+        console.log("go to travelplanner");
+        window.location.href = "http://travelplanner.cup2000.it";
+        //window.open("http://travelplanner.cup2000.it","bus","fullscreen,scrollbars")
     })
 
 });

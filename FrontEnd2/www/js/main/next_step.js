@@ -387,6 +387,10 @@ $(document).ready(function(){
         window.location.href = "finish.html"
     });
 
+    $("#bus").click(function(){
+        window.location.href = "http://travelplanner.cup2000.it";
+    })
+
 
 
 });
