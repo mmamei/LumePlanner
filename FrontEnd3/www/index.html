@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LUMEPlanner</title>
+
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/main/index.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+
+
+    <script>
+        // if(window.self == window.top) I am not in an iframe
+        if(platform == "Win32" && window.self == window.top){
+            window.location = "phone.html"
+        }
+
+        function  formatCityBlock(name,img) {
+            var lname = name;
+            if(lname == "Forli") lname = "Forlì";
+            if(lname == "ReggioEmilia") lname = "Reggio Emilia";
+            return "<div class='ui-block-a show-page-loading-msg' data-textonly='false' data-textvisible='true' data-msgtext='' data-inline='true'>"+
+                    "<h3 align = 'center'>"+lname+"</h3><img src='"+img+"' class='img-responsive img-rounded' alt='"+name+"' id='"+name+"'>"+
+                    "</div>"
+        }
+
+
+
+
+
+
+
+
+    </script>
+
+
+    <style>
+        .ui-grid-a img {
+            width  : 100%;
+            height : auto;
+        }
+        .ui-grid-b img {
+            width  : 100%;
+            height : auto;
+        }
+        .ui-grid-c img {
+            width  : 100%;
+            height : auto;
+        }
+    </style>
+
+
+</head>
+<body>
+
+
+
+<div data-role="page" id = "pageone" class="jqm-demos jqm-home">
+
+    <div data-role="header" class="jqm-header"  data-position="fixed" >
+        <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
+        <!--<p>Version <span class="jqm-version"></span></p> -->
+        <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    </div>
+
+    <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
+        <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
+            <li data-filtertext="homepage" data-icon="home"><a href="index.html" tkey="homepage">Pagina principale</a></li>
+            <li data-filtertext="luoghi" data-icon = "location"><a href="index.html" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
+            <li data-filtertext="viaggi" data-icon = "camera"><a href="index.html" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
+            <li data-filtertext="percorsi" data-icon = "star"><a href="index.html" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
+            <li data-filtertext="account" data-icon = "user"><a href="index.html" data-ajax="false" tkey="user">Utente</a></li>
+            <li data-filtertext="assistenza" data-icon = "phone"><a href="index.html" data-ajax="false" tkey="help">Assistenza</a></li>
+        </ul>
+    </div>
+
+
+
+    <div role="main" class="ui-content jqm-content">
+
+        <p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>
+
+
+        <!--
+        <label for="search-mini"></label>
+        <input type="search" name="search-mini" id="search-mini" value="" data-mini="true" />
+        -->
+
+        <div id="cities" class="ui-grid-a ui-responsive"></div>
+        <button id="more" class="btn btn-primary" tkey="more_cities">Altre Città</button>
+
+        <div data-role="popup" id="infoPopup" style="max-width:350px;text-align: center" class="ui-corner-all">
+        </div>
+
+
+    </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+
+
+</body>
+</html>

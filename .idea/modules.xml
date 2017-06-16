@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Backend/DITAWS/DITAWS.iml" filepath="$PROJECT_DIR$/Backend/DITAWS/DITAWS.iml" />
       <module fileurl="file://$PROJECT_DIR$/FrontEnd2/FrontEnd2.iml" filepath="$PROJECT_DIR$/FrontEnd2/FrontEnd2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FrontEnd3/FrontEnd3.iml" filepath="$PROJECT_DIR$/FrontEnd3/FrontEnd3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FrontEnd2/TestCordova.iml" filepath="$PROJECT_DIR$/FrontEnd2/TestCordova.iml" />
     </modules>
   </component>
 </project>

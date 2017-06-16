@@ -30,7 +30,7 @@ public class CategoriesDictionary {
         MIBACT_TO_CAT.put("Battistero","attractions");
         MIBACT_TO_CAT.put("Portico","attractions");
         MIBACT_TO_CAT.put("Monumento","attractions");
-        MIBACT_TO_CAT.put("Stazione","service");
+        MIBACT_TO_CAT.put("Stazione","attractions");
         MIBACT_TO_CAT.put("Borgo","attractions");
         MIBACT_TO_CAT.put("Convento","attractions");
         MIBACT_TO_CAT.put("Mercato","attractions");

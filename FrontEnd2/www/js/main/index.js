@@ -29,8 +29,7 @@ var showall = false;
 function init(position) {
     //console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
     $.getJSON(conf.dita_server+"cities",function(data, status){
-
-        if(position != null) {
+        if(position && position.coords) {
             data.sort(function(a,b) {
                 var pa = a.split(",");
                 var pb = b.split(",");
@@ -44,7 +43,7 @@ function init(position) {
 
         if(!showall)
             data = data.slice(0,3);
-
+        $("#cities").html("");
         for(var i=0; i<data.length;i++) {
             console.log("-----"+data[i]);
             var city = data[i].split(",")[0];
@@ -100,50 +99,60 @@ function init(position) {
 }
 
 var user;
+function onDeviceReady() {
+    console.log("-------------------------------");
+    alert("here");
+    alert(cordova.plugins.Diagnostic);
 
-$(document).ready(function(){
+    //if( cordova.plugins["diagnostic"])
+    cordova.plugins.diagnostic.isLocationAvailable(function (available) {
+        console.log("Location is " + (available ? "available" : "not available"));
+    }, function (error) {
+        console.log("The following error occurred: " + error);
+    });
 
+    $(document).ready(function () {
+        if (conf.localize && navigator.geolocation)
+            navigator.geolocation.getCurrentPosition(init, init);
+        else init();
 
-
-    if(conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init);
-    else init(null);
-
-        $("#more").click(function(event) {
+        $("#more").click(function (event) {
             showall = true;
             $("#cities").html("");
 
-            if(conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init);
-            else init(null)
+            if (conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init, init);
+            else init()
 
         });
 
 
-    // login user
-    user = window.localStorage.getItem("user");
-    if(!user) {
-        console.log("user must be created");
-        var r = ""+Math.random();
-        user = {id: "", email: r, password: r};
-        console.log(user);
-        $.postJSON(conf.dita_server+"signup",user,
-            function(data, status){
-                console.log("Data: " + data + "\nStatus: " + status);
-                if (data === "true" || data === true) {
-                    console.log("registration succedded");
-                    window.localStorage.setItem("user",JSON.stringify(user))
-                }
-                else console.log("registration failed");
+        // login user
+        user = window.localStorage.getItem("user");
+        if (!user) {
+            console.log("user must be created");
+            var r = "" + Math.random();
+            user = {id: "", email: r, password: r};
+            console.log(user);
+            $.postJSON(conf.dita_server + "signup", user,
+                function (data, status) {
+                    console.log("Data: " + data + "\nStatus: " + status);
+                    if (data === "true" || data === true) {
+                        console.log("registration succedded");
+                        window.localStorage.setItem("user", JSON.stringify(user))
+                    }
+                    else console.log("registration failed");
 
-            });
-    }
-    else {
-        user = JSON.parse(user);
-    }
+                });
+        }
+        else {
+            user = JSON.parse(user);
+        }
 
 
+        // login was used only to retrieve an existing unfinished plan.
+        // for now, we just remove it
 
-    // login was used only to retrieve an existing unfinished plan.
-    // for now, we just remove it
-
-    //console.log("user: "+window.localStorage.getItem("hashed_user"));
-});
+        //console.log("user: "+window.localStorage.getItem("hashed_user"));
+    });
+}
+document.addEventListener("deviceready", onDeviceReady, false);

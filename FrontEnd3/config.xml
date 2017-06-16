@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="it.unimore.morselli.lume" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Lume</name>
+    <description>
+        Lume Planner
+    </description>
+    <author email="marco.mamei@unimore.it" href="http://www.lumeplanner.it">
+        Marco Mamei
+    </author>
+    <icon src="www/img/home_candle_piccola.png" />
+    <content src="index.html" />
+    <splash src="www/img/splash.png" />
+    <preference name="SplashScreenDelay" value="6000" />
+    <preference name="FadeSplashScreenDuration" value="1000" />
+    <allow-navigation href="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <platform name="android">
+    </platform>
+    <engine name="android" spec="^6.2.3" />
+    <engine name="browser" spec="^4.1.0" />
+    <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.2" />
+    <plugin name="cordova.plugins.diagnostic" spec="^3.6.5" />
+</widget>

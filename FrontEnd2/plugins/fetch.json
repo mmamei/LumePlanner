@@ -38,5 +38,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova.plugins.diagnostic": {
+        "source": {
+            "type": "registry",
+            "id": "cordova.plugins.diagnostic@^3.6.5"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

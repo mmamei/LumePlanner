@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phone</title>
+    <style>
+
+        body {
+            overflow-y: hidden;
+        }
+
+        #phone {
+            width:500px;
+            height:1100px;
+            background: url("img/phone.jpg");
+            background-size: 100%;
+            background-repeat: no-repeat;
+
+            margin: 0 auto;
+            text-align:center;
+        }
+        #screen {
+            width: 430px;
+            height: 700px;
+
+            position: relative;
+            margin: 0 auto 0 auto;
+            top: 130px;
+        }
+        #back{
+            position: relative;
+            width:30px;
+            height:30px;
+            top: 140px;
+            left:110px;
+        }
+        #footer {
+            position:absolute;
+            bottom:20px;
+            right:10px;
+        }
+        #lang {
+            position:absolute;
+            top:20px;
+            right:10px;
+        }
+
+        .foot,a {
+            color:gray;
+            font-size:20pt;
+            text-decoration: none;
+        }
+    </style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script>
+        $(document).ready(function(){
+            var i = window.location.href.indexOf("page=");
+            if(i > 0) {
+                var url = window.location.href.substr(i+"page=".length);
+                console.log(url);
+                $("#screen").attr("src", url)
+            }
+        });
+
+        function change_lang(l) {
+            langCode = l;
+            window.sessionStorage.setItem("langCode",langCode);
+
+            $.when(loadDictionary(langCode)).done(function(){
+                location.reload()
+            });
+
+
+        }
+
+
+    </script>
+</head>
+<body>
+<div id="phone">
+    <iframe id="screen" src="index.html"></iframe>
+    <div id="back" onclick="window.history.back()"></div>
+</div>
+
+<div id="lang">
+    <img onclick="change_lang('it')" src="img/IT.png" width="50px">&emsp;
+    <img onclick="change_lang('en')" src="img/EN.png" width="50px">
+</div>
+
+<div id="footer">
+    <a href="http://www.lumeplanner.it/"><i class="foot fa fa-home" aria-hidden="true"></i></a>&emsp;
+    <a href="https://twitter.com/lumeplannerit"><i class="foot fa fa-twitter" aria-hidden="true"></i></a>&emsp;
+    <a href="https://www.facebook.com/lumeplanner/"><i class="foot fa fa-facebook-official" aria-hidden="true"></i></a>&emsp;
+    <a href="privacy.html"><span class="foot" style="padding:0px 2px 0px 2px;color:white;background-color:gray">Privacy Policy</span></a>
+</div>
+</body>
+</html>
