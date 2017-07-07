@@ -17,6 +17,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.geojson.Point;
 
+import org.json.JSONObject;
 import util.PointCodec;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -106,6 +107,11 @@ public class Mongo {
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
+	}
+
+
+	public void insertFBData(String fbdata) {
+		db.getCollection("fbdata").insertOne(Document.parse(fbdata));
 	}
 
 

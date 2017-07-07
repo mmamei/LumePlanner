@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by marco on 19/10/2016.
@@ -34,6 +36,15 @@ public class CityProperties {
         }
         return l;
     }
+
+    public static Map<String,CityProperties> getInstanceHash(String file) {
+        List<CityProperties> list = getInstance(file);
+        Map<String,CityProperties> h = new HashMap<>();
+        for(CityProperties cp: list)
+            h.put(cp.getName(),cp);
+        return h;
+    }
+
 
     private CityProperties(String name, double[] lonLatBL, double[] lonLatTR) {
         this.name = name;

@@ -14,7 +14,7 @@ var openFB = (function () {
         logoutURL = 'https://www.facebook.com/logout.php',
 
     // By default we store fbtoken in sessionStorage. This can be overridden in init()
-        tokenStore = window.sessionStorage,
+        tokenStore = window.localStorage,
 
     // The Facebook App Id. Required. Set using init().
         fbAppId,
@@ -204,7 +204,7 @@ var openFB = (function () {
             token = tokenStore.fbAccessToken;
 
         /* Remove token. Will fail silently if does not exist */
-        tokenStore.removeItem('fbtoken');
+        tokenStore.removeItem('fbAccessToken');
 
         if (token) {
             logoutWindow = window.open(logoutURL + '?access_token=' + token + '&next=' + logoutRedirectURL, '_blank', 'location=no,clearcache=yes');

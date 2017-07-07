@@ -30,7 +30,8 @@ $.postJSON = function(url, data, callback) {
         'url': url,
         'data': JSON.stringify(data),
         'dataType': 'json',
-        'success': callback
+        'success': callback,
+        'error':callback
     });
 };
 

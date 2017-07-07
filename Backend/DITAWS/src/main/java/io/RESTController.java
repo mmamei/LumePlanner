@@ -1,5 +1,6 @@
 package io;
 
+import org.json.JSONObject;
 import services.timdatapipe.DataPipeDownload;
 import model.*;
 import org.apache.log4j.Logger;
@@ -104,6 +105,15 @@ public class RESTController {
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
 		tracelog.info("user "+plan_request.getUser()+" request newplan "+plan_request);
 		return new FindPath().getNewVisitPlan(dao,plan_request);
+	}
+
+	@RequestMapping(value = "fb", method = RequestMethod.POST, headers = {"content-type=application/json"})
+	public @ResponseBody boolean saveFacebookData(@RequestBody String fbdata) {
+		//tracelog.info("user "+plan_request.getUser()+" request newplan "+plan_request);
+		//JSONObject obj = new JSONObject(fbdata);
+		//logger.info("************************************************"+obj.get("id"));
+		dao.insertFBData(fbdata);
+		return true;
 	}
 
 

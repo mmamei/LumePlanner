@@ -21,6 +21,8 @@ function find_pic (picture_query) {
     });
 }
 
+
+
 $(document).ready(function() {
 
     $("#photo_url").hide();
@@ -97,6 +99,25 @@ $(document).ready(function() {
         window.location = $(this).attr("href")
     });
 
+
+    $("#share_btn").click(function() {
+        var place_name = $("#title").html();
+        //alert(place_name)
+        openFB.api({
+            method: 'POST',
+            path: '/me/feed',
+            params: {
+                message: "Ho scoperto "+place_name+" grazie a Lume Planner!",
+                link: "https://play.google.com/store/apps/details?id=it.unimore.morselli.lume"
+            },
+            success: function() {
+                alert('Informazione condivisa su Facebook');
+            },
+            error: function() {
+                alert('Si è verificato un problema con la condivisione');
+            }
+        });
+    });
 
     $("#close").click(function() {
         window.history.back()
