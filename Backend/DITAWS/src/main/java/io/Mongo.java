@@ -31,13 +31,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 
+import static io.MongoLoginInfo.MONGO_DB;
+import static io.MongoLoginInfo.MONGO_PASSWORD;
+import static io.MongoLoginInfo.MONGO_USER;
+
 
 public class Mongo {
 
-    private static final String MONGO_URL = "127.0.0.1:27017";
-	private static final String MONGO_USER = "dita";
-    private static final String MONGO_PASSWORD = "mames1976";
-	private static final String MONGO_DB = "lume";
+
 	private Logger logger = Logger.getLogger(Mongo.class);
 
 	private ObjectMapper mapper;
@@ -59,7 +60,7 @@ public class Mongo {
 
 		mongoLogger = java.util.logging.Logger.getLogger( "org.mongodb.driver" );
 		mongoLogger.setLevel(Level.SEVERE);
-        mongoClient = new MongoClient(new ServerAddress(MONGO_URL), Arrays.asList(
+        mongoClient = new MongoClient(new ServerAddress(MongoLoginInfo.MONGO_URL), Arrays.asList(
 							MongoCredential.createCredential(
                                     MONGO_USER,
 									MONGO_DB,
