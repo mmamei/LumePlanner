@@ -1,6 +1,7 @@
 package io;
 
 import org.json.JSONObject;
+import services.CheckUser;
 import services.timdatapipe.DataPipeDownload;
 import model.*;
 import org.apache.log4j.Logger;
@@ -100,6 +101,11 @@ public class RESTController {
 		return gHopper.route(vechicle, Double.parseDouble(s[0]),Double.parseDouble(s[1]),Double.parseDouble(e[0]),Double.parseDouble(e[1]));
 	}
 
+	@RequestMapping(value = "checkuser", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody UserLog checkUser(@RequestParam(value="userid") String userid) {
+		return CheckUser.checkUser(dao,userid);
+	}
+
 
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
@@ -109,12 +115,14 @@ public class RESTController {
 
 	@RequestMapping(value = "fb", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody boolean saveFacebookData(@RequestBody String fbdata) {
-		//tracelog.info("user "+plan_request.getUser()+" request newplan "+plan_request);
-		//JSONObject obj = new JSONObject(fbdata);
-		//logger.info("************************************************"+obj.get("id"));
+
+		JSONObject obj = new JSONObject(fbdata);
+		tracelog.info("user "+obj.get("id")+" logged with facebook");
 		dao.insertFBData(fbdata);
 		return true;
 	}
+
+
 
 
 	@RequestMapping(value = "accept_plan", method = RequestMethod.POST, headers = {"content-type=application/json"})

@@ -49,6 +49,8 @@ public class BIL2KML {
 
         System.out.println("["+mini+","+maxi+"] X ["+minj+","+maxj+"]");
 
+        double[][] x = getCellBorder(mini,minj,ox,oy,xdim,ydim);
+
         DescriptiveStatistics ds = new DescriptiveStatistics();
         for (int i = 0; i < nrows; i++)
             for (int j = 0; j < ncols; j++) {

@@ -9,15 +9,22 @@
     </author>
     <icon src="www/img/home_candle_piccola.png" />
     <content src="index.html" />
-    <splash src="www/img/splash.png" />
-    <preference name="SplashScreenDelay" value="6000" />
-    <preference name="FadeSplashScreenDuration" value="1000" />
     <allow-navigation href="*" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="mailto:*" />
     <platform name="android">
+        <preference name="SplashScreen" value="www/img/splash.png" />
+        <preference name="SplashScreenDelay" value="6000" />
+        <preference name="FadeSplashScreenDuration" value="1000" />
+    </platform>
+    <platform name="browser">
+        <preference name="SplashScreen" value="/img/splash.png" />
+        <preference name="SplashScreenDelay" value="3000" />
+        <preference name="FadeSplashScreenDuration" value="1000" />
+        <preference name="SplashScreenWidth" value="500" />
+        <preference name="SplashScreenHeight" value="850" />
     </platform>
     <engine name="android" spec="^6.2.3" />
     <engine name="browser" spec="^4.1.0" />

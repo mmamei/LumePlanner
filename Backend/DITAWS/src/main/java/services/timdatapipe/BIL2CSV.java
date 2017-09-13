@@ -19,8 +19,8 @@ public class BIL2CSV {
     public static void main(String[] args) throws  Exception {
 
         CityProperties city = CityProperties.getInstanceHash("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv").get("Modena");
-        Calendar start = new GregorianCalendar(2017, Calendar.JUNE, 1, 0, 0, 0);
-        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 3,  24, 0, 0);
+        Calendar start = new GregorianCalendar(2017, Calendar.APRIL, 14, 0, 0, 0);
+        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 27,  24, 0, 0);
         run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
     }
     public static void run(CityProperties city,Calendar start,Calendar end,String outfile) throws Exception{
