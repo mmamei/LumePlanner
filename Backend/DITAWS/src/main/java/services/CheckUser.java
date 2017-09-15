@@ -44,6 +44,9 @@ public class CheckUser {
                             ul.getItineraries().put(name,list);
                         }
                     }
+                    if(line.contains("prize!"))
+                        ul.setGotPrize(true);
+
                 }
             }
             br.close();

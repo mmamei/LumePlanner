@@ -268,15 +268,16 @@ var prevLat = 0;
 var prevLon = 0;
 function localize(position) {
 
-    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > 50) {
+    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
         $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
         });
         console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+        prevLat = position.coords.latitude;
+        prevLon = position.coords.longitude;
+        start = prevLat+","+prevLon;
     }
 
-    prevLat = position.coords.latitude;
-    prevLon = position.coords.longitude;
-    start = prevLat+","+prevLon;
+
 
     if(!dragged)
         mymap.panTo([position.coords.latitude, position.coords.longitude]);

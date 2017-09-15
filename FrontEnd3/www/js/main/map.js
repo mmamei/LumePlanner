@@ -8,14 +8,15 @@ var prevLat = 0;
 var prevLon = 0;
 function localize(position) {
 
-    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > 50) {
+    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
         $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
         });
         console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+        prevLat = position.coords.latitude;
+        prevLon = position.coords.longitude;
     }
 
-    prevLat = position.coords.latitude;
-    prevLon = position.coords.longitude;
+
 
     if(!dragged)
         mymap.panTo([position.coords.latitude, position.coords.longitude]);
@@ -40,19 +41,8 @@ function localize(position) {
 }
 
 
-
-
-$(document).ready(function(){
-    $("#popup").hide();
-    var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-    console.log(pois);
-    var markers = {};//new Markers();
-
-    var minLat = 1000;
-    var minLon = 1000;
-    var maxLat = -1000;
-    var maxLon = -1000;
-
+function selectMarkers(pois) {
+    markers = {};
     for(var type in pois) {
         console.log(type);
         if(pois[type])
@@ -62,9 +52,9 @@ $(document).ready(function(){
                 var lon = x.geometry.coordinates[0];
 
                 var info = "<span class='popcontent'>"+format_name(x.display_name)+"<br></span>" +
-                           "<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a><br>" +
-                           "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br>"+
-                           "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
+                    "<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a><br>" +
+                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br>"+
+                    "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
 
 
 
@@ -90,8 +80,30 @@ $(document).ready(function(){
                 maxLon = Math.max(maxLon, lon)
             }
     }
+}
 
+/*
+TO DO:
+- separa il buonding box da metodo di sopra
+- prova a caricare solo un sample dei punti
+- generalizza la funzione in modo che possa ancare beene anche in next_step senza codice duplicato
+- stessa cosa anche per la funzione che calcola in bbox
+- usa il peso dei pois
+ */
 
+var markers = {};//new Markers();
+
+var minLat = 1000;
+var minLon = 1000;
+var maxLat = -1000;
+var maxLon = -1000;
+
+$(document).ready(function(){
+    $("#popup").hide();
+    var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+    //console.log(pois);
+    selectMarkers(pois);
+    //console.log(markers)
 
 
 

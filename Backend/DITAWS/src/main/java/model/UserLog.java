@@ -15,6 +15,7 @@ public class UserLog {
     String userid;
     private List<double[]> latLon;
     private Map<String,List<POI>> itineraries;
+    private boolean gotPrize = false;
 
 
     public UserLog() {
@@ -65,5 +66,13 @@ public class UserLog {
 
     public void setItineraries(Map<String, List<POI>> itineraries) {
         this.itineraries = itineraries;
+    }
+
+    public boolean isGotPrize() {
+        return gotPrize;
+    }
+
+    public void setGotPrize(boolean gotPrize) {
+        this.gotPrize = gotPrize;
     }
 }

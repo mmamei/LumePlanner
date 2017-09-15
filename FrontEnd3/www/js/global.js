@@ -18,7 +18,7 @@ if(platform == "Win32")
 
 var LOCALIZE_EVERY = 1000;
 var REROUTE_EVERY = 20000;
-
+var SEND_POSITION_EVERY_METERS = 20;
 
 $.postJSON = function(url, data, callback) {
     return jQuery.ajax({

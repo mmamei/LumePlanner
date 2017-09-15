@@ -10,26 +10,24 @@
 	
 	<style>
 		#login_btn{
-		color:white;
-		background-color: #4C69BA; !important
+			color:white;
+			background-color: #4C69BA; !important
 		}
 		#logout_btn{
-		color:white;
-		background-color: #4C69BA; !important
+			color:white;
+			background-color: #4C69BA; !important
 		}
 		#userPic{
-		border-radius: 50%;
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
+			border-radius: 50%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			height: 150px;
 		}
 		.ui-content{
-		font-size:22px; !important
+			font-size:22px; !important
 		}
-		#div_img{
-		height: 100px;
-		}
-		
+
 	</style>
 
     <script src="js/jquery.min.js"></script>
@@ -73,32 +71,10 @@
 			</div>
 
 			<div id="logged" style="display:none">
-
 					<p style="color:gray;text-align:center">Ciao <span id="userName"></span>!<br><br>Grazie per aver eseguito il login tramite Facebook</p>
-					
-					<div id="div_img">
-						<img id="userPic"/>
-					</div>
-					
+					<img id="userPic"/>
 					<button class="btn btn-block" id="logout_btn" onclick="logout()">Logout  <i id="fb" class="fa fa-facebook-f"></i>acebook </button>
 					<button style="display: none;" class="btn btn-block" id="home_btn">Home</button>
-
-					<!--<button class="btn btn-block" onclick="myTok()">My token</button>-->
-					<!--<button class="btn btn-block" onclick="extendTok()">Extend</button>-->
-					<!--<button class="btn btn-block" onclick="getInfo()">Get My Info</button>-->
-					
-
-					<p>Name: <span id="userName2"></span></p>
-					<p>ID: <span id="userId"></span></p>
-					<p>Birthday: <span id="userBirthday"></span></p>
-					<p>Gender: <span id="userGender"></span></p>
-					<p>Likes: <span id="userLikes"></span></p>
-					<p>Eventi: <span id="events"></span></p>
-					<img id="userPic"/>
-					<hr/>
-
-					<!--<textarea id="Message" placeholder="What's on your mind?" rows="5"></textarea>
-					<button class="btn btn-block" onclick="share()">Share</button>-->
 			</div>
 		</div>
 	</div>
@@ -147,23 +123,16 @@
 				all.eventsInfo = [];
 
 
-                document.getElementById("userLikes").innerHTML = "<ul>";
+                //document.getElementById("userLikes").innerHTML = "<ul>";
 				idLikes = [];
                 idPlace = [];
                 for(var i=0; i<data.likes["data"].length; i++){
-              	 		document.getElementById("userLikes").innerHTML += "<li>"+ (i+1) + ") " + data.likes["data"][i]["name"] + " (" + data.likes["data"][i]["category"] + ") info: " + data.likes["data"][i]["about"];
+              	 		//document.getElementById("userLikes").innerHTML += "<li>"+ (i+1) + ") " + data.likes["data"][i]["name"] + " (" + data.likes["data"][i]["category"] + ") info: " + data.likes["data"][i]["about"];
                         idLikes.push(data.likes["data"][i]["id"])
                         }
                 for(var i=0; i<idLikes.length; i++)
                 	findEvent(idLikes[i],all);
 
-
-                document.getElementById("userLikes").innerHTML += "</ul>";
-                document.getElementById("userName").innerHTML = data.first_name + " " + data.last_name;
-				document.getElementById("userName2").innerHTML = data.first_name + " " + data.last_name;
-                document.getElementById("userId").innerHTML = data.id;
-                document.getElementById("userGender").innerHTML = data.gender;
-                document.getElementById("userBirthday").innerHTML = data.birthday;
                 document.getElementById("userPic").src = 'http://graph.facebook.com/' + data.id + '/picture?type=small';
             },
             error: errorHandler});
@@ -194,8 +163,8 @@ function findEvent(id,all) {
                 limit: 100000
             },
             success: function(data) {
-            	var doc = document.getElementById("events");
-                doc.innerHTML += "<ul>";
+            	//var doc = document.getElementById("events");
+                //doc.innerHTML += "<ul>";
             	//console.log(data)
                 if(data["data"]["length"] != 0) 
                 	for (var i=0 ; i<data["data"]["length"]; i++) {
@@ -205,18 +174,18 @@ function findEvent(id,all) {
                     	//console.log(eventDate)
                        	if (eventDate-actualDate >=0) {
 							all.eventsInfo.push(data["data"][i]);
-                    		doc.innerHTML += "<li> " + data["data"][i]["name"] + " alle ore " + eventDate;
+                    		//doc.innerHTML += "<li> " + data["data"][i]["name"] + " alle ore " + eventDate;
                         	if (data["data"][i]["place"]){
-                				doc.innerHTML += "presso -> " + data["data"][i]["place"]["name"];
+                				//doc.innerHTML += "presso -> " + data["data"][i]["place"]["name"];
                                 var place_id = data["data"][i]["place"]["id"];
-                                doc.innerHTML += "<span id='" + place_id + "'></span>";
+                                //doc.innerHTML += "<span id='" + place_id + "'></span>";
 								if(place_id){
                                 	findPlaceLoc(place_id)
                                     }
                             }
                         }        
                     } 
-                doc.innerHTML += "</ul>"
+                //doc.innerHTML += "</ul>"
             	},
             error: errorHandler});
             
@@ -230,8 +199,8 @@ function findEvent(id,all) {
             },
             success: function(data) {
 				//console.log(data)
-                var doc = document.getElementById(data["id"]);
-            	doc.innerHTML += " <b>lat</b> ->" + data["location"]["latitude"] + ", <b>long</b> -> " + data["location"]["longitude"]
+                //var doc = document.getElementById(data["id"]);
+            	//doc.innerHTML += " <b>lat</b> ->" + data["location"]["latitude"] + ", <b>long</b> -> " + data["location"]["longitude"]
             },
             error: errorHandler});
             

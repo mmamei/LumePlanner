@@ -31,32 +31,41 @@
 
     <style>
 
-body {
-	background-color:#084465;
-	color:#ffffff;
-	font-weight:bold;
-}
+        body, html {height:100%;}
+
+        body {
+            background-color: #084265;
+            color: #ffffff;
+
+        }
+
+        #mapPage, #mapid {
+            height: 100%;
+            z-index: 1;
+            overflow:hidden;
+        }
+
+        #map-content{
+            height: 70%;
+            padding: 0px;
+            margin:0px;
+            z-index: -1;
+        }
 
 
+        .ui-icon-delete:after {
+            background-color: darkred;
+        }
 
-#mapid {
-    height: 400px;
-    z-index: 1;
-    overflow:hidden;
-}
-
-#map-content{
-    height: 88%;
-    padding: 0px;
-    margin:0px;
-    z-index: -1;
-}
+        .ui-icon-check:after {
+            background-color: green;
+        }
 
 
-p {
-	margin-left: 20px;
-}
-
+        .itiner {
+            background-color: cornflowerblue;
+            color:white;
+        }
 
 
 </style>
@@ -89,8 +98,7 @@ p {
     </div>
     <div id="result"></div>
 
-
-    <input type="text" id="user" value="3662677592101309">
+    <input type="text" id="user" placeholder="user id">
 
 
     <button id="check" class="btn btn-primary">Check!</button>

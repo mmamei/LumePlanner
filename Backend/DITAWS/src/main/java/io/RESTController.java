@@ -106,6 +106,12 @@ public class RESTController {
 		return CheckUser.checkUser(dao,userid);
 	}
 
+	@RequestMapping(value = "log", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody boolean log(@RequestParam(value="txt") String txt) {
+		tracelog.info(txt);
+		return true;
+	}
+
 
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
