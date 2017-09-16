@@ -108,17 +108,31 @@ public class MibactConvert {
                 if(cp.contains(lonlat[1],lonlat[0])) {
 
                     if(!GUIDA_ROSSA_ONLY || (GUIDA_ROSSA_ONLY && e.length > 26 && !e[26].isEmpty())) {
+
+                        String guida_rossa_cat = e[26];
+                        float importance = 0;
+                        // Corsivo, Presente, Fuori guida, Grassetto+asterisco, Corsivo+asterisco, Assente, Grassetto
+                        if(guida_rossa_cat.equals("Grassetto+asterisco"))  importance = 1;
+                        if(guida_rossa_cat.equals("Grassetto"))  importance = 0.9f;
+                        if(guida_rossa_cat.equals("Corsivo+asterisco"))  importance = 0.8f;
+                        if(guida_rossa_cat.equals("Corsivo"))  importance = 0.7f;
+                        if(guida_rossa_cat.equals("Presente"))  importance = 0.4f;
+                        if(guida_rossa_cat.equals("Fuori guida"))  importance = 0.3f;
+
                         String www = e.length > 27 && !e[27].isEmpty() ? e[27] : e.length > 20 && !e[20].isEmpty() ? e[20] : null;
 
                         String category = MIBACT_TO_CAT.get(cat);
                         if(category == null) category = DEFAULT_CAT;
 
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", category, cat, 10, "", 0, "ok", "ok", 0, null,null,www));
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[3]+",from:MIBACT", category, cat, importance, "", 0, "ok", "ok", 0, null,null,www));
                         tot ++;
                     }
                 }
             }
         }
+
+
+        //System.exit(0);
 
         //for(String k: allCategories.keySet())
         //    System.out.println(k+" ==> "+allCategories.get(k));

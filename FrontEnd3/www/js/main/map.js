@@ -74,11 +74,10 @@ function selectMarkers(pois,bbox) {
     }
 
     visiblePois.sort(function(a,b) {
-        if(a.importance > b.importance) return 1;
-        if(a.importance < b.importance) return -1;
+        if(a.importance < b.importance) return 1;
+        if(a.importance > b.importance) return -1;
         return 0
     });
-
 
 
     for(var i=0; i<Math.min(MAX_POIS_IN_MAP,visiblePois.length);i++) {

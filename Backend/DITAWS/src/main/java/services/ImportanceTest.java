@@ -18,10 +18,11 @@ public class ImportanceTest {
 
 	public static void main(String[] args) throws Exception  {
 		ImportanceTest g = new ImportanceTest();
-		String city = "Venezia";
+		String city = "Ravenna";
 		Mongo dao = new Mongo();
-		String file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\nominatim.json";
-		g.run(city, dao, file);
+		g.run(city, dao, "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\nominatim.json");
+		g.run(city, dao, "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\ibc.json");
+		g.run(city, dao, "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\mibact.json");
 	}
 
 
@@ -30,6 +31,9 @@ public class ImportanceTest {
 
 
 	public void run(String city, Mongo dao, String file) {
+
+		System.out.println(new File(file).getName()+" ***************");
+
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
@@ -43,6 +47,7 @@ public class ImportanceTest {
 				try {
 					currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
 					ds.addValue(currentPOI.getImportance());
+					//if(currentPOI.getImportance() > 0.3) System.out.println(currentPOI.getDisplay_name());
 				} catch(Exception pe) {
 					logger.warn("Error parsing " + currentJPOI.toString());
 					pe.printStackTrace();

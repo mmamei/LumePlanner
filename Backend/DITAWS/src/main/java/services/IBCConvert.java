@@ -52,7 +52,6 @@ And split it according to the cities we have
 
 public class IBCConvert {
 
-    public static  boolean GUIDA_ROSSA_ONLY = true;
 
     public static void main(String[] args) throws Exception {
 
@@ -92,10 +91,10 @@ public class IBCConvert {
 
                 for(CityProperties cp: cities) {
                     if (cp.contains(lonlat[1], lonlat[0])) {
-                        System.out.println(line);
+                        //System.out.println(line);
                         String www = e[3];
                         if(www.isEmpty()) www = e[4];
-                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[0]+",from:IBC", IBC_TO_CAT.get(f), f, 10, "", 0, "ok", "ok", 0, null,null,www));
+                        hm.get(cp.getName()).add(new POI(e[1], lonlat[1], lonlat[0], e[0]+",from:IBC", IBC_TO_CAT.get(f), f, 0, "", 0, "ok", "ok", 0, null,null,www));
                         tot++;
                     }
                 }
@@ -120,7 +119,7 @@ public class IBCConvert {
             line = line + " " + other;
             if(line.endsWith(",")) line = line.substring(0,line.length()-1);
             line = line.replaceAll(",,",",\"\",").replaceAll("\",\"","\";\"").replaceAll("\"","");
-            System.out.println(line);
+            //System.out.println(line);
             String[] e = line.split(";");
 
             String key = e[0]+""+e[1]+""+e[2];
@@ -142,7 +141,7 @@ public class IBCConvert {
                 if (cp.contains(lonlat[1], lonlat[0])) {
                     String img = v.size() > 3 ? (String)v.get(3) : null;
                     String category = IBC_TO_CAT.get("Tree");
-                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", category, category, 10, "", 0, "ok", "ok", 0, img,null,null));
+                    hm.get(cp.getName()).add(new POI(v.get(0)+" "+tot, lonlat[1], lonlat[0], v.get(0)+",from:IBC", category, category, 0, "", 0, "ok", "ok", 0, img,null,null));
                     tot++;
                 }
             }
