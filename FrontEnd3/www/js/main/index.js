@@ -26,17 +26,45 @@ function loadItineraries(city, user) {
 
 
 var showall = false;
+
+var cityBbox = {};
+
+
 function init(position) {
 
 
     //console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
     $.getJSON(conf.dita_server+"cities",function(data, status){
+
+
+        for(var i=0; i<data.length;i++) {
+            var x = data[i].split(",");
+            cityBbox[x[0]] = [Number(x[1]), Number(x[2]), Number(x[3]), Number(x[4])]
+        }
+
+
         if(position && position.coords) {
+
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            window.sessionStorage.setItem("prevLat",lat);
+            window.sessionStorage.setItem("prevLon",lng);
+
             data.sort(function(a,b) {
                 var pa = a.split(",");
                 var pb = b.split(",");
-                var da = getDistanceFromLatLonInM(position.coords.latitude, position.coords.longitude, pa[2],pa[1]);
-                var db = getDistanceFromLatLonInM(position.coords.latitude, position.coords.longitude, pb[2],pb[1]);
+
+
+
+                var lata = (Number(pa[2]) + Number(pa[4])) / 2;
+                var lnga = (Number(pa[1]) + Number(pa[3])) / 2;
+
+                var latb = (Number(pb[2]) + Number(pb[4])) / 2;
+                var lngb = (Number(pb[1]) + Number(pb[3])) / 2;
+
+                var da = getDistanceFromLatLonInM(lat, lng, lata, lnga);
+                var db = getDistanceFromLatLonInM(lat, lng, latb, lngb);
                 if(da < db) return -1;
                 if(da > db) return 1;
                 return 0;
@@ -82,6 +110,9 @@ function init(position) {
 
                 var city = event.target.id;
                 window.sessionStorage.setItem("city", event.target.id);
+                window.sessionStorage.setItem("citybbox", JSON.stringify(cityBbox[event.target.id]));
+
+
                 $.when(loadActivities(city,user.email), loadItineraries(city,user.email)).done(function(){
                     window.location.href = "map.html";
                 });

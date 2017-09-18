@@ -11,11 +11,11 @@ conf = {
 };
 
 var platform = navigator.platform;
-
-if(platform == "Win32")
+//console.log(navigator)
+var isChrome = !!window.chrome && !!window.chrome.webstore;
+//console.log(isChrome)
+if(platform == "Win32" && isChrome == true)
     conf.localize = false;
-
-
 
 
 $.postJSON = function(url, data, callback) {
@@ -85,7 +85,7 @@ function format_name_from(name) {
 
 
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
-console.log(mIcons);
+//console.log(mIcons);
 if(!mIcons) {
     $.getJSON(conf.dita_server_files + 'markerIcons.json', function (jsdata) {
         mIcons = jsdata;
@@ -185,10 +185,7 @@ $(document).ready(function(){
 /*********************************************************************************************************************/
 /**********************                      MAP METHODS                     *****************************************/
 
-var LOCALIZE_EVERY = 1000;
-var REROUTE_EVERY = 20000;
-var SEND_POSITION_EVERY_METERS = 20;
-var MAX_POIS_IN_MAP = 10;
+
 
 
 function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
@@ -209,40 +206,7 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
-var dragged = false;
-var centerMarker = null;
-var prevLat = 0;
-var prevLon = 0;
-var start;
-
-
-function localize(position) {
-    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
-        });
-        console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
-        prevLat = position.coords.latitude;
-        prevLon = position.coords.longitude;
-        start = prevLat+","+prevLon;
-    }
-    if(!dragged)
-        mymap.panTo([position.coords.latitude, position.coords.longitude]);
-    if (centerMarker == null) {
-
-        var icon = L.divIcon({
-            type: 'div',
-            className: 'marker',
-            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-        });
-        centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
-        mymap.setZoom(15)
-    }
-
-
-    centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
-    selectMarkers(pois,mymap.getBounds());
-
-    window.setTimeout(function () {
-        navigator.geolocation.getCurrentPosition(localize)
-    }, LOCALIZE_EVERY)
-}
+var prevLat = Number(window.sessionStorage.getItem("prevLat"));
+var prevLon = Number(window.sessionStorage.getItem("prevLon"));
+if(prevLat == null) prevLat = 0;
+if(prevLon == null) prevLon = 0;

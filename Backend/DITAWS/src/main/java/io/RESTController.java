@@ -35,8 +35,8 @@ public class RESTController {
 		cities = new ArrayList<>();
 		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
 			String city = cp.getName();
-			double[] lonlat = cp.getCenterLonLat();
-			cities.add(city+","+lonlat[0]+","+lonlat[1]);
+			double[][] lonlatBB = cp.getLonLatBbox();
+			cities.add(city+","+lonlatBB[0][0]+","+lonlatBB[0][1]+","+lonlatBB[1][0]+","+lonlatBB[1][1]);
 			if (!dao.checkActivities(city)) {
 				logger.info("/../data/"+cp.getDataDir());
 				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";

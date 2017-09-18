@@ -115,6 +115,10 @@ public class Mongo {
 		db.getCollection("fbdata").insertOne(Document.parse(fbdata));
 	}
 
+	public MongoCollection<Document> retrieveFBData() {
+		return db.getCollection("fbdata");
+	}
+
 
 
 	/*

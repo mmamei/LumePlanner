@@ -21,7 +21,7 @@ public class GHopper {
 
     public static void main(String[] args) {
         GHopper gh = new GHopper();
-        Path p = gh.route("foot",44.674857, 10.714559,44.675933, 10.690269);
+        Path p = gh.route("foot",44.52615814969668,10.866599678993227,44.524776,10.867791);
         System.out.println(p.toJSONString());
     }
 

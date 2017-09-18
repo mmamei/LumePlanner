@@ -147,6 +147,23 @@ $(document).ready(function() {
     visitplan.selected = type_of_plan;
     //console.log(type_of_plan)
 
+
+    var minLat = 1000;
+    var minLon = 1000;
+    var maxLat = -1000;
+    var maxLon = -1000;
+    for(var i=0; i<visitplan.plans.asis.to_visit.length;i++) {
+
+        var lat = visitplan.plans.asis.to_visit[i].visit.geometry.coordinates[1];
+        var lon = visitplan.plans.asis.to_visit[i].visit.geometry.coordinates[0];
+
+        minLat = Math.min(minLat, lat);
+        minLon = Math.min(minLon, lon);
+        maxLat = Math.max(maxLat, lat);
+        maxLon = Math.max(maxLon, lon)
+    }
+
+
     var lat  = visitplan.plans[type_of_plan].departure.geometry.coordinates[1];
     var lng  = visitplan.plans[type_of_plan].departure.geometry.coordinates[0];
     console.log(type_of_plan+" --> "+markerName2Key(type_of_plan));
@@ -161,7 +178,10 @@ $(document).ready(function() {
     });
 
 
-    mymap.setView([lat, lng], 12);
+    mymap.fitBounds([
+        [minLat, minLon],
+        [maxLat, maxLon]
+    ]);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
     L.control.layers(plans_markers,null).addTo(mymap);
     //$.when(translateObjKeys(plans_markers)).done(function(){L.control.layers(plans_markers,null).addTo(mymap)})
