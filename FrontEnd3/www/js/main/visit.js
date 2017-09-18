@@ -33,11 +33,15 @@ $(document).ready(function() {
     console.log(window.location.href);
 
     var type = getUrlParameter("type");
-    var n = getUrlParameter("num");
+    var id = getUrlParameter("id");
     var currentVisit = null;
-    if(type && n) {
+    if(type && id) {
         var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-        currentVisit = pois[type][n]
+        for(var i = 0; i<pois[type].length;i++)
+            if(pois[type][i].place_id == id) {
+                currentVisit = pois[type][i];
+                break;
+            }
     }
 
     var currentDestination = JSON.parse(window.sessionStorage.getItem("currentDestination"));

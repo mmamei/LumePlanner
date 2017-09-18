@@ -16,10 +16,7 @@ if(platform == "Win32")
     conf.localize = false;
 
 
-var LOCALIZE_EVERY = 1000;
-var REROUTE_EVERY = 20000;
-var SEND_POSITION_EVERY_METERS = 20;
-var MAX_POIS_IN_MAP = 10;
+
 
 $.postJSON = function(url, data, callback) {
     return jQuery.ajax({
@@ -84,23 +81,7 @@ function format_name_from(name) {
 }
 
 
-function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
-    var R = 6371000; // Radius of the earth in m
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1);
-    var a =
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon/2) * Math.sin(dLon/2)
-        ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c; // Distance in m
-    return d;
-}
 
-function deg2rad(deg) {
-    return deg * (Math.PI/180)
-}
 
 
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
@@ -113,6 +94,34 @@ if(!mIcons) {
     })
 }
 
+
+
+
+
+
+
+// loader code
+$( document ).on( "click", ".show-page-loading-msg", function() {
+    var $this = $( this ),
+        theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
+        msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
+        textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible,
+        textonly = !!$this.jqmData( "textonly" );
+    html = $this.jqmData( "html" ) || "";
+    $.mobile.loading( "show", {
+        text: msgText,
+        textVisible: textVisible,
+        theme: theme,
+        textonly: textonly,
+        html: html
+    });
+}).on( "click", ".hide-page-loading-msg", function() {
+    $.mobile.loading( "hide" );
+});
+
+
+/*********************************************************************************************************************/
+/**********************                      TRANSLATE METHODS               *****************************************/
 
 var langCode = window.sessionStorage.getItem("langCode");
 if(langCode == null) langCode = navigator.language.substr (0, 2);
@@ -134,10 +143,10 @@ function loadDictionary(langCode) {
 
 function translate() {
     if(dictionary)
-    $("[tkey]").each(function (index) {
-        var strTr = dictionary [$(this).attr('tkey')];
-        $(this).html(strTr);
-    });
+        $("[tkey]").each(function (index) {
+            var strTr = dictionary [$(this).attr('tkey')];
+            $(this).html(strTr);
+        });
 }
 
 function translateObjKeys(obj) {
@@ -173,26 +182,67 @@ $(document).ready(function(){
 });
 
 
+/*********************************************************************************************************************/
+/**********************                      MAP METHODS                     *****************************************/
 
-// loader code
-$( document ).on( "click", ".show-page-loading-msg", function() {
-    var $this = $( this ),
-        theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
-        msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
-        textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible,
-        textonly = !!$this.jqmData( "textonly" );
-    html = $this.jqmData( "html" ) || "";
-    $.mobile.loading( "show", {
-        text: msgText,
-        textVisible: textVisible,
-        theme: theme,
-        textonly: textonly,
-        html: html
-    });
-}).on( "click", ".hide-page-loading-msg", function() {
-    $.mobile.loading( "hide" );
-});
+var LOCALIZE_EVERY = 1000;
+var REROUTE_EVERY = 20000;
+var SEND_POSITION_EVERY_METERS = 20;
+var MAX_POIS_IN_MAP = 10;
 
 
+function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
+    var R = 6371000; // Radius of the earth in m
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in m
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+
+var dragged = false;
+var centerMarker = null;
+var prevLat = 0;
+var prevLon = 0;
+var start;
 
 
+function localize(position) {
+    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
+        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
+        });
+        console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
+        prevLat = position.coords.latitude;
+        prevLon = position.coords.longitude;
+        start = prevLat+","+prevLon;
+    }
+    if(!dragged)
+        mymap.panTo([position.coords.latitude, position.coords.longitude]);
+    if (centerMarker == null) {
+
+        var icon = L.divIcon({
+            type: 'div',
+            className: 'marker',
+            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+        });
+        centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
+        mymap.setZoom(15)
+    }
+
+
+    centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
+    selectMarkers(pois,mymap.getBounds());
+
+    window.setTimeout(function () {
+        navigator.geolocation.getCurrentPosition(localize)
+    }, LOCALIZE_EVERY)
+}

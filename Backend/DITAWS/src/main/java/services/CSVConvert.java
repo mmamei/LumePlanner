@@ -44,7 +44,7 @@ public class CSVConvert {
         while ((line = br.readLine()) != null) {
             line = line.trim();
             if (line.startsWith("//") || line.isEmpty()) continue;
-            //System.out.println(line);
+            System.out.println(line);
             String[] e = line.split(",");
             String id = e[0];
             String type = e[1];
@@ -54,29 +54,29 @@ public class CSVConvert {
                 System.out.println(line);
                 category = type;
             }
-
-            String name = e[2];
-            double lon = Double.parseDouble(e[3]);
-            double lat = Double.parseDouble(e[4]);
+            float importance = Float.parseFloat(e[2]);
+            String name = e[3];
+            double lon = Double.parseDouble(e[4]);
+            double lat = Double.parseDouble(e[5]);
             String img = null;
             String www = null;
             String desc = null;
-            if (e.length > 5) {
-                if (e[5].startsWith("http")) {
-                    www = e[5];
-                    if (e.length > 6) {
-                        desc = e[6];
-                        for (int i = 7; i < e.length; i++)
+            if (e.length > 6) {
+                if (e[6].startsWith("http")) {
+                    www = e[6];
+                    if (e.length > 7) {
+                        desc = e[7];
+                        for (int i = 8; i < e.length; i++)
                             desc += "," + e[i];
                     }
                 } else {
-                    desc = e[5];
-                    for (int i = 6; i < e.length; i++)
+                    desc = e[6];
+                    for (int i = 7; i < e.length; i++)
                         desc += "," + e[i];
 
                 }
             }
-            list.add(new POI(id, lat, lon, name + source, category, type, 10, "", 0, "ok", "ok", 0, img, desc, www));
+            list.add(new POI(id, lat, lon, name + source, category, type, importance, "", 0, "ok", "ok", 0, img, desc, www));
         }
         br.close();
 

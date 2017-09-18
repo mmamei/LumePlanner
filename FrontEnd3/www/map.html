@@ -72,6 +72,11 @@
             margin-right: auto;
             text-align:center;
         }
+
+        #itinerary {
+            margin:0px !important;
+            height: 70px;
+        }
     </style>
 </head>
 <body>
@@ -99,16 +104,7 @@
     <div id="map-content" data-role="content">
         <div id="mapid"></div>
     </div>
-
-
-    <nav data-role="navbar" >
-        <ul>
-            <li><span id="bus" class="ui-btn btn-primary ui-icon-carat-r ui-btn-icon-right" tkey="use_public_transport">Usa i mezzi pubblici</span></li>
-        </ul>
-        <ul>
-            <li><span id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist" tkey="itineraries_go">Fai un percorso!</span></li>
-        </ul>
-    </nav>
+    <div id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="itineraries_go">Fai un percorso!</div></div>
 
     <div id="popup-area">
         <button id="popup" class="btn btn-primary"></button>

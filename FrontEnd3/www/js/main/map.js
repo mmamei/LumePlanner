@@ -9,42 +9,7 @@ var minLon = 1000;
 var maxLat = -1000;
 var maxLon = -1000;
 
-var dragged = false;
-var centerMarker = null;
-var prevLat = 0;
-var prevLon = 0;
-function localize(position) {
 
-    if(getDistanceFromLatLonInM(position.coords.latitude,position.coords.longitude,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + position.coords.latitude + "&lon=" + position.coords.longitude + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
-        });
-        console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
-        prevLat = position.coords.latitude;
-        prevLon = position.coords.longitude;
-    }
-
-
-    if(!dragged)
-        mymap.panTo([position.coords.latitude, position.coords.longitude]);
-    if (centerMarker == null) {
-
-        var icon = L.divIcon({
-            type: 'div',
-            className: 'marker',
-            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-        });
-        centerMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon: icon}).addTo(mymap);
-        mymap.setZoom(15)
-    }
-
-
-    centerMarker.setLatLng([position.coords.latitude, position.coords.longitude]);
-    selectMarkers(pois,mymap.getBounds());
-
-    window.setTimeout(function () {
-        navigator.geolocation.getCurrentPosition(localize)
-    }, LOCALIZE_EVERY)
-}
 
 
 function selectMarkers(pois,bbox) {
@@ -85,10 +50,11 @@ function selectMarkers(pois,bbox) {
         var type = x.category;
         var lat = x.geometry.coordinates[1];
         var lon = x.geometry.coordinates[0];
+        var id = x.place_id;
 
         var info = "<span class='popcontent'>"+format_name(x.display_name)+"<br></span>" +
-                    "<a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a><br>" +
-                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br>"+
+                    "<a  target=\"_top\" href=\"visit.html?type="+type+"&id="+id+"\">Visit</a><br>" +
+                    "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.type+"</span><br>"+
                     "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
 
 
