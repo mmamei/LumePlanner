@@ -1,44 +1,4 @@
 
-
-var visitplan;
-var type_of_plan;
-var items;
-
-function setupDestination() {
-    visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-    type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
-
-    //console.log(JSON.stringify(visitplan));
-    //console.log(type_of_plan);
-
-    items = visitplan.plans[type_of_plan];
-    console.log(items);
-
-    if (items.visited === null || items.visited.length === 0) {
-        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
-    } else if (items.to_visit.length > 0) {
-        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
-    } else {
-        currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
-    }
-
-    var name = format_name(currentDestination.place.display_name);
-    console.log(name);
-    if(name == "Current Location") {
-        $("#destination").html("Ritorna al punto di partenza");
-        $("#missing_stops").html("")
-    }
-    else {
-        $("#destination").html("Destinazione: "+name);
-        $("#missing_stops").html("mancano altre "+(items.to_visit.length-1)+" tappe")
-    }
-    window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
-}
-
-
-
-
-
 $(document).ready(function(){
 
     next_step = false;
@@ -59,7 +19,8 @@ $(document).ready(function(){
     $("#popup").hide();
     $("#visit_popup").hide();
 
-    if(next_step) setupDestination();
+
+
 
     mymap = L.map('mapid',{
         attributionControl: false,
@@ -102,9 +63,10 @@ $(document).ready(function(){
         window.sessionStorage.setItem("prevLon",prevLon);
     });
 
-    if(next_step)
-    mymap.setView([prevLat,prevLon], 18);
-
+    if(next_step) {
+        mymap.setView([prevLat, prevLon], 18);
+        setupDestination();
+    }
 
     if(conf.localize && navigator.geolocation)
         navigator.geolocation.watchPosition(localize);

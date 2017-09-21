@@ -20,33 +20,35 @@ for(k in mIcons) {
 }
 
 
+var startIcon = L.divIcon({
+    type: 'div',
+    className: 'marker',
+    html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+});
 
+var endIcon = L.divIcon({
+    type: 'div',
+    className: 'marker',
+    html: "<span class='fa-stack fa-lg'>" +
+    "<i class='fa fa-circle fa-stack-2x'></i> " +
+    "<i class='fa fa-flag fa-stack-1x fa-inverse'></i> " +
+    "</span>"
+});
 
-startM = {
-    lat : 0,
-    lng: 0,
-    icon: L.divIcon({
-        type: 'div',
-        className: 'marker',
-        html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
-    })
+var centerIcon = L.divIcon({
+    type: 'div',
+    className: 'marker',
+    html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
+});
+
+var pathStyle = {
+    fillColor: "green",
+    weight: 5,
+    opacity: 1,
+    color: 'blue',
+    dashArray: '3',
+    fillOpacity: 0.7
 };
-
-endM = {
-    lat : 0,
-    lng: 0,
-    icon: L.divIcon({
-        type: 'div',
-        className: 'marker',
-        html: "<span class='fa-stack fa-lg'>" +
-              "<i class='fa fa-circle fa-stack-2x'></i> " +
-              "<i class='fa fa-flag fa-stack-1x fa-inverse'></i> " +
-              "</span>"
-
-
-    })
-};
-
 
 var REROUTE_EVERY = 20000;
 var SEND_POSITION_EVERY_METERS = 20;
@@ -54,7 +56,12 @@ var MAX_POIS_IN_MAP = 10;
 
 var dragged = false;
 var centerMarker = null;
+var endMarker = null;
 
+
+var visitplan;
+var type_of_plan;
+var items;
 
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var out_city_alert_fired = false;
@@ -74,12 +81,7 @@ function localize(position) {
     }
 
     if (centerMarker == null) {
-        var icon = L.divIcon({
-            type: 'div',
-            className: 'marker',
-            html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-        });
-        centerMarker = L.marker([lat, lng], {icon: icon}).addTo(mymap);
+        centerMarker = L.marker([lat, lng], {icon: centerIcon}).addTo(mymap);
         mymap.setZoom(18)
     }
     centerMarker.setLatLng([lat, lng]);
@@ -103,9 +105,6 @@ function localize(position) {
             [cityLonLatBbox[1], cityLonLatBbox[0]],
             [cityLonLatBbox[3], cityLonLatBbox[2]]
         ]);
-
-
-
     if(!next_step)
         selectMarkers(pois,mymap.getBounds(),mymap.getZoom());
     else {
@@ -202,7 +201,12 @@ function selectMarkers(pois,bbox,zoom) {
 
     mymap.addLayer(markers);
 
-
+    if(currentDestination.place) {
+        if (destination_marker == null) {
+            destination_marker = L.marker([currentDestination.place.geometry.coordinates[1], currentDestination.place.geometry.coordinates[0]], {icon: endIcon}).addTo(mymap);
+        }
+        destination_marker.setLatLng([currentDestination.place.geometry.coordinates[1], currentDestination.place.geometry.coordinates[0]])
+    }
     var count= 0;
     markers.eachLayer(function(marker) {count++});
     console.log(count)
@@ -336,7 +340,8 @@ function visit() {
 
             window.sessionStorage.setItem("visitplan", JSON.stringify(data));
             setupDestination();
-            //window.location.href = "next_step.html"
+            if(!conf.localize && next_step)
+               simulatedMovement();
         });
 
     });
@@ -350,62 +355,104 @@ var currentDestination = {};
 var next_step = false;
 
 
+var destination_marker = null;
 
-function drawStartEndPlacemarks() {
 
-    //startM.lat = prevLat;
-    //startM.lng = prevLon;
-    //L.marker(startM,{icon:startM.icon}).addTo(mymap);
 
-    if(endM.lat == 0) {
-        endM.lat = currentDestination.place.geometry.coordinates[1];
-        endM.lng = currentDestination.place.geometry.coordinates[0];
-        L.marker(endM, {icon: endM.icon}).addTo(mymap);
+
+
+
+function setupDestination() {
+    visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
+    type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
+
+    //console.log(JSON.stringify(visitplan));
+    //console.log(type_of_plan);
+
+    items = visitplan.plans[type_of_plan];
+    console.log(items);
+
+    if (items.visited === null || items.visited.length === 0) {
+        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
+    } else if (items.to_visit.length > 0) {
+        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
+    } else {
+        currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
     }
 
-    selectMarkers(pois,mymap.getBounds());
+    var name = format_name(currentDestination.place.display_name);
+    console.log(name);
+    if(name == "Current Location") {
+        $("#destination").html("Ritorna al punto di partenza");
+        $("#missing_stops").html("")
+    }
+    else {
+        $("#destination").html("Destinazione: "+name);
+        $("#missing_stops").html("mancano altre "+(items.to_visit.length-1)+" tappe")
+    }
+    window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
 }
 
-
 var path=null;
+var path_coords = null;
 
-var prevStart = "0,0";
 function computeRoute() {
 
     var start = prevLat+","+prevLon;
     var end = currentDestination.place.geometry.coordinates[1] + "," + currentDestination.place.geometry.coordinates[0];
 
+    //console.log(start);
+    //console.log(end);
+
+    //$.getJSON('https://graphhopper.com/api/1/route?' +
+    //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+    //        '&point=' + newstart + '&point=' + end, function (data, status) {
+    $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
+        path_coords = data.points;
+        if (path != null)
+            mymap.removeLayer(path);
+        path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
+    });
+    if(conf.localize) window.setTimeout(computeRoute,REROUTE_EVERY)
+}
+
+
+var timed_update;
+function simulatedMovement() {
+
+    var start = prevLat+","+prevLon;
+    var end = currentDestination.place.geometry.coordinates[1] + "," + currentDestination.place.geometry.coordinates[0];
     console.log(start);
     console.log(end);
+    if(centerMarker == null)
+        centerMarker = L.marker([prevLat,prevLon], {icon: centerIcon}).addTo(mymap);
+    else centerMarker.setLatLng([prevLat,prevLon]);
+    clearInterval(timed_update);
 
-    if(getDistanceFromLatLonInM(start.split(",")[0],start.split(",")[1],prevStart.split(",")[0],prevStart.split(",")[1]) > 100) {
-        console.log("recompute route");
-        //$.getJSON('https://graphhopper.com/api/1/route?' +
-        //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
-        //        '&point=' + newstart + '&point=' + end, function (data, status) {
-        $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
-            prevStart = start;
-            var geojson = {
-                //data: data.paths[0].points, // <--- use this if calling graphhopper.com
-                data: data.points,
-                style: {
-                    fillColor: "green",
-                    weight: 2,
-                    opacity: 1,
-                    color: 'blue',
-                    dashArray: '3',
-                    fillOpacity: 0.7
-                }
-            };
-            if (path != null)
-                mymap.removeLayer(path);
-            path = L.geoJSON(geojson.data, {style: geojson.style});
-            path.addTo(mymap);
+    computeRoute();
 
-        });
-    }
-    window.setTimeout(computeRoute,REROUTE_EVERY)
+    var t = 0;
+    timed_update = setInterval(function() {
+        if(path_coords != null) {
+            console.log(t + "/" + path_coords.coordinates.length);
+            var lat = path_coords.coordinates[t][1];
+            var lng = path_coords.coordinates[t][0];
+            centerMarker.setLatLng([lat, lng]);
+            mymap.panTo([lat, lng]);
+            selectMarkers(pois, mymap.getBounds());
+            prevLat = lat;
+            prevLon = lng;
+            window.sessionStorage.setItem("prevLat", prevLat);
+            window.sessionStorage.setItem("prevLon", prevLon);
+            var dist = getDistanceFromLatLonInM(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), lat, lng);
+            $("#dist").html("mancano " + dist.toFixed(0) + " metri");
+            t++;
+            if (t == path_coords.coordinates.length) clearInterval(timed_update)
+        }
+    },2000)
 }
+
+
 
 /***************************************************************************************************************/
 /************                                  KALMAN FILER                                           **********/
