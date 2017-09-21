@@ -1,11 +1,8 @@
 
-$(document).ready(function(){
+    $(document).ready(function(){
 
-    next_step = false;
-
-    if(window.sessionStorage.getItem("visitplan"))
-        next_step = true;
-
+    $("#popup").hide();
+    $("#visit_popup").hide();
     if(next_step)
           $("#itinerary").hide();
     else {
@@ -13,14 +10,6 @@ $(document).ready(function(){
           $("#bus").hide();
           $("#quit").hide()
     }
-
-    console.log("next_step = "+next_step);
-
-    $("#popup").hide();
-    $("#visit_popup").hide();
-
-
-
 
     mymap = L.map('mapid',{
         attributionControl: false,
@@ -32,53 +21,33 @@ $(document).ready(function(){
     });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
+
+    mymap.fitBounds([
+        [cityLonLatBbox[1], cityLonLatBbox[0]],
+        [cityLonLatBbox[3], cityLonLatBbox[2]]
+    ]);
+
     L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
         dragged = false;
     }).addTo(mymap);
 
-    if(!next_step) {
-        selectMarkers(pois);
-        if(!conf.localize)
-            mymap.fitBounds([
-                [minLat, minLon],
-                [maxLat, maxLon]
-            ]);
-    }
-
-
 
     mymap.on('zoom', function(e) {
-        selectMarkers(pois,mymap.getBounds())
+        selectMarkers()
     });
-
-
 
     mymap.on('drag', function(e) {
         dragged = true;
-        selectMarkers(pois,mymap.getBounds());
-
-        prevLat = mymap.getCenter().lat;
-        prevLon = mymap.getCenter().lng;
-        window.sessionStorage.setItem("prevLat",prevLat);
-        window.sessionStorage.setItem("prevLon",prevLon);
+        selectMarkers();
     });
 
-    if(next_step) {
-        mymap.setView([prevLat, prevLon], 18);
-        setupDestination();
-    }
+    if(next_step) setupDestination();
+
 
     if(conf.localize && navigator.geolocation)
         navigator.geolocation.watchPosition(localize);
-    else {
-        if(next_step) simulatedMovement();
-        if(!next_step) {
-            prevLat = mymap.getCenter().lat;
-            prevLon = mymap.getCenter().lng;
-            window.sessionStorage.setItem("prevLat",prevLat);
-            window.sessionStorage.setItem("prevLon",prevLon);
-        }
-    }
+    else simulatedMovement();
+
 
     $("#itinerary").click(function(){
         $(this).css("opacity","0.5");
@@ -110,3 +79,37 @@ $(document).ready(function(){
     })
 
 });
+
+var prev_path_coords;
+var timed_update;
+function simulatedMovement() {
+    prevLat = (cityLonLatBbox[1] +  cityLonLatBbox[3]) / 2;
+    prevLon = (cityLonLatBbox[0] +  cityLonLatBbox[2]) / 2;
+    var t = 0;
+    timed_update = setInterval(function() {
+        if(path_coords == null || t >= path_coords.coordinates.length) {
+            localize({
+                coords: {
+                    latitude: prevLat,
+                    longitude: prevLon,
+                    accuracy: 1
+                }
+            })
+        }
+        else {
+            if(JSON.stringify(path_coords)!=JSON.stringify(prev_path_coords)) {
+                t = 0;
+                prev_path_coords = path_coords
+            }
+            localize({
+                coords: {
+                    latitude: path_coords.coordinates[t][1],
+                    longitude: path_coords.coordinates[t][0],
+                    accuracy: 1
+                }
+            });
+            t++;
+            //if (t == path_coords.coordinates.length) clearInterval(timed_update)
+        }
+    },2000)
+}

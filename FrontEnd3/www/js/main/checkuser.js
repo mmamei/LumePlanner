@@ -16,7 +16,7 @@ function checkIti(name,data) {
                 break;
             }
         }
-        pois_visited.push(visited)
+        pois_visited.push([visited,lonlatp[1],lonlatp[0]])
     }
     return pois_visited
 }
@@ -46,6 +46,8 @@ $(document).ready(function(){
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 
+
+
     $("#check").click(function() {
         var usr = $("#user").val();
         console.log("check "+usr);
@@ -66,24 +68,30 @@ $(document).ready(function(){
 
             mymap.fitBounds(polyline.getBounds());
 
-            //$("#mapid").show();
+
 
             var str = "";
             for(var k in data.itineraries) {
-                str += "<div class='itiner ui-corner-all ui-mini'>&nbsp;"+k+"&nbsp;";
+                str += "<div class='itiner-box ui-corner-all ui-mini'>&nbsp;<span class='itiner'>"+k+"</span>&nbsp;";
                 var check = checkIti(k,data);
+                console.log(check);
                 for(var j=0; j<check.length;j++)
-                    if(check[j]) str += "<span class='ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-notext ui-btn-b ui-btn-inline ui-mini'></span>";
-                    else str += "<span class='ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-b ui-btn-inline ui-mini'></span>";
+                    if(check[j][0]) str += "<span lat='"+check[j][1]+"' lng='"+check[j][2]+"' class='checkpoint ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-notext ui-btn-b ui-btn-inline ui-mini'></span>";
+                    else str += "<span lat='"+check[j][1]+"' lng='"+check[j][2]+"' class='checkpoint ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-b ui-btn-inline ui-mini'></span>";
                 str += "</div>"
             }
             if(!data.gotPrize)
             str += "<div id='prize' class='ui-corner-all'><span style='margin: 0 auto' class='ui-btn ui-shadow ui-corner-all ui-icon-star ui-btn-icon-notext ui-btn-b'></span></div>";
 
 
-
-
             $("#result").html(str);
+
+            $(".checkpoint").click(function() {
+                //console.log($(this).attr("lat"))
+                mymap.panTo([$(this).attr("lat"),$(this).attr("lng")]);
+                mymap.setZoom(18)
+            });
+
             $(".itiner").click(function() {
                 var txt = $(this).text().trim();
                 var points = data.itineraries[txt];

@@ -1,10 +1,5 @@
 
 
-function PlaceTime(place,time) {
-    this.place = place;
-    this.time = time;
-}
-
 var mymap;
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
@@ -56,9 +51,7 @@ var MAX_POIS_IN_MAP = 10;
 
 var dragged = false;
 var centerMarker = null;
-var endMarker = null;
-
-
+var destination_marker = null;
 var visitplan;
 var type_of_plan;
 var items;
@@ -66,37 +59,37 @@ var items;
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var out_city_alert_fired = false;
 
+
+var currentDestination = {};
+var next_step = window.sessionStorage.getItem("visitplan") ? true : false;
+
+
+var path=null;
+var path_coords = null;
+
+
 function localize(position) {
     var accuracy = position.coords.accuracy;
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
-    console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
-    if(getDistanceFromLatLonInM(lat,lng,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
-        });
-        prevLat = lat;
-        prevLon = lng;
-        window.sessionStorage.setItem("prevLat",prevLat);
-        window.sessionStorage.setItem("prevLon",prevLon);
+
+
+    var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
+        cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
+    console.log(cityLonLatBbox);
+    console.log("localized at " + lat + "," + lng);
+    console.log(inCity);
+    if(!next_step && !inCity && !out_city_alert_fired) {
+        out_city_alert_fired = true;
+        alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa")
     }
+
 
     if (centerMarker == null) {
         centerMarker = L.marker([lat, lng], {icon: centerIcon}).addTo(mymap);
         mymap.setZoom(18)
     }
     centerMarker.setLatLng([lat, lng]);
-
-    var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
-                 cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
-    console.log(cityLonLatBbox);
-    console.log("localized at " + lat + "," + lng);
-    console.log(inCity);
-
-    if(!next_step && !inCity && !out_city_alert_fired) {
-        out_city_alert_fired = true;
-        alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa")
-    }
-
     if((next_step && !dragged) || (!next_step && !dragged && inCity))
         mymap.panTo([lat, lng]);
 
@@ -105,28 +98,31 @@ function localize(position) {
             [cityLonLatBbox[1], cityLonLatBbox[0]],
             [cityLonLatBbox[3], cityLonLatBbox[2]]
         ]);
-    if(!next_step)
-        selectMarkers(pois,mymap.getBounds(),mymap.getZoom());
-    else {
-        drawStartEndPlacemarks();
-        computeRoute()
+
+    console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
+    if(getDistanceFromLatLonInM(lat,lng,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
+        $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
+        });
+        prevLat = lat;
+        prevLon = lng;
     }
 
-    //window.setTimeout(function () {
-    //    navigator.geolocation.getCurrentPosition(localize)
-    //}, LOCALIZE_EVERY)
+
+    selectMarkers();
+    if(next_step) {
+        var dist = getDistanceFromLatLonInM(currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0], lat, lng);
+        $("#dist").html("mancano " + dist.toFixed(0) + " metri");
+        computeRoute()
+    }
 }
 
 
 
 
-var minLat = 1000;
-var minLon = 1000;
-var maxLat = -1000;
-var maxLon = -1000;
-
 var markers = new L.LayerGroup();
-function selectMarkers(pois,bbox,zoom) {
+function selectMarkers() {
+
+    var bbox = mymap.getBounds();
 
     markers.clearLayers();
     markers = new L.LayerGroup();
@@ -192,39 +188,41 @@ function selectMarkers(pois,bbox,zoom) {
         });
 
         marker.addTo(markers);
-
-        minLat = Math.min(minLat, lat);
-        minLon = Math.min(minLon, lon);
-        maxLat = Math.max(maxLat, lat);
-        maxLon = Math.max(maxLon, lon)
     }
 
     mymap.addLayer(markers);
 
-    if(currentDestination.place) {
+    if(currentDestination.geometry) {
         if (destination_marker == null) {
-            destination_marker = L.marker([currentDestination.place.geometry.coordinates[1], currentDestination.place.geometry.coordinates[0]], {icon: endIcon}).addTo(mymap);
+            destination_marker = L.marker([currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0]], {icon: endIcon}).addTo(mymap);
         }
-        destination_marker.setLatLng([currentDestination.place.geometry.coordinates[1], currentDestination.place.geometry.coordinates[0]])
+        destination_marker.setLatLng([currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0]])
     }
     var count= 0;
     markers.eachLayer(function(marker) {count++});
     console.log(count)
 }
 
-/*
- <h2 id="title" align = "center"></h2>
+function computeRoute() {
 
- <img id="photo_url" src="" class="img-responsive center">
- <p id="info"></p>
- <p id="description"></p>
- <button id="www" class="btn btn-primary" tkey="more_info">Altre Informazioni</button>
+    var start = prevLat+","+prevLon;
+    var end = currentDestination.geometry.coordinates[1] + "," + currentDestination.geometry.coordinates[0];
 
- <div id="cities" class="ui-grid-a ui-responsive"></div>
- <button id="next" class="btn btn-primary" tkey="next_visit">Prossima Visita</button>
- <button class="btn btn-block" id="share_btn">Condividi con  <i id="fb" class="fa fa-facebook-f"></i>acebook </button>
- <button id="close" class="btn btn-primary" tkey="close_visit">Chiudi</button>
- */
+    //console.log(start);
+    //console.log(end);
+
+    //$.getJSON('https://graphhopper.com/api/1/route?' +
+    //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
+    //        '&point=' + newstart + '&point=' + end, function (data, status) {
+    $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
+        path_coords = data.points;
+        if (path != null)
+            mymap.removeLayer(path);
+        path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
+    });
+    if(conf.localize) window.setTimeout(computeRoute,REROUTE_EVERY)
+}
+
 
 function visit() {
     var clickedVisit = null;
@@ -252,13 +250,13 @@ function visit() {
     var next_icon = true;
 
     if(currentDestination && !clickedVisit) {
-        actualVisit = currentDestination.place;
+        actualVisit = currentDestination;
         close_icon = false
     }
 
     if(clickedVisit) {
         actualVisit = clickedVisit;
-        if(!currentDestination || clickedVisit.place_id != currentDestination.place.place_id)
+        if(!currentDestination || clickedVisit.place_id != currentDestination.place_id)
             next_icon = false;
         else
             close_icon = false
@@ -329,7 +327,7 @@ function visit() {
         var d = new Date().getTime();
         var request = {
             user: user.email,
-            visited: currentDestination.place,
+            visited: currentDestination,
             time: d,
             rating: 10, // ???
             city: city
@@ -340,23 +338,11 @@ function visit() {
 
             window.sessionStorage.setItem("visitplan", JSON.stringify(data));
             setupDestination();
-            if(!conf.localize && next_step)
-               simulatedMovement();
         });
 
     });
 
 }
-
-
-var currentDestination = {};
-
-
-var next_step = false;
-
-
-var destination_marker = null;
-
 
 
 
@@ -372,15 +358,14 @@ function setupDestination() {
     items = visitplan.plans[type_of_plan];
     console.log(items);
 
-    if (items.visited === null || items.visited.length === 0) {
-        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
-    } else if (items.to_visit.length > 0) {
-        currentDestination = new PlaceTime(items.to_visit[0].visit, items.to_visit[0].arrival_time);
-    } else {
-        currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
-    }
+    if (items.visited === null || items.visited.length === 0)
+        currentDestination = items.to_visit[0].visit;
+    else if (items.to_visit.length > 0)
+        currentDestination = items.to_visit[0].visit;
+    else
+        currentDestination = items.arrival;
 
-    var name = format_name(currentDestination.place.display_name);
+    var name = format_name(currentDestination.display_name);
     console.log(name);
     if(name == "Current Location") {
         $("#destination").html("Ritorna al punto di partenza");
@@ -388,110 +373,13 @@ function setupDestination() {
     }
     else {
         $("#destination").html("Destinazione: "+name);
-        $("#missing_stops").html("mancano altre "+(items.to_visit.length-1)+" tappe")
+        if((items.to_visit.length-1) > 0)
+            $("#missing_stops").html("mancano altre "+(items.to_visit.length-1)+" tappe")
     }
     window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
 }
 
-var path=null;
-var path_coords = null;
-
-function computeRoute() {
-
-    var start = prevLat+","+prevLon;
-    var end = currentDestination.place.geometry.coordinates[1] + "," + currentDestination.place.geometry.coordinates[0];
-
-    //console.log(start);
-    //console.log(end);
-
-    //$.getJSON('https://graphhopper.com/api/1/route?' +
-    //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
-    //        '&point=' + newstart + '&point=' + end, function (data, status) {
-    $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
-        path_coords = data.points;
-        if (path != null)
-            mymap.removeLayer(path);
-        path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
-    });
-    if(conf.localize) window.setTimeout(computeRoute,REROUTE_EVERY)
-}
 
 
-var timed_update;
-function simulatedMovement() {
-
-    var start = prevLat+","+prevLon;
-    var end = currentDestination.place.geometry.coordinates[1] + "," + currentDestination.place.geometry.coordinates[0];
-    console.log(start);
-    console.log(end);
-    if(centerMarker == null)
-        centerMarker = L.marker([prevLat,prevLon], {icon: centerIcon}).addTo(mymap);
-    else centerMarker.setLatLng([prevLat,prevLon]);
-    clearInterval(timed_update);
-
-    computeRoute();
-
-    var t = 0;
-    timed_update = setInterval(function() {
-        if(path_coords != null) {
-            console.log(t + "/" + path_coords.coordinates.length);
-            var lat = path_coords.coordinates[t][1];
-            var lng = path_coords.coordinates[t][0];
-            centerMarker.setLatLng([lat, lng]);
-            mymap.panTo([lat, lng]);
-            selectMarkers(pois, mymap.getBounds());
-            prevLat = lat;
-            prevLon = lng;
-            window.sessionStorage.setItem("prevLat", prevLat);
-            window.sessionStorage.setItem("prevLon", prevLon);
-            var dist = getDistanceFromLatLonInM(parseFloat(end.split(',')[0]), parseFloat(end.split(',')[1]), lat, lng);
-            $("#dist").html("mancano " + dist.toFixed(0) + " metri");
-            t++;
-            if (t == path_coords.coordinates.length) clearInterval(timed_update)
-        }
-    },2000)
-}
-
-
-
-/***************************************************************************************************************/
-/************                                  KALMAN FILER                                           **********/
-/*
-var kMinAccuracy = 1;
-var kQ_metres_per_second = 3;
-var k_timestamp_milliseconds;
-var klat;
-var klng;
-var kvariance;
-
-function kalman(lat_measurement, lng_measurement, accuracy, time_stamp_milliseconds) {
-    if (accuracy < kMinAccuracy) accuracy = kMinAccuracy;
-    if (kvariance < 0) {
-        // if variance < 0, object is unitialised, so initialise with current values
-        k_timestamp_milliseconds = time_stamp_milliseconds;
-        klat = lat_measurement;
-        klng = lng_measurement;
-        kvariance = accuracy*accuracy;
-    } else {
-        // else apply Kalman filter
-        var TimeInc_milliseconds = time_stamp_milliseconds - k_timestamp_milliseconds;
-        if (TimeInc_milliseconds > 0) {
-            // time has moved on, so the uncertainty in the current position increases
-            kvariance += TimeInc_milliseconds * kQ_metres_per_second * kQ_metres_per_second / 1000;
-            k_timestamp_milliseconds = time_stamp_milliseconds;
-        }
-
-        // Kalman gain matrix K = Covarariance * Inverse(Covariance + MeasurementVariance)
-        // NB: because K is dimensionless, it doesn't matter that variance has different units to lat and lng
-        var K = kvariance / (kvariance + accuracy * accuracy);
-        // apply K
-        klat += K * (lat_measurement - klat);
-        klng += K * (lng_measurement - klng);
-        // new Covarariance  matrix is (IdentityMatrix - K) * Covarariance
-        kvariance = (1 - K) * kvariance;
-    }
-}
-
-*/
 
 
