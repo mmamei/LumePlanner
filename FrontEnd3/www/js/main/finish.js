@@ -30,7 +30,7 @@ $(document).ready(function(){
     $("#map").click(function() {
         $(this).css("opacity","0.5");
         cleanup();
-        window.location.href = "next_step.html";
+        window.location.href = "map.html";
     });
 
 });

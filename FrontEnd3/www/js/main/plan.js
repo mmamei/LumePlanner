@@ -233,10 +233,10 @@ $(document).ready(function() {
         if(newplan) {
             $.postJSON(conf.dita_server+"accept_plan",visitplan,function(data, status){
                 console.log(data);
-                if(data) window.location.href = "next_step.html";
+                if(data) window.location.href = "map.html";
                 else console.log("Cannot create plan")
             });
         }
-        else window.location.href = "next_step.html"
+        else window.location.href = "map.html"
     });
 });
