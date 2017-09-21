@@ -30,10 +30,11 @@
         <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0-beta.1/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" type="text/css" href="js/leaflet-jquerydialog.css" />
         <script src="js/leaflet-jquerydialog.js"></script>
-        <script src="js/main/aforismi.js"></script>
+        <script src="js/aforismi.js"></script>
         <script src="js/openfb.js"></script>
         <script src="js/global.js"></script>
         <script src="js/global_map.js"></script>
+        <script src="js/global_sim_movement.js"></script>
         <script src="js/main/next_step.js"></script>
         <style>
 
@@ -118,21 +119,24 @@
 
 
 
-        <div id="visit" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px"><span id="destination"></span></div></div>
+        <div id="visit" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist">
+            <div style="margin:0px">
+                <span id="destination"></span><br>
+                <span style="font-size:small" id="dist"></span><br>
+                <span style="font-size:x-small" id="missing_stops"></span>
+            </div>
+
+
+        </div>
         <div id="bus" style="background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="use_public_transport">Usa i mezzi pubblici</div></div>
+
+        <div id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="itineraries_go">Fai un percorso!</div></div>
         <div id="quit" style="background: darkblue; color: white;"  class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="quit">Abbandona il percorso</div></div>
 
         <div id="popup" class="ui-corner-all"></div>
         <div id="visit_popup" class="ui-corner-all"></div>
 
     </div>
-
-
-
-
-
-
-
 
     </body>
 </html>

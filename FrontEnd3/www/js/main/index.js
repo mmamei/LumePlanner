@@ -114,11 +114,11 @@ function init(position) {
 
 
                 $.when(loadActivities(city,user.email), loadItineraries(city,user.email)).done(function(){
-                    window.location.href = "map.html";
+                    window.location.href = "next_step.html";
                 });
             }
             else {
-                window.location.href = "map.html";
+                window.location.href = "next_step.html";
             }
         });
 

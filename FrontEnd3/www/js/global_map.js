@@ -1,5 +1,10 @@
 
 
+function PlaceTime(place,time) {
+    this.place = place;
+    this.time = time;
+}
+
 var mymap;
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
@@ -43,7 +48,6 @@ endM = {
 };
 
 
-var LOCALIZE_EVERY = 1000;
 var REROUTE_EVERY = 20000;
 var SEND_POSITION_EVERY_METERS = 20;
 var MAX_POIS_IN_MAP = 10;
@@ -250,7 +254,7 @@ function visit() {
 
     if(clickedVisit) {
         actualVisit = clickedVisit;
-        if(clickedVisit.place_id != currentDestination.place.place_id)
+        if(!currentDestination || clickedVisit.place_id != currentDestination.place.place_id)
             next_icon = false;
         else
             close_icon = false
