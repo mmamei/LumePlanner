@@ -167,22 +167,18 @@ function simulatedMovement() {
 
 
 
-
-
-
-
-
-$(document).ready(function(){
-    $("#popup").hide();
-    var visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
-    var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
+var visitplan;
+var type_of_plan;
+var items;
+function setupDestination() {
+    visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
+    type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
 
     //console.log(JSON.stringify(visitplan));
     //console.log(type_of_plan);
 
-
     items = visitplan.plans[type_of_plan];
-    //console.log(items);
+    console.log(items);
 
 
 
@@ -195,10 +191,32 @@ $(document).ready(function(){
         currentDestination = new PlaceTime(items.arrival, items.arrival.arrival_time);
     }
 
+    var name = format_name(currentDestination.place.display_name);
+    console.log(name);
+    var txt = "Destinazione: "+name+" <span style='font-size:x-small'>mancano altre ";
+    //txt += ""
+    txt += items.to_visit.length-1+" tappe</span>";
+    //txt += "</span>"
+    console.log(txt);
+    if(name == "Current Location")
+        txt = "Ritorna al punto di partenza";
+
+
+    $("#destination").html(txt);
+
 
 
     window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
 
+}
+
+
+
+$(document).ready(function(){
+    $("#popup").hide();
+    $("#visit_popup").hide();
+
+    setupDestination();
 
     mymap = L.map('mapid',{
         attributionControl: false,
@@ -223,19 +241,16 @@ $(document).ready(function(){
 
 
     if(conf.localize && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(localize);
+        navigator.geolocation.watchPosition(localize);
     else
         simulatedMovement();
-
-
-
-
 
 
     $("#visit").click(function(){
         $(this).css("opacity","0.5");
         if (items.to_visit.length > 0) {
-            window.location.href = "visit.html"
+           //window.location.href = "visit.html"
+            visit()
         } else {
             window.location.href = "finish.html"
         }

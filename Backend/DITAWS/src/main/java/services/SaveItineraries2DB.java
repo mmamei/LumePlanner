@@ -13,16 +13,13 @@ import java.io.*;
 
 public class SaveItineraries2DB {
 
-
-
 	public static void main(String[] args) throws Exception  {
 		SaveItineraries2DB g = new SaveItineraries2DB();
-		String city = "Maranello";
+		String city = "Modena";
 		Mongo dao = new Mongo();
 		String file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\itineraries.json";
 		g.run(city, dao,file);
 	}
-
 
 	private Logger logger = Logger.getLogger(RESTController.class);
 

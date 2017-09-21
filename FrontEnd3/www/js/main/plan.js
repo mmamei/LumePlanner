@@ -40,7 +40,8 @@ function parsePlan(items) {
             icon: L.divIcon({
                 type: 'div',
                 className: 'marker',
-                html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                //html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
+                html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
             })
         };
     }

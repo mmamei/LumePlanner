@@ -22,7 +22,9 @@ public class CSVConvert {
 
 
     public static void main(String[] args) throws Exception {
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv",",from:Maranello",false);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv",",from:Maranello",false);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\ReggioEmilia\\pois\\pois19092017.csv",",from:Reggio-Emilia",false);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Modena\\pois\\pois20092017.csv",",from:Modena",false);
         System.out.println("Done");
     }
 

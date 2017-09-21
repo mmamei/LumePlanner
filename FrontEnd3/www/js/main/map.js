@@ -3,8 +3,8 @@
 
 $(document).ready(function(){
     $("#popup").hide();
-
-    console.log(pois);
+    $("#visit_popup").hide();
+    //console.log(pois);
 
     mymap = L.map('mapid',{
         attributionControl: false,
@@ -38,14 +38,13 @@ $(document).ready(function(){
     });
 
     mymap.on('zoom', function(e) {
-        dragged = true;
         selectMarkers(pois,mymap.getBounds())
     });
 
 
     if(conf.localize) {
         if (navigator.geolocation)
-            navigator.geolocation.getCurrentPosition(localize);
+            navigator.geolocation.watchPosition(localize);
         else
             alert("Turn on GPS");
     }

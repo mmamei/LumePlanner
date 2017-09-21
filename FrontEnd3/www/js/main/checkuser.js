@@ -24,7 +24,8 @@ function checkIti(name,data) {
 
 $(document).ready(function(){
 
-    //$("#mapid").hide();
+    var userid = JSON.parse(window.localStorage.getItem("user")).email.substring(2);
+    $("#user").val(userid);
 
     mymap = L.map('mapid',{
         attributionControl: false,

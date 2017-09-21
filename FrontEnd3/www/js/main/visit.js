@@ -1,29 +1,11 @@
-function find_pic (picture_query) {
-    var q = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9eab1c5e074fc0e1deb66c40d7535ad9&format=json&sort=relevance&page=1&per_page=1&nojsoncallback=1&text="+picture_query;
-    console.log(q);
-    $.get(q, function(data, status){
-        console.log(data);
-        if (data.photos.photo.length > 0) {
-            var photo_url = data.photos.photo[0];
-            var photo_url = "https://farm"+photo_url.farm+".staticflickr.com/"+photo_url.server+"/"+photo_url.id+"_"+photo_url.secret+"_b.jpg";
-            console.log(photo_url);
-            $("#photo_url").attr("src",photo_url);
-            $("#photo_url").show();
-        } else {
-            console.log("not found:"+picture_query);
-            if (picture_query.lastIndexOf(" ") !== -1) {
-                picture_query = picture_query.substr(0, picture_query.lastIndexOf(" "));
-                find_pic(picture_query);
-            } else {
-                console.log("picture not found");
-            }
-        }
-    });
-}
+
 
 
 
 $(document).ready(function() {
+
+
+
 
     $("#photo_url").hide();
     $("#description").hide();
@@ -85,6 +67,11 @@ $(document).ready(function() {
     $("#info").html(actualVisit.place.display_name.replace(",","<br/>"));
     if(actualVisit.place.description != null) {
         $("#description").html(actualVisit.place.description);
+        $("#description").show()
+    }
+    else {
+        var txt = aforismi[Math.floor(Math.random()*aforismi.length)];
+        $("#description").html("Da queste parti si dice: \"<i>"+txt+"</i>\"");
         $("#description").show()
     }
     if(actualVisit.place.www != null) {

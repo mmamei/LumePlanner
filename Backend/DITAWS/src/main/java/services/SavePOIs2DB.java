@@ -20,7 +20,7 @@ public class SavePOIs2DB {
 
 	public static void main(String[] args) throws Exception  {
 		SavePOIs2DB g = new SavePOIs2DB();
-		String city = "Forlì";
+		String city = "Modena";
 		Mongo dao = new Mongo();
 		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
 		g.run(city, dao,dir);
@@ -28,7 +28,6 @@ public class SavePOIs2DB {
 
 
 	private Logger logger = Logger.getLogger(RESTController.class);
-
 
 
 	public void run(String city, Mongo dao, String pois_dir) {
