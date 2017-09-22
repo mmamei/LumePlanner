@@ -103,7 +103,8 @@ function localize(position) {
 
     if (centerMarker == null) {
         centerMarker = L.marker([lat, lng], {icon: centerIcon}).addTo(mymap);
-        mymap.setZoom(18)
+        if(next_step) mymap.setZoom(18);
+        else mymap.setZoom(16)
     }
     centerMarker.setLatLng([lat, lng]);
     if((next_step && !dragged) || (!next_step && !dragged && inCity))
@@ -322,10 +323,10 @@ function visit() {
                 link: "https://play.google.com/store/apps/details?id=it.unimore.morselli.lume"
             },
             success: function() {
-                alert('Informazione condivisa su Facebook');
+                alert('Informazione condivisa su Facebook!');
             },
             error: function() {
-                alert('Si è verificato un problema con la condivisione');
+                window.location = "fb.html"
             }
         });
     });

@@ -208,7 +208,7 @@ $(document).ready(function() {
 
 
     $('#dialog-about').dialog({
-        modal: true, autoOpen: false, closeOnEsc: false, draggable: false, maxWidth:700,
+        modal: true, autoOpen: false, closeOnEsc: false, draggable: false, maxWidth:"90%", maxHeight:"95%"
     });
 
 
