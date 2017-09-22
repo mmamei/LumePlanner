@@ -11,10 +11,6 @@ $(document).ready(function(){
         window.location = 'mailto:' + email + '?subject=' + subject + '&body=' +   emailBody;
     });
 
-    $("#check").click(function() {
-        window.location = "checkuser.html"
-    });
-
     $("#home").click(function() {
         window.location = "index.html"
     });

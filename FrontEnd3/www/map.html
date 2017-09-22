@@ -44,7 +44,7 @@
                 overflow:hidden;
             }
             #mapid {
-                height: 70%;
+                height: 60%;
                 z-index: 1;
                 padding:0px;
                 margin:0px;
@@ -95,7 +95,7 @@
             <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
                 <li data-filtertext="homepage" data-icon="home"><a href="index.html" target="_top" tkey="homepage">Pagina principale</a></li>
                 <li data-filtertext="luoghi" data-icon = "location"><a href="map.html" target="_top" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
-                <li data-filtertext="viaggi" data-icon = "camera"><a href="itineraries.html" target="_top" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
+                <li data-filtertext="viaggi" data-icon = "camera"><a href="checkuser.html" target="_top" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
                 <li data-filtertext="percorsi" data-icon = "star"><a href="itineraries.html" target="_top" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
                 <li data-filtertext="account" data-icon = "user"><a href="fb.html" target="_top" data-ajax="false" tkey="user">Utente</a></li>
                 <li data-filtertext="assistenza" data-icon = "phone"><a href="help.html" target="_top" data-ajax="false" tkey="help">Assistenza</a></li>
@@ -105,9 +105,9 @@
         <div id="mapid" data-role="content"></div>
         <div id="popup" data-role="header" class="ui-corner-all ui-shadow"></div>
 
-        <div id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="itineraries_go">Fai un percorso!</div></div>
+        <div id="itinerary" style="height:10%;margin:0px" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="itineraries_go">Fai un percorso!</div></div>
 
-        <div id="visit" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist">
+        <div id="visit" style="height:20%;margin:0px" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist">
             <div style="margin:0px">
                 <span id="destination"></span><br>
                 <span style="font-size:small" id="dist"></span><br>
@@ -116,9 +116,9 @@
         </div>
         <div id="visit_popup" class="ui-corner-all"></div>
 
-        <div id="bus" style="background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="use_public_transport">Usa i mezzi pubblici</div></div>
+        <div id="bus" style="height:10%; margin:0px; background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="use_public_transport">Usa i mezzi pubblici</div></div>
 
-        <a id="quit" style="background: darkblue; color: white;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
+        <a id="quit" style="height:10%; margin:0px; background: darkblue; color: white;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
            class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist" tkey="quit">Abbandona il percorso</a>
         <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false">
             <div data-role="header" data-theme="a">

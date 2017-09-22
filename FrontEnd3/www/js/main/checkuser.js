@@ -71,9 +71,15 @@ $(document).ready(function(){
 
             mymap.fitBounds(polyline.getBounds());
 
-
-
             var str = "";
+            if(userid != usr) {
+                if (data.gotPrize)
+                    str += "<div id='prize' style='background-color: gold; margin: 0 auto' class='ui-btn ui-shadow ui-corner-all ui-icon-star ui-btn-icon-notext ui-btn-b'></div>";
+                else
+                    str += "<div id='prize' style='background-color: gray; margin: 0 auto' class='ui-btn ui-shadow ui-corner-all ui-icon-star ui-btn-icon-notext ui-btn-b'></div>";
+            }
+
+
             for(var k in data.itineraries) {
                 str += "<div class='itiner-box ui-corner-all ui-mini'>&nbsp;<span class='itiner'>"+k+"</span>&nbsp;";
                 var check = checkIti(k,data);
@@ -83,8 +89,7 @@ $(document).ready(function(){
                     else str += "<span lat='"+check[j][1]+"' lng='"+check[j][2]+"' class='checkpoint ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-b ui-btn-inline ui-mini'></span>";
                 str += "</div>"
             }
-            if(!data.gotPrize)
-            str += "<div id='prize' class='ui-corner-all'><span style='margin: 0 auto' class='ui-btn ui-shadow ui-corner-all ui-icon-star ui-btn-icon-notext ui-btn-b'></span></div>";
+
 
 
             $("#result").html(str);
@@ -123,7 +128,7 @@ $(document).ready(function(){
             $("#prize").click(function () {
                 $.getJSON(conf.dita_server + 'log?txt=user 0.'+usr+' got prize!', function (data, status) {
                     console.log("recorded");
-                    $("#prize").hide()
+                    $("#prize").css("background-color","gold")
                 })
             })
         })

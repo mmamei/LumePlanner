@@ -35,31 +35,19 @@
         <style>
 
 
-            body {
-                background-color: #084265;
-                color: #ffffff;
-            }
-
-
-            .title {
-                background-color:#031b26;
-                color:#82a4a6;
-                padding:20px;
-            }
-
-            .img-responsive {
-                margin: 0 auto;
-            }
-
-            #mapPage, #mapid {
+            #mapPage {
                 height: 100%;
-            }
-
-            #map-content{
-                height: 90%;
-                padding: 0px;
+                z-index: 1;
+                padding:0px;
                 margin:0px;
-                z-index: -1;
+                overflow:hidden;
+            }
+            #mapid {
+                height: 90%;
+                z-index: 1;
+                padding:0px;
+                margin:0px;
+                overflow:hidden;
             }
 
 
@@ -120,11 +108,9 @@
 
         <div id="dialog-about" title="Title"></div>
 
-        <div id="map-content" data-role="content">
-            <div id="mapid"></div>
-        </div>
+        <div id="mapid" data-role="content"></div>
 
-        <div id="start" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="start">Inizia il percorso</div></div>
+        <div id="start" style="height:10%;margin:0px" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="start">Inizia il percorso</div></div>
     </div>
     </body>
 </html>
