@@ -36,63 +36,54 @@
         <script src="js/global_map.js"></script>
         <script src="js/main/map.js"></script>
         <style>
-
-
-
-            body {
-                background-color: #084265;
-                color: #ffffff;
-            }
-
-
-            #mapPage, #mapid {
+            #mapPage {
                 height: 100%;
                 z-index: 1;
+                padding:0px;
+                margin:0px;
                 overflow:hidden;
             }
-
-            #map-content{
+            #mapid {
                 height: 70%;
-                padding: 0px;
+                z-index: 1;
+                padding:0px;
                 margin:0px;
-                z-index: -1;
+                overflow:hidden;
             }
 
 
             #popup {
                 background-color: white;
-                position:relative;
+                border:solid;
+                position:absolute;
                 z-index:2;
-                bottom:180px;
-                width:80%;
-                height:100px;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                text-align:center;
+                bottom:190px;
+                width:95%;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                text-align: center;
             }
 
             #visit_popup {
                 background-color: white;
-                position:relative;
+                border:solid;
+                position:absolute;
                 z-index:5;
-                bottom:700px;
-                width:90%;
-                height:500px;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
+                top:50px;
+                width:95%;
+                height:80%;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
                 text-align:center;
+                padding: 10px;
             }
-
         </style>
-
-
-
     </head>
     <body>
 
-    <div data-role="page"  id="mapPage" class="jqm-demos jqm-home">
+    <div data-role="page" id="mapPage" class="jqm-demos jqm-home">
 
         <div data-role="header" class="jqm-header"  data-position="fixed" >
             <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
@@ -111,12 +102,10 @@
             </ul>
         </div>
 
+        <div id="mapid" data-role="content"></div>
+        <div id="popup" data-role="header" class="ui-corner-all ui-shadow"></div>
 
-        <div id="map-content" data-role="content">
-            <div id="mapid"></div>
-        </div>
-
-
+        <div id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="itineraries_go">Fai un percorso!</div></div>
 
         <div id="visit" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist">
             <div style="margin:0px">
@@ -124,18 +113,26 @@
                 <span style="font-size:small" id="dist"></span><br>
                 <span style="font-size:x-small" id="missing_stops"></span>
             </div>
-
-
         </div>
-        <div id="bus" style="background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="use_public_transport">Usa i mezzi pubblici</div></div>
-
-        <div id="itinerary" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin-top:12px" tkey="itineraries_go">Fai un percorso!</div></div>
-        <div id="quit" style="background: darkblue; color: white;"  class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="quit">Abbandona il percorso</div></div>
-
-        <div id="popup" class="ui-corner-all"></div>
         <div id="visit_popup" class="ui-corner-all"></div>
 
+        <div id="bus" style="background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div style="margin:0px" tkey="use_public_transport">Usa i mezzi pubblici</div></div>
+
+        <a id="quit" style="background: darkblue; color: white;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
+           class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist" tkey="quit">Abbandona il percorso</a>
+        <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false">
+            <div data-role="header" data-theme="a">
+                <h1>Abbandoni?</h1>
+            </div>
+            <div role="main" class="ui-content">
+                <h3 class="ui-title">Sei sicuro di voler abbandonare il percorso?</h3>
+                <div id="real_quit" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Conferma</div>
+                <div class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">No</div>
+            </div>
+        </div>
     </div>
+
+
 
     </body>
 </html>

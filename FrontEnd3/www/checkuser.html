@@ -31,25 +31,18 @@
 
     <style>
 
-        body, html {height:100%;}
-
-        body {
-            background-color: #084265;
-            color: #ffffff;
-
-        }
-
-        #mapPage, #mapid {
+        #mapPage {
             height: 100%;
             z-index: 1;
-            overflow:hidden;
-        }
-
-        #map-content{
-            height: 70%;
             padding: 0px;
-            margin:0px;
-            z-index: -1;
+            margin: 0px;
+            overflow: hidden;
+        }
+        #mapid {
+            height: 50%;
+            z-index: 1;
+            padding:0px;
+            overflow: hidden;
         }
 
 
@@ -82,7 +75,6 @@
         <a href="#" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
     </div><!-- /header -->
     <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
-
         <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
             <li data-filtertext="homepage" data-icon="home"><a href="index.html" target="_top" tkey="homepage">Pagina principale</a></li>
             <li data-filtertext="luoghi" data-icon = "location"><a href="map.html" target="_top" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
@@ -93,16 +85,16 @@
         </ul>
     </div>
 
-    <div id="map-content" data-role="content">
-        <div id="mapid"></div>
+    <div id="mapid"></div>
+    <div id="result" data-role="content" style="margin:0px; height:220px; overflow-y: scroll;"></div>
+
+    <div class="ui-grid-a" style="margin:0px !important;">
+        <div class="ui-block-a"><input style="height:43px" type="text" id="user" placeholder="user id"></div>
+        <div class="ui-block-b"><button id="check" class="ui-btn ui-corner-all ui-shadow">Check!</button></div>
     </div>
-    <div id="result"></div>
 
-    <input type="text" id="user" placeholder="user id">
+    <div style="margin:0px" id="home" class="ui-btn ui-corner-all ui-shadow" tkey="home">Vai alla pagina principale</div>
 
-
-    <button id="check" class="btn btn-primary">Check!</button>
-    <button id="home" class="btn btn-primary" tkey="home">Vai alla pagina principale</button>
 </div><!-- /page -->
 
 

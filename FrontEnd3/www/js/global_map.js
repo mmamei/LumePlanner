@@ -61,11 +61,27 @@ var out_city_alert_fired = false;
 
 
 var currentDestination = {};
-var next_step = window.sessionStorage.getItem("visitplan") ? true : false;
+
+
+var next_step = checkNextStep();
+
 
 
 var path=null;
 var path_coords = null;
+
+
+function checkNextStep() {
+    var vp = JSON.parse(window.sessionStorage.getItem("visitplan"));
+    if(vp == null) return false;
+    var it = vp.plans[JSON.parse(window.sessionStorage.getItem("type_of_plan"))];
+    if(!it) {
+        //alert("broken plan")
+        return false;
+    }
+    return true;
+}
+
 
 
 function localize(position) {
@@ -165,12 +181,13 @@ function selectMarkers() {
         var id = x.place_id;
 
 
-        var info = "<span class='popcontent'>"+format_name(x.display_name)+"<br></span>" +
-            //"<a  target=\"_top\" href=\"visit.html?type="+type+"&id="+id+"\">Visit</a><br>" +
-
-            "<span place='"+type+"__"+id+"' onclick='visit()'>Visit</span><br>" +
-            "<span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.type+"</span><br>"+
-            "<span onclick='$(\"#popup\").hide()' class='ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'></span>";
+        var info =
+            "<div>"+format_name(x.display_name)+"</div>" +
+            "<div>"+
+            "<span place='"+type+"__"+id+"' onclick='visit()' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Informazioni</span>&nbsp;" +
+            "<span onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
+            "</div>"+
+            "<div style='color:lightsteelblue'>"+format_name_from(x.display_name)+": "+x.type+"</div>";
 
 
 
@@ -179,7 +196,6 @@ function selectMarkers() {
 
 
         var marker = L.marker([lat, lon], {icon: icon, mypopup:info});
-        //marker.bindPopup("<h2>"+format_name(x.display_name)+"</h2><br><span style='color:lightsteelblue'>"+format_name_from(x.display_name)+":"+x.place_id+"</span><br><a  target=\"_top\" href=\"visit.html?type="+type+"&num="+i+"\">Visit</a>").openPopup().addTo(markers[type]);
 
         marker.on('click',function(e) {
             //console.log(e.target.options.mypopup)
@@ -246,20 +262,16 @@ function visit() {
 
     var actualVisit;
 
-    var close_icon = true;
+
     var next_icon = true;
 
-    if(currentDestination && !clickedVisit) {
+    if(currentDestination && !clickedVisit)
         actualVisit = currentDestination;
-        close_icon = false
-    }
 
     if(clickedVisit) {
         actualVisit = clickedVisit;
         if(!currentDestination || clickedVisit.place_id != currentDestination.place_id)
             next_icon = false;
-        else
-            close_icon = false
     }
 
     var txt = "";
@@ -270,12 +282,16 @@ function visit() {
 
     txt += "<p>"+actualVisit.display_name.replace(",","<br/>")+"</p>";
 
+    txt += "<div style='padding: 10px;text-align: justify'>";
+
     if(actualVisit.description != null)
-        txt += "<p>"+actualVisit.description+"</p>";
+        txt += actualVisit.description;
     else {
         var afo = aforismi[Math.floor(Math.random()*aforismi.length)];
-        txt += "<p>Da queste parti si dice: \"<i>" + afo + "</i>\"</p>"
+        txt += "Da queste parti si dice: \"<i>" + afo + "</i>\""
     }
+
+    txt += "<br><br></div>";
 
     if(actualVisit.www != null) {
         var href = actualVisit.www.trim();
@@ -285,13 +301,12 @@ function visit() {
         txt += "<a href='"+href+"' class='ui-btn ui-corner-all'>Altre Informazioni</a>"
     }
 
-    txt += "<button class='ui-btn ui-corner-all' id='share_btn'>Condividi con  <i id='fb' class='fa fa-facebook-f'></i>acebook </button>";
 
-
-    if(close_icon)
-        txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
     if(next_icon)
         txt += "<div id='next' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Prossima Visita</div></div>";
+    txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
+
+    txt += "<button style='width:300px;margin: 0 auto;' class='ui-btn ui-shadow ui-corner-all ui-btn-active ui-state-persist' id='share_btn'>Condividi con  <i id='fb' class='fa fa-facebook-f'></i>acebook </button>";
 
 
     $("#visit_popup").html(txt);

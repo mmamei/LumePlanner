@@ -6,6 +6,8 @@
     if(next_step)
           $("#itinerary").hide();
     else {
+          $("#mapid").css("height","90%");
+          $("#popup").css("bottom","60px");
           $("#visit").hide();
           $("#bus").hide();
           $("#quit").hide()
@@ -68,10 +70,8 @@
         }
     });
 
-    $("#quit").click(function(){
-        $(this).css("opacity","0.5");
-        var x = confirm("Sei sicuro?");
-        if(x) window.location.href = "finish.html"
+    $("#real_quit").click(function(){
+        window.location.href = "finish.html"
     });
 
     $("#bus").click(function(){

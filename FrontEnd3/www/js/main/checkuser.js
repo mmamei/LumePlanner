@@ -24,6 +24,8 @@ function checkIti(name,data) {
 
 $(document).ready(function(){
 
+    $("#result").hide();
+
     var userid = JSON.parse(window.localStorage.getItem("user")).email.substring(2);
     $("#user").val(userid);
 
@@ -49,6 +51,7 @@ $(document).ready(function(){
 
 
     $("#check").click(function() {
+        $("#result").show();
         var usr = $("#user").val();
         console.log("check "+usr);
         $.getJSON(conf.dita_server + 'checkuser?userid=' + usr, function (data, status) {
@@ -87,9 +90,8 @@ $(document).ready(function(){
             $("#result").html(str);
 
             $(".checkpoint").click(function() {
-                //console.log($(this).attr("lat"))
-                mymap.panTo([$(this).attr("lat"),$(this).attr("lng")]);
-                mymap.setZoom(18)
+                //console.log("check at "+$(this).attr("lat")+","+$(this).attr("lng"))
+                mymap.setView([$(this).attr("lat"),$(this).attr("lng")],18);
             });
 
             $(".itiner").click(function() {
