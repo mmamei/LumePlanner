@@ -56,7 +56,7 @@
     "Il destino è un'invenzione della gente fiacca e rassegnata.",
     "L'uomo cerca la verità per poterla nascondere meglio.",
     "Le ho chiesto di sposarmi e lei mi ha detto di no. Da allora viviamo felici e contenti.",
-    "Ringrazio Dio di non avermi fatto nascere donna. Avrei passato tutto il giorno a toccarmi le tette!",
+    //"Ringrazio Dio di non avermi fatto nascere donna. Avrei passato tutto il giorno a toccarmi le tette!",
     "Il sorriso è il modo meno costoso per migliorare il viso.",
     "L'ignoranza è temporanea, la stupidità è per sempre.",
     "Un'idea non è responsabile per le persone che la credono.",

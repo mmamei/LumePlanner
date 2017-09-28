@@ -24,10 +24,10 @@
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 
-    mymap.fitBounds([
-        [cityLonLatBbox[1], cityLonLatBbox[0]],
-        [cityLonLatBbox[3], cityLonLatBbox[2]]
-    ]);
+    //mymap.fitBounds([
+    //    [cityLonLatBbox[1], cityLonLatBbox[0]],
+    //    [cityLonLatBbox[3], cityLonLatBbox[2]]
+    //]);
 
     L.easyButton('fa-crosshairs fa-lg', function(btn, map) {
         dragged = false;

@@ -15,9 +15,7 @@ import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.geojson.Point;
 
-import org.json.JSONObject;
 import util.PointCodec;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -31,9 +29,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 
-import static io.MongoLoginInfo.MONGO_DB;
-import static io.MongoLoginInfo.MONGO_PASSWORD;
-import static io.MongoLoginInfo.MONGO_USER;
+import static io.LoginInfo.MONGO_DB;
+import static io.LoginInfo.MONGO_PASSWORD;
+import static io.LoginInfo.MONGO_USER;
 
 
 public class Mongo {
@@ -60,7 +58,7 @@ public class Mongo {
 
 		mongoLogger = java.util.logging.Logger.getLogger( "org.mongodb.driver" );
 		mongoLogger.setLevel(Level.SEVERE);
-        mongoClient = new MongoClient(new ServerAddress(MongoLoginInfo.MONGO_URL), Arrays.asList(
+        mongoClient = new MongoClient(new ServerAddress(LoginInfo.MONGO_URL), Arrays.asList(
 							MongoCredential.createCredential(
                                     MONGO_USER,
 									MONGO_DB,

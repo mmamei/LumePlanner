@@ -92,9 +92,9 @@ function localize(position) {
 
     var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
         cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
-    console.log(cityLonLatBbox);
-    console.log("localized at " + lat + "," + lng);
-    console.log(inCity);
+    //console.log(cityLonLatBbox);
+    //console.log("localized at " + lat + "," + lng);
+    //console.log(inCity);
     if(!next_step && !inCity && !out_city_alert_fired) {
         out_city_alert_fired = true;
         alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa")
@@ -116,7 +116,7 @@ function localize(position) {
             [cityLonLatBbox[3], cityLonLatBbox[2]]
         ]);
 
-    console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
+    //console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
     if(getDistanceFromLatLonInM(lat,lng,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
         $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
         });
@@ -217,7 +217,7 @@ function selectMarkers() {
     }
     var count= 0;
     markers.eachLayer(function(marker) {count++});
-    console.log(count)
+    //console.log(count)
 }
 
 function computeRoute() {
@@ -275,6 +275,8 @@ function visit() {
             next_icon = false;
     }
 
+    console.log(actualVisit);
+
     var txt = "";
     txt += "<h2 id='title' align='center'>" + actualVisit.display_name.split(",")[0] + "</h2>";
 
@@ -312,20 +314,29 @@ function visit() {
 
     $("#visit_popup").html(txt);
     $("#visit_popup").show();
+
     $("#share_btn").click(function() {
         var place_name = $("#title").html();
         //alert(place_name)
         openFB.api({
             method: 'POST',
+
             path: '/me/feed',
             params: {
                 message: "Ho scoperto "+place_name+" grazie a Lume Planner!",
+                //place: actualVisit.place_id,
+                //coordinates: JSON.stringify({
+                //    'latitude' : actualVisit.geometry.coordinates[1],
+                //    'longitude' : actualVisit.geometry.coordinates[0]
+                //}),
                 link: "https://play.google.com/store/apps/details?id=it.unimore.morselli.lume"
             },
             success: function() {
                 alert('Informazione condivisa su Facebook!');
             },
-            error: function() {
+            error: function(err) {
+                //alert(actualVisit.geometry.coordinates[1]+","+actualVisit.geometry.coordinates[0])
+                //alert(JSON.stringify(err))
                 window.location = "fb.html"
             }
         });
@@ -389,8 +400,9 @@ function setupDestination() {
     }
     else {
         $("#destination").html("Destinazione: "+name);
-        if((items.to_visit.length-1) > 0)
-            $("#missing_stops").html("mancano altre "+(items.to_visit.length-1)+" tappe")
+        console.log(items.to_visit.length);
+        if((items.to_visit.length) > 0)
+            $("#missing_stops").html("mancano altre "+(items.to_visit.length)+" tappe")
     }
     window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
 }

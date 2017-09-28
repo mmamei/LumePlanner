@@ -24,7 +24,8 @@ public class CSVConvert {
     public static void main(String[] args) throws Exception {
         //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv",",from:Maranello",false);
         //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\ReggioEmilia\\pois\\pois19092017.csv",",from:Reggio-Emilia",false);
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Modena\\pois\\pois20092017.csv",",from:Modena",false);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Modena\\pois\\pois20092017.csv",",from:Modena",false);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\extra-pois\\extra-pois.csv",",from:Lume",true);
         System.out.println("Done");
     }
 
@@ -103,6 +104,12 @@ public class CSVConvert {
             String fileName = new File(file.substring(0, file.length() - 3) + "json").getName();
             for (String city : hm.keySet()) {
                 System.out.println(city + " ==> " + hm.get(city).size());
+                for(POI p : hm.get(city)) {
+                    System.out.print(p.getPlace_id()+",");
+                }
+                System.out.println();
+
+
                 if (hm.get(city).size() > 0) {
                     File f = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\" + city + "\\pois\\" + fileName);
                     System.out.println(f.getAbsolutePath());

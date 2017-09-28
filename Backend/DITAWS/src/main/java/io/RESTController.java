@@ -98,6 +98,7 @@ public class RESTController {
 									@RequestParam(value="end", defaultValue="unknown") String end) {
 		String[] s = start.split(",");
 		String[] e = end.split(",");
+
 		return gHopper.route(vechicle, Double.parseDouble(s[0]),Double.parseDouble(s[1]),Double.parseDouble(e[0]),Double.parseDouble(e[1]));
 	}
 

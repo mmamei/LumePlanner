@@ -72,11 +72,11 @@
 <script src="js/openfb.js"></script>
 
 <script>
-
+	/*
 	function myTok() {
     alert(localStorage.getItem("fbAccessToken"))
     }
-
+	*/
      //openFB.init({appId: '144640029403557'});
      // Defaults to sessionStorage for storing the Facebook token
 
@@ -126,19 +126,7 @@
 
 
 
-    function share() {
-        openFB.api({
-            method: 'POST',
-            path: '/me/feed',
-            params: {
-                message: "Grazie mille LUME!!!",
-				link: "www.bizzinidavide.altervista.org" 
-            },
-            success: function() {
-                alert('the item was posted on Facebook');
-            },
-            error: errorHandler});
-    }
+
 	
 
 function findEvent(id,all) {
@@ -231,7 +219,7 @@ function formatLocalDate() {
 
 	
 	
-
+/*
     function readPermissions() {
         openFB.api({
             method: 'GET',
@@ -250,7 +238,7 @@ function formatLocalDate() {
                 },
                 errorHandler);
     }
-
+*/
     function logout() {
         openFB.logout(
                 function() {
@@ -262,7 +250,7 @@ function formatLocalDate() {
 
     function errorHandler(error) {
 
-		alert(error.message); //Invalid OAuth access token.
+		// alert(error.message); //Invalid OAuth access token.
 		localStorage.setItem("fbAccessToken","");
 		location.reload()
     }
