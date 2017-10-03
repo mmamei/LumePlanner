@@ -1,6 +1,8 @@
 
 
 var mymap;
+var city = window.sessionStorage.getItem("city");
+var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
 console.log(mIcons);
@@ -62,10 +64,15 @@ var out_city_alert_fired = false;
 
 var currentDestination = {};
 
+var MAP_TYPES = {
+    MAP: 0,
+    NEXT_STEP: 1,
+    CROWD: 2
+};
 
-var next_step = checkNextStep();
-
-
+var map_type = MAP_TYPES.MAP;
+if(checkNextStep()) map_type = MAP_TYPES.NEXT_STEP;
+if(getUrlParameter("crowd")) map_type = MAP_TYPES.CROWD;
 
 var path=null;
 var path_coords = null;
@@ -95,7 +102,7 @@ function localize(position) {
     //console.log(cityLonLatBbox);
     //console.log("localized at " + lat + "," + lng);
     //console.log(inCity);
-    if(!next_step && !inCity && !out_city_alert_fired) {
+    if(map_type != MAP_TYPES.NEXT_STEP && !inCity && !out_city_alert_fired) {
         out_city_alert_fired = true;
         alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa")
     }
@@ -103,14 +110,14 @@ function localize(position) {
 
     if (centerMarker == null) {
         centerMarker = L.marker([lat, lng], {icon: centerIcon}).addTo(mymap);
-        if(next_step) mymap.setZoom(18);
+        if(map_type == MAP_TYPES.NEXT_STEP) mymap.setZoom(18);
         else mymap.setZoom(16)
     }
     centerMarker.setLatLng([lat, lng]);
-    if((next_step && !dragged) || (!next_step && !dragged && inCity))
+    if((map_type == MAP_TYPES.NEXT_STEP && !dragged) || (map_type != MAP_TYPES.NEXT_STEP && !dragged && inCity))
         mymap.panTo([lat, lng]);
 
-    if(!next_step && !dragged && !inCity)
+    if(map_type != MAP_TYPES.NEXT_STEP && !dragged && !inCity)
         mymap.fitBounds([
             [cityLonLatBbox[1], cityLonLatBbox[0]],
             [cityLonLatBbox[3], cityLonLatBbox[2]]
@@ -126,7 +133,7 @@ function localize(position) {
 
 
     selectMarkers();
-    if(next_step) {
+    if(map_type == MAP_TYPES.NEXT_STEP) {
         var dist = getDistanceFromLatLonInM(currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0], lat, lng);
         $("#dist").html("mancano " + dist.toFixed(0) + " metri");
         computeRoute()
@@ -138,7 +145,11 @@ function localize(position) {
 
 var markers = new L.LayerGroup();
 function selectMarkers() {
+    if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
+    if(map_type == MAP_TYPES.CROWD) crowdMarkers();
+}
 
+function poiMarkers() {
     var bbox = mymap.getBounds();
 
     markers.clearLayers();
@@ -218,6 +229,137 @@ function selectMarkers() {
     var count= 0;
     markers.eachLayer(function(marker) {count++});
     //console.log(count)
+}
+
+
+
+
+
+var CROWD_TYPES = {
+    ABS: 0,
+    REL: 1
+};
+
+var crowd_type = CROWD_TYPES.ABS;
+var crowd  = null;
+function crowdMarkers() {
+
+    if(crowd == null) {
+
+        $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
+            crowd = data;
+            console.log(crowd);
+
+            var legend = L.control({position: 'bottomright'});
+
+            legend.onAdd = function (map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    grades = CROWD_TYPES.ABS ? [100,50,20,10,0] : [3,2,1,0.5,0.25];
+                    labels = [];
+
+                var y = crowd.time.substring(0,4);
+                var m = crowd.time.substring(4,6);
+                var d = crowd.time.substring(6,8);
+                var h = crowd.time.substring(9,11);
+                var min = crowd.time.substring(11,13);
+
+                div.innerHTML += "<h4>"+d+"/"+m+"/"+y+" "+h+":"+min+"</h4>";
+                div.innerHTML += "<button id='legend_switch'>switch to REL</button><br>";
+                // loop through our density intervals and generate a label with a colored square for each interval
+                for (var i = 0; i < grades.length; i++) {
+                    div.innerHTML +=
+                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                }
+
+                return div;
+            };
+
+            legend.addTo(mymap);
+
+            $("#legend_switch").click(function() {
+                if(crowd_type == CROWD_TYPES.ABS) {
+                    $("#legend_switch").html("switch to ABS");
+                    crowd_type = CROWD_TYPES.REL
+                }
+                else {
+                    $("#legend_switch").html("switch to REL");
+                    crowd_type = CROWD_TYPES.ABS
+                }
+            });
+
+
+
+            crowdMarkers()
+        })
+    }
+    else {
+        markers.clearLayers();
+        markers = new L.LayerGroup();
+
+        var z = mymap.getZoom();
+        var size = z > 14 ? 1 :
+            z > 13 ? 2 : 4;
+        for (var i = 0; i < crowd.nrows; i = i + size)
+            for (var j = 0; j < crowd.ncols; j = j + size) {
+
+                var v = 0;
+                var num = 0;
+                var den = 0;
+                for (var i1 = i; i1 < (i + size); i1++)
+                    for (var j1 = j; j1 < (j + size); j1++) {
+
+                        var x = crowd_type == CROWD_TYPES.ABS ? crowd.avalues[i][j] : crowd.mvalues[i][j];
+                        if (x > 0) {
+                            num += x;
+                            den++
+                        }
+                    }
+
+                v = num / den;
+
+
+                if (v > 0) {
+                    var border = getCellBorder(i, j, crowd.ox, crowd.oy, crowd.xdim, crowd.ydim, size);
+                    L.polygon(border).setStyle({
+                        fillColor: getColor(v),
+                        weight: 1,
+                        opacity: 1,
+                        color: 'white',
+                        fillOpacity: 0.5
+                    }).addTo(markers);
+                }
+            }
+        markers.addTo(mymap)
+    }
+}
+
+function getColor(d) {
+    var color = CROWD_TYPES.ABS ? ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'] :
+                                  ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6'];
+    var cutoff = CROWD_TYPES.ABS ? [100,50,20,10,0] :
+                                   [3,2,1,0.5,0.25];
+    return d > cutoff[0] ? color[0] :
+        d > cutoff[1] ? color[1] :
+            d > cutoff[2] ? color[2] :
+                d > cutoff[3] ? color[3] : color[4];
+}
+
+function getCellBorder(i, j, ox, oy, xdim, ydim, size) {
+    var ll = [];
+
+    // bottom left corner
+    var x = ox + (j * xdim) - xdim/2;
+    var y = oy - (i * ydim) - ydim/2;
+
+    ll.push([y,x]);
+    ll.push([y,x+size*xdim]);
+    ll.push([y+size*ydim,x+size*xdim]);
+    ll.push([y+size*ydim,x]);
+
+
+    return ll;
 }
 
 function computeRoute() {
@@ -370,9 +512,6 @@ function visit() {
     });
 
 }
-
-
-
 
 
 function setupDestination() {

@@ -3,14 +3,22 @@
 
     $("#popup").hide();
     $("#visit_popup").hide();
-    if(next_step)
+    if(map_type == MAP_TYPES.NEXT_STEP)
           $("#itinerary").hide();
-    else {
-          $("#mapid").css("height","90%");
-          $("#popup").css("bottom","60px");
-          $("#visit").hide();
-          $("#bus").hide();
-          $("#quit").hide()
+    if(map_type == MAP_TYPES.MAP) {
+        $("#mapid").css("height","90%");
+        $("#popup").css("bottom","60px");
+        $("#visit").hide();
+        $("#bus").hide();
+        $("#quit").hide()
+    }
+    if(map_type == MAP_TYPES.CROWD) {
+        $("#mapid").css("height","100%");
+        $("#popup").css("bottom","60px");
+        $("#itinerary").hide();
+        $("#visit").hide();
+        $("#bus").hide();
+        $("#quit").hide()
     }
 
     mymap = L.map('mapid',{
@@ -43,7 +51,7 @@
         selectMarkers();
     });
 
-    if(next_step) setupDestination();
+    if(map_type == MAP_TYPES.NEXT_STEP) setupDestination();
 
 
     if(conf.localize && navigator.geolocation)

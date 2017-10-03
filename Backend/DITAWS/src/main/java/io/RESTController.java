@@ -1,7 +1,9 @@
 package io;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import services.CheckUser;
+import services.timdatapipe.CrowdDataManager;
 import services.timdatapipe.DataPipeDownload;
 import model.*;
 import org.apache.log4j.Logger;
@@ -25,13 +27,14 @@ public class RESTController {
 	static final Logger tracelog = Logger.getLogger("reportsLogger");
 	private  GHopper gHopper;
 	private Mongo dao;
-
+	CrowdDataManager cdm;
 	private List<String> cities;
 
 	public RESTController() {
 		logger.info("Server initialization started");
 		dao = new Mongo();
 		gHopper = new GHopper();
+		cdm = new CrowdDataManager();
 		cities = new ArrayList<>();
 		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
 			String city = cp.getName();
@@ -83,6 +86,7 @@ public class RESTController {
 		tracelog.info("user "+user+ " got activities of " +city);
 		return dao.retrieveActivities(city);
 	}
+
 
 	@RequestMapping(value = "itineraries", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody List<Itinerary> sendItineraries(@RequestParam(value="city", defaultValue="unknown") String city,
@@ -192,6 +196,7 @@ public class RESTController {
 		String minute = minuteFormatter.format(d);
 		System.out.println("download datapipe data at "+hour+":"+minute);
 		new DataPipeDownload().download();
+		cdm.processCrowdInfo();
 	}
 
 }

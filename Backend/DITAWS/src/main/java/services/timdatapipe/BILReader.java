@@ -41,7 +41,7 @@ public class BILReader {
             InputStream bil_is = null;
             while((e.hasMoreElements())) {
                 ZipEntry ze = e.nextElement();
-                System.out.println(ze.getName());
+                //System.out.println(ze.getName());
                 if(ze.getName().endsWith(".hdr"))
                     hdr_is = zipFile.getInputStream(ze);
                 if(ze.getName().endsWith(".bil"))
@@ -73,7 +73,7 @@ public class BILReader {
         }catch(Exception e) {
             e.printStackTrace();
         }
-        System.out.println(header);
+        //System.out.println(header);
         return header;
     }
 
@@ -84,7 +84,7 @@ public class BILReader {
         try {
             DataInputStream dis = new DataInputStream(is);
 
-            System.out.println(nrows+" * "+ncols);
+            //System.out.println(nrows+" * "+ncols);
             DescriptiveStatistics ds = new DescriptiveStatistics();
             for (int i = 0; i < nrows; i++)
                 for (int j = 0; j < ncols; j++) {
@@ -93,8 +93,8 @@ public class BILReader {
                 }
             dis.close();
 
-            for(int p=10;p<=100;p=p+10)
-                System.out.println(p+" ==> "+ds.getPercentile(p));
+            //for(int p=10;p<=100;p=p+10)
+            //    System.out.println(p+" ==> "+ds.getPercentile(p));
 
         } catch (Exception e) {
             e.printStackTrace();

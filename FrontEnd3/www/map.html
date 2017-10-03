@@ -50,8 +50,6 @@
                 margin:0px;
                 overflow:hidden;
             }
-
-
             #popup {
                 background-color: white;
                 border:solid;
@@ -79,6 +77,31 @@
                 text-align:center;
                 padding: 10px;
             }
+
+            .info {
+                padding: 6px 8px;
+                font: 14px/16px Arial, Helvetica, sans-serif;
+                background: white;
+                background: rgba(255,255,255,0.8);
+                box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                border-radius: 5px;
+            }
+            .info h4 {
+                margin: 0 0 5px;
+                color: #777;
+            }
+
+            .legend {
+                line-height: 18px;
+                color: #555;
+            }
+            .legend i {
+                width: 18px;
+                height: 18px;
+                float: left;
+                margin-right: 8px;
+                opacity: 0.7;
+            }
         </style>
     </head>
     <body>
@@ -90,17 +113,7 @@
             <!--<p>Version <span class="jqm-version"></span></p> -->
             <a href="#" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
         </div>
-        <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
-
-            <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
-                <li data-filtertext="homepage" data-icon="home"><a href="index.html" target="_top" tkey="homepage">Pagina principale</a></li>
-                <li data-filtertext="luoghi" data-icon = "location"><a href="map.html" target="_top" data-icon="location" data-ajax="false" tkey="my_places">I miei luoghi</a></li>
-                <li data-filtertext="viaggi" data-icon = "camera"><a href="checkuser.html" target="_top" data-icon="location" data-ajax="false" tkey="my_itineraries">I miei viaggi</a></li>
-                <li data-filtertext="percorsi" data-icon = "star"><a href="itineraries.html" target="_top" data-ajax="false" tkey="itineraries">I percorsi più visti</a></li>
-                <li data-filtertext="account" data-icon = "user"><a href="fb.html" target="_top" data-ajax="false" tkey="user">Utente</a></li>
-                <li data-filtertext="assistenza" data-icon = "phone"><a href="help.html" target="_top" data-ajax="false" tkey="help">Assistenza</a></li>
-            </ul>
-        </div>
+        <div id="list_menu" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"></div>
 
         <div id="mapid" data-role="content"></div>
         <div id="popup" data-role="header" class="ui-corner-all ui-shadow"></div>
@@ -131,8 +144,5 @@
             </div>
         </div>
     </div>
-
-
-
     </body>
 </html>
