@@ -95,18 +95,17 @@ if(!mIcons) {
 }
 
 $( document ).ready(function() {
-    //var city = window.sessionStorage.getItem("city")
-    // TODO: abilita certe funzioni solo se c'è la città impostata
-    var menu =
-        "<ul id='list_menu' class='jqm-list ui-alt-icon ui-nodisc-icon'>"+
-        "<li data-filtertext='homepage' data-icon='home'><a href='index.html' target='_top' tkey='homepage'>Pagina principale</a></li>" +
-        "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html' target='_top' data-icon='location' data-ajax='false'>Mappa</a></li>"+
-        "<li data-filtertext='viaggi' data-icon = 'camera'><a href='checkuser.html' target='_top' data-icon='location' data-ajax='false' tkey='my_itineraries'>I miei viaggi</a></li>"+
-        "<li data-filtertext='percorsi' data-icon = 'star'><a href='itineraries.html' target='_top' data-ajax='false' tkey='itineraries'>I percorsi più visti</a></li>"+
-        "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html?crowd=true' target='_top' data-icon='location' data-ajax='false'>Crowd</a></li>"+
-        "<li data-filtertext='account' data-icon = 'user'><a href='fb.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>"+
-        "<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>"+
-        "</ul>";
+    var city = window.sessionStorage.getItem("city");
+
+    var menu = "<ul id='list_menu' class='jqm-list ui-alt-icon ui-nodisc-icon'>";
+    menu += "<li data-filtertext='homepage' data-icon='home'><a href='index.html' target='_top' tkey='homepage'>Pagina principale</a></li>";
+    if(city != null) menu += "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html' target='_top' data-icon='location' data-ajax='false'>Mappa</a></li>";
+    if(city != null) menu += "<li data-filtertext='viaggi' data-icon = 'camera'><a href='checkuser.html' target='_top' data-icon='location' data-ajax='false' tkey='my_itineraries'>I miei viaggi</a></li>";
+    if(city != null) menu += "<li data-filtertext='percorsi' data-icon = 'star'><a href='itineraries.html' target='_top' data-ajax='false' tkey='itineraries'>I percorsi più visti</a></li>";
+    if(city != null) menu += "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html?crowd=true' target='_top' data-icon='location' data-ajax='false'>Crowd</a></li>";
+    menu += "<li data-filtertext='account' data-icon = 'user'><a href='fb.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
+    menu +="<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>";
+    menu += "</ul>";
 
     $("#list_menu").append(menu);
     $("#list_menu").trigger('pagecreate');

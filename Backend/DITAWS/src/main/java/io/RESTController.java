@@ -3,6 +3,7 @@ package io;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import services.CheckUser;
+import services.timdatapipe.BILMean;
 import services.timdatapipe.CrowdDataManager;
 import services.timdatapipe.DataPipeDownload;
 import model.*;
@@ -185,7 +186,7 @@ public class RESTController {
 	}
 
 
-	@Scheduled(fixedRate = 300000) // every five minutes
+	@Scheduled(fixedRate = 5*60*1000) // every five minutes
 	public void downloadData() {
 
 		DateFormat hourFormatter = new SimpleDateFormat("hh");
@@ -197,6 +198,11 @@ public class RESTController {
 		System.out.println("download datapipe data at "+hour+":"+minute);
 		new DataPipeDownload().download();
 		cdm.processCrowdInfo();
+	}
+
+	@Scheduled(fixedRate = 2*7*24*60*1000) // every 2 weeks
+	public void comppute2WeeksMeanCrowdValues() {
+		BILMean.saveMean();
 	}
 
 }

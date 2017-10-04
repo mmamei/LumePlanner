@@ -70,13 +70,36 @@ public class CrowdDataManager {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         float[][][][] means = null;
+
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream("D:\\crowd_mean_20170414_20170502.ser"));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("D:\\crowd_mean.ser"));
             means = (float[][][][]) in.readObject();
             in.close();
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        /*
+        Parma [247,313] X [644,711]
+        Ravenna [518,613] X [1779,1877]
+        Bologna [503,534] X [1260,1307]
+        Maranello [447,502] X [940,1031]
+        Modena [364,419] X [997,1081]
+        Rimini [830,935] X [2003,2093]
+        Ferrara [234,254] X [1438,1468]
+        Forli [712,780] X [1667,1742]
+        ReggioEmilia [333,381] X [843,901]
+        Cesena [784,820] X [1799,1857]
+        Piacenza [56,95] X [262,341]
+
+        int mi =  364;
+        for(int j=997; j<1081;j++) {
+              System.out.println(mi+","+j+" => "+means[mi][j][day][hour]+" ");
+
+        }
+        //System.exit(0);
+        */
+
 
         for(String city: cities.keySet()) {
 
@@ -94,7 +117,8 @@ public class CrowdDataManager {
             double ox = ulxmap + (minj * xdim);
             double oy = ulymap - (mini * ydim);
 
-            System.out.println(city+" ["+mini+","+maxi+"] X ["+minj+","+maxj+"]");
+            System.out.print(city+" ["+mini+","+maxi+"] X ["+minj+","+maxj+"] ");
+            int sum = 0;
             int[][] avalues = new int[nrows][ncols];
             float[][] mvalues = null;
             if(means!=null && day >= 0 && hour >= 0)
@@ -102,11 +126,14 @@ public class CrowdDataManager {
             for (int i = 0; i < nrows; i++)
             for (int j = 0; j < ncols; j++) {
                 int v = hb.bil[mini+i][minj+j];
-                v = (v == NO_DATA) ? -1 : v / 1000;
+                v = (v == NO_DATA) ? -1 : v / 10;
                 avalues[i][j] = v;
+                sum += v;
                 if(mvalues != null)
-                    mvalues[i][j] = 1.0f * v / means[i][j][day][hour];
+                    mvalues[i][j] = (v == -1 || means[mini+i][minj+j][day][hour] <= 0) ? -1 : 1.0f * v / means[mini+i][minj+j][day][hour];
             }
+            System.out.println("tot = "+sum);
+
 
 
             CrowdData dc = new CrowdData(last_time,ulxmap,ulymap,xdim,ydim,minj,maxi,maxj,

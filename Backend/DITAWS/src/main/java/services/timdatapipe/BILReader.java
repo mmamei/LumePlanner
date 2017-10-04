@@ -1,11 +1,14 @@
 package services.timdatapipe;
 
+import com.google.common.io.LittleEndianDataInputStream;
+import com.google.common.io.LittleEndianDataOutputStream;
 import model.CityProperties;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import util.Colors;
 import util.KMLSquare;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,7 @@ public class BILReader {
     public static void main(String[] args) throws Exception {
 
 
-        HeaderBil hb = read("D:\\LUME-ER\\Nrealtime_Emilia-Romagna_15_20170413_1700.zip");
+        HeaderBil hb = read("D:\\LUME-ER\\Nrealtime_Emilia-Romagna_15_20171004_1645.zip");
 
     }
 
@@ -82,8 +85,7 @@ public class BILReader {
         int ncols = Integer.parseInt(header.get("ncols"));
         int[][] sarray = new int[nrows][ncols];
         try {
-            DataInputStream dis = new DataInputStream(is);
-
+            LittleEndianDataInputStream dis = new LittleEndianDataInputStream(is);
             //System.out.println(nrows+" * "+ncols);
             DescriptiveStatistics ds = new DescriptiveStatistics();
             for (int i = 0; i < nrows; i++)
@@ -91,6 +93,8 @@ public class BILReader {
                     sarray[i][j] = dis.readUnsignedShort();
                     ds.addValue(sarray[i][j]);
                 }
+            //int x = dis.readUnsignedShort();
+            //System.out.println(sarray[413][1038]); // 278
             dis.close();
 
             //for(int p=10;p<=100;p=p+10)

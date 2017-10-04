@@ -233,14 +233,48 @@ function poiMarkers() {
 
 
 
-
-
 var CROWD_TYPES = {
     ABS: 0,
     REL: 1
 };
 
+var cutoff = {
+    ABS : [5000,2000,1000,500,0],
+    REL : [20,10,5,1,0]
+};
+
+var colors = {
+    ABS : ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'],
+    REL : ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6']
+};
+
 var crowd_type = CROWD_TYPES.ABS;
+
+function crowdTime2String(time) {
+    var y = time.substring(0,4);
+    var m = time.substring(4,6);
+    var d = time.substring(6,8);
+    var h = time.substring(9,11);
+    var min = time.substring(11,13);
+    return d+"/"+m+"/"+y+" "+h+":"+min
+}
+
+function nlegend(crowd_type) {
+    var grades = crowd_type == CROWD_TYPES.ABS ? cutoff.ABS.slice() : cutoff.REL.slice(); // slice() copy by value
+    grades.reverse();
+    var new_legend = "<h4>"+crowdTime2String(crowd.time)+"</h4>";
+    for (var i = 0; i < grades.length; i++) {
+        //console.log(grades[i]+" ==> "+getColor(grades[i] + 0.01,crowd_type))
+        new_legend += "<i style='background:" + getColor(grades[i] + 0.01,crowd_type) + "'></i>" +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+    $("#leg").html(new_legend);
+    var switch_button = crowd_type == CROWD_TYPES.ABS ? "REL" : "ABS";
+    $("#legend_switch").text("switch to "+switch_button)
+}
+
+
+
 var crowd  = null;
 function crowdMarkers() {
 
@@ -251,46 +285,24 @@ function crowdMarkers() {
             console.log(crowd);
 
             var legend = L.control({position: 'bottomright'});
-
             legend.onAdd = function (map) {
-
-                var div = L.DomUtil.create('div', 'info legend'),
-                    grades = CROWD_TYPES.ABS ? [100,50,20,10,0] : [3,2,1,0.5,0.25];
-                    labels = [];
-
-                var y = crowd.time.substring(0,4);
-                var m = crowd.time.substring(4,6);
-                var d = crowd.time.substring(6,8);
-                var h = crowd.time.substring(9,11);
-                var min = crowd.time.substring(11,13);
-
-                div.innerHTML += "<h4>"+d+"/"+m+"/"+y+" "+h+":"+min+"</h4>";
-                div.innerHTML += "<button id='legend_switch'>switch to REL</button><br>";
-                // loop through our density intervals and generate a label with a colored square for each interval
-                for (var i = 0; i < grades.length; i++) {
-                    div.innerHTML +=
-                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-                }
-
+                var div = L.DomUtil.create('div', 'info legend');
+                div.innerHTML = "<div id='leg'></div><br><button id='legend_switch'>switch to REL</button>";
                 return div;
             };
-
             legend.addTo(mymap);
+            nlegend(crowd_type);
 
             $("#legend_switch").click(function() {
                 if(crowd_type == CROWD_TYPES.ABS) {
-                    $("#legend_switch").html("switch to ABS");
-                    crowd_type = CROWD_TYPES.REL
+                    crowd_type = CROWD_TYPES.REL;
+                    nlegend(crowd_type)
                 }
                 else {
-                    $("#legend_switch").html("switch to REL");
-                    crowd_type = CROWD_TYPES.ABS
+                    crowd_type = CROWD_TYPES.ABS;
+                    nlegend(crowd_type)
                 }
             });
-
-
-
             crowdMarkers()
         })
     }
@@ -301,6 +313,9 @@ function crowdMarkers() {
         var z = mymap.getZoom();
         var size = z > 14 ? 1 :
             z > 13 ? 2 : 4;
+
+        var max = -1000;
+
         for (var i = 0; i < crowd.nrows; i = i + size)
             for (var j = 0; j < crowd.ncols; j = j + size) {
 
@@ -311,19 +326,20 @@ function crowdMarkers() {
                     for (var j1 = j; j1 < (j + size); j1++) {
 
                         var x = crowd_type == CROWD_TYPES.ABS ? crowd.avalues[i][j] : crowd.mvalues[i][j];
+
+                        max = Math.max(x,max);
                         if (x > 0) {
                             num += x;
                             den++
                         }
                     }
-
-                v = num / den;
-
+                if(den > 0)
+                    v = num / den;
 
                 if (v > 0) {
                     var border = getCellBorder(i, j, crowd.ox, crowd.oy, crowd.xdim, crowd.ydim, size);
                     L.polygon(border).setStyle({
-                        fillColor: getColor(v),
+                        fillColor: getColor(v,crowd_type),
                         weight: 1,
                         opacity: 1,
                         color: 'white',
@@ -331,19 +347,20 @@ function crowdMarkers() {
                     }).addTo(markers);
                 }
             }
+        console.log(max);
         markers.addTo(mymap)
     }
 }
 
-function getColor(d) {
-    var color = CROWD_TYPES.ABS ? ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'] :
-                                  ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6'];
-    var cutoff = CROWD_TYPES.ABS ? [100,50,20,10,0] :
-                                   [3,2,1,0.5,0.25];
-    return d > cutoff[0] ? color[0] :
-        d > cutoff[1] ? color[1] :
-            d > cutoff[2] ? color[2] :
-                d > cutoff[3] ? color[3] : color[4];
+function getColor(d, crowd_type) {
+    var xcutoff = crowd_type == CROWD_TYPES.ABS ? cutoff.ABS : cutoff.REL;
+    var palette = crowd_type == CROWD_TYPES.ABS ? colors.ABS : colors.REL;
+
+    return  d > xcutoff[0] ? palette[0] :
+            d > xcutoff[1] ? palette[1] :
+            d > xcutoff[2] ? palette[2] :
+            d > xcutoff[3] ? palette[3] :
+                             palette[4];
 }
 
 function getCellBorder(i, j, ox, oy, xdim, ydim, size) {
