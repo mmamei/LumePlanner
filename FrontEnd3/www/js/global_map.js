@@ -1,4 +1,18 @@
 
+var CROWD_TYPES = {
+    ABS: 0,
+    REL: 1
+};
+
+var cutoff = {
+    ABS : [1000,500,200,100,0],
+    REL : [10,5,2,1,0]
+};
+
+var colors = {
+    ABS : ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'],
+    REL : ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6']
+};
 
 var mymap;
 var city = window.sessionStorage.getItem("city");
@@ -6,6 +20,7 @@ var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
 console.log(mIcons);
+
 var markerIcons = {};
 for(k in mIcons) {
     var x = mIcons[k].split(",");
@@ -111,7 +126,8 @@ function localize(position) {
     if (centerMarker == null) {
         centerMarker = L.marker([lat, lng], {icon: centerIcon}).addTo(mymap);
         if(map_type == MAP_TYPES.NEXT_STEP) mymap.setZoom(18);
-        else mymap.setZoom(16)
+        else mymap.setZoom(16);
+        getCrowdedPOIS()
     }
     centerMarker.setLatLng([lat, lng]);
     if((map_type == MAP_TYPES.NEXT_STEP && !dragged) || (map_type != MAP_TYPES.NEXT_STEP && !dragged && inCity))
@@ -144,6 +160,9 @@ function localize(position) {
 
 
 var markers = new L.LayerGroup();
+var crowded_markers = new L.LayerGroup();
+
+
 function selectMarkers() {
     if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
     if(map_type == MAP_TYPES.CROWD) crowdMarkers();
@@ -154,6 +173,7 @@ function poiMarkers() {
 
     markers.clearLayers();
     markers = new L.LayerGroup();
+
 
     var visiblePois = [];
 
@@ -231,22 +251,44 @@ function poiMarkers() {
     //console.log(count)
 }
 
+function getCrowdedPOIS() {
 
+        $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
+            console.log("********* getting crowded pois *********");
 
-var CROWD_TYPES = {
-    ABS: 0,
-    REL: 1
-};
+            crowded_markers.clearLayers();
+            crowded_markers = new L.LayerGroup();
 
-var cutoff = {
-    ABS : [5000,2000,1000,500,0],
-    REL : [20,10,5,1,0]
-};
+            for (var i = 0; i < data.nrows; i++)
+                for (var j = 0; j < data.ncols; j++) {
+                    if(data.avalues[i][j] > 100 && data.mvalues[i][j] > 2) {
+                        var border = getCellBorder(i, j, data.ox, data.oy, data.xdim, data.ydim, 1);
 
-var colors = {
-    ABS : ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'],
-    REL : ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6']
-};
+                        L.polygon(border,{
+                            avalue: data.avalues[i][j],
+                            mvalue: data.mvalues[i][j]
+                        }).setStyle({
+                            fillColor: getColor(data.mvalues[i][j], CROWD_TYPES.REL),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'white',
+                            fillOpacity: 0.5
+                        }).on('click',function(e) {
+                            //console.log(e.target.options.mypopup)
+                            var info =
+                                "<div><h4>Area Affollata</h4>In questa zona ci sono circa <strong>"+e.target.options.avalue+"</strong> persone!<br>E' circa </strong>"+e.target.options.mvalue.toFixed(0)+"</strong> volte il numero di persone abituale</div>" +
+                                "<div onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
+
+                            $("#popup").html(info);
+                            $("#popup").show()
+                        }).addTo(crowded_markers);
+                    }
+                }
+            mymap.addLayer(crowded_markers);
+        });
+    setTimeout(getCrowdedPOIS,1*60*1000)
+}
+
 
 var crowd_type = CROWD_TYPES.ABS;
 
@@ -276,6 +318,10 @@ function nlegend(crowd_type) {
 
 
 var crowd  = null;
+
+
+
+
 function crowdMarkers() {
 
     if(crowd == null) {
@@ -316,6 +362,9 @@ function crowdMarkers() {
 
         var max = -1000;
 
+
+        var bbox = mymap.getBounds();
+
         for (var i = 0; i < crowd.nrows; i = i + size)
             for (var j = 0; j < crowd.ncols; j = j + size) {
 
@@ -333,24 +382,48 @@ function crowdMarkers() {
                             den++
                         }
                     }
-                if(den > 0)
-                    v = num / den;
 
-                if (v > 0) {
+                v = (crowd_type == CROWD_TYPES.ABS) ? num :  (den > 0) ? num / den  : -1;
+
+
+
+                if (bbox && v > 0) {
                     var border = getCellBorder(i, j, crowd.ox, crowd.oy, crowd.xdim, crowd.ydim, size);
-                    L.polygon(border).setStyle({
-                        fillColor: getColor(v,crowd_type),
-                        weight: 1,
-                        opacity: 1,
-                        color: 'white',
-                        fillOpacity: 0.5
-                    }).addTo(markers);
+                    var ll = bbox.getSouthWest();
+                    var tr = bbox.getNorthEast();
+                    var visible = false;
+                    for(var k=0; k<border.length;k++) {
+                        var lat = border[k][0];
+                        var lon = border[k][1];
+                        if (ll.lat < lat && lat < tr.lat && ll.lng < lon && lon < tr.lng) {
+                            visible = true;
+                            break;
+                        }
+                    }
+                    if(visible) {
+                        L.polygon(border).setStyle({
+                            fillColor: getColor(v, crowd_type),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'white',
+                            fillOpacity: 0.5
+                        }).addTo(markers);
+                    }
                 }
             }
-        console.log(max);
+
+        console.log("maximum value overall "+max);
+        /*
+        var count= 0;
+        markers.eachLayer(function(marker) {count++});
+        console.log("num visible squares "+count)
+        */
         markers.addTo(mymap)
     }
 }
+
+
+
 
 function getColor(d, crowd_type) {
     var xcutoff = crowd_type == CROWD_TYPES.ABS ? cutoff.ABS : cutoff.REL;

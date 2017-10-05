@@ -17,11 +17,13 @@ public class BIL2CSV {
     public final static SimpleDateFormat sdf_day = new SimpleDateFormat("yyyyMMdd"); //20170413
     public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm"); //20170413_1700
     public static void main(String[] args) throws  Exception {
-
+        long startx = System.currentTimeMillis();
         CityProperties city = CityProperties.getInstanceHash("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv").get("Modena");
-        Calendar start = new GregorianCalendar(2017, Calendar.APRIL, 14, 0, 0, 0);
-        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 27,  24, 0, 0);
+        Calendar start = new GregorianCalendar(2017, Calendar.JUNE, 1, 0, 0, 0);
+        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 4,  24, 0, 0);
         run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
+        long endx = System.currentTimeMillis();
+        System.out.println("Completed in "+(endx-startx)/(60*1000)+" mins");
     }
     public static void run(CityProperties city,Calendar start,Calendar end,String outfile) throws Exception{
 

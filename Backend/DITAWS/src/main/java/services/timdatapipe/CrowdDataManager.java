@@ -126,11 +126,16 @@ public class CrowdDataManager {
             for (int i = 0; i < nrows; i++)
             for (int j = 0; j < ncols; j++) {
                 int v = hb.bil[mini+i][minj+j];
-                v = (v == NO_DATA) ? -1 : v / 10;
+                v = (v == NO_DATA) ? -1 : 3 * v / 10; // 3 per considerare TIM, Vodsfone e Wind
                 avalues[i][j] = v;
                 sum += v;
-                if(mvalues != null)
+                if(mvalues != null) {
                     mvalues[i][j] = (v == -1 || means[mini+i][minj+j][day][hour] <= 0) ? -1 : 1.0f * v / means[mini+i][minj+j][day][hour];
+
+                    //if(city.equals("Modena") && mvalues[i][j] > 10)
+                    //    System.out.println(v+" / "+ means[mini+i][minj+j][day][hour]);
+
+                }
             }
             System.out.println("tot = "+sum);
 
