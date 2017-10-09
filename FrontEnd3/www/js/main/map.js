@@ -55,17 +55,13 @@
 
 
     if(conf.localize && navigator.geolocation)
-        navigator.geolocation.watchPosition(localize);
+        navigator.geolocation.watchPosition(localize,localize,{enableHighAccuracy: true});
     else simulatedMovement();
 
 
     $("#itinerary").click(function(){
         $(this).css("opacity","0.5");
-        var data = JSON.parse(window.sessionStorage.getItem("itineraries"));
-        if(data == null)
-            window.location.href = "itinerary_create.html";
-        else
-            window.location.href = "itineraries.html";
+        window.location.href = "itineraries.html";
     });
 
     $("#visit").click(function(){

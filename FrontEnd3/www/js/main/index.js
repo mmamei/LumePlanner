@@ -14,15 +14,6 @@ function loadActivities(city,user) {
         });
 }
 
-function loadItineraries(city, user) {
-    window.sessionStorage.setItem("itineraries",null);
-    console.log("get itineraries for city "+city+" from server");
-    return  $.getJSON(conf.dita_server + 'itineraries?city=' + city + "&user="+user,
-        function (data, status) {
-            if(data.length > 0)
-                window.sessionStorage.setItem("itineraries",JSON.stringify(data));
-        });
-}
 
 
 var showall = false;
@@ -113,7 +104,7 @@ function init(position) {
                 window.sessionStorage.setItem("citybbox", JSON.stringify(cityBbox[event.target.id]));
 
 
-                $.when(loadActivities(city,user.email), loadItineraries(city,user.email)).done(function(){
+                $.when(loadActivities(city,user.email)).done(function(){
                     window.location.href = "map.html";
                 });
             }

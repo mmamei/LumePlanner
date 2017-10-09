@@ -1,50 +1,48 @@
+var startIcon = L.divIcon({
+    type: 'div',
+    className: 'marker',
+    html: "<span class='fa-stack fa-lg'>" +
+    "<i class='fa fa-circle fa-stack-2x'></i> " +
+    "<i class='fa fa-home fa-stack-1x fa-inverse'></i> " +
+    "</span>"
+});
+
+var endIcon = L.divIcon({
+    type: 'div',
+    className: 'marker',
+    html: "<span class='fa-stack fa-lg'>" +
+    "<i class='fa fa-circle fa-stack-2x'></i> " +
+    "<i class='fa fa-flag fa-stack-1x fa-inverse'></i> " +
+    "</span>"
+});
+
+
 function parsePlan(items) {
-    //console.log(items);
+    console.log(items);
 
+    var closed_circuit = (items.departure.place_id == "0" && items.arrival.place_id == "00") || items.departure.place_id == items.arrival.place_id;
     var m = {};
-    if ((items.departure.place_id === "0" && items.arrival.place_id === "00")
-        || items.departure.place_id === items.arrival.place_id ) {
 
-        m[items.departure.place_id] = {
-            lat : items.departure.geometry.coordinates[1],
-            lng: items.departure.geometry.coordinates[0],
-            message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Partenza:" + items.departure_time + "</b><br />" +
-            "<b>Fine:" + items.arrival_time + "</b><br />" +
-            format_name(items.arrival.display_name)+"</p>",
-            icon: L.divIcon({
-                type: 'div',
-                className: 'marker',
-                html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
-            })
-        };
 
-    } else {
 
-        m[items.arrival.place_id] = {
-            lat : items.arrival.geometry.coordinates[1],
-            lng: items.arrival.geometry.coordinates[0],
+    var jitter = 0.001;
+
+    m[items.arrival.place_id] = {
+            lat : items.arrival.geometry.coordinates[1]+Math.random()*jitter,
+            lng: items.arrival.geometry.coordinates[0]+Math.random()*jitter,
             message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Arrivo:" + items.arrival_time + "</b><br />" +
             format_name(items.arrival.display_name)+"</p>",
-            icon: L.divIcon({
-                type: 'div',
-                className: 'marker',
-                html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-flag-checkered fa-stack-2x\"></i></span>"
-            })
-        };
+            icon: endIcon
+    };
 
-        m[items.departure.place_id] = {
-            lat : items.departure.geometry.coordinates[1],
-            lng: items.departure.geometry.coordinates[0],
+    m[items.departure.place_id] = {
+            lat : items.departure.geometry.coordinates[1]+Math.random()*jitter,
+            lng: items.departure.geometry.coordinates[0]+Math.random()*jitter,
             message:  "<p style='background-color:white !important;color:#084265 !important;'><b>Partenza:"+items.departure_time+"</b><br />" +
             format_name(items.departure.display_name)+"</p>",
-            icon: L.divIcon({
-                type: 'div',
-                className: 'marker',
-                //html: "<span class=\"fa-col-green fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
-                html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-            })
-        };
-    }
+            icon: startIcon
+    };
+
 
     var j;
     for (j = 0; j < items.visited.length; j+=1) {
@@ -103,12 +101,13 @@ function parsePlan(items) {
 
 
     var desc = "";
-    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.departure.display_name)+"<br><strong>parti alle: </strong>"+items.departure_time+"</div>");
-    desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.arrival.display_name)+"<br><strong>arrivi alle: </strong>"+items.arrival_time+"</div>");
+    var startplace = (items.departure.display_name == "Current Location") ? "" : format_name(items.departure.display_name)+"<br>";
+    desc = desc.concat("<div class=\"alert alert-info\">"+startplace+"<strong>parti alle: </strong>"+items.departure_time+"</div>");
     for(var i=0; i<items.to_visit.length;i++)
         desc = desc.concat("<div class=\"alert alert-info\">"+format_name(items.to_visit[i].visit.display_name)+
             "<br><span style='font-size: small'><strong> arrivi alle: </strong>"+items.to_visit[i].arrival_time+"<br><strong> parti alle: </strong>"+items.to_visit[i].departure_time+"</span></div>")
-
+    var endplace = (items.arrival.display_name == "Current Location") ? "" : format_name(items.departure.display_name)+"<br>";
+    desc = desc.concat("<div class=\"alert alert-info\">"+endplace+"<strong>arrivi alle: </strong>"+items.arrival_time+"</div>");
     return {"markers":markers,"desc":desc}
 }
 
@@ -118,8 +117,27 @@ var plans_desc = {};
 var plans_markers = {};
 
 
+function getBbox(plan) {
+    var minLat =  plan.departure.geometry.coordinates[1] - 0.001;
+    var minLon = plan.departure.geometry.coordinates[0] - 0.001;
+    var maxLat = plan.arrival.geometry.coordinates[1] + 0.001;
+    var maxLon = plan.arrival.geometry.coordinates[0] + 0.001;
+    for(var i=0; i<plan.to_visit.length;i++) {
 
+        var lat = plan.to_visit[i].visit.geometry.coordinates[1];
+        var lon = plan.to_visit[i].visit.geometry.coordinates[0];
 
+        minLat = Math.min(minLat, lat);
+        minLon = Math.min(minLon, lon);
+        maxLat = Math.max(maxLat, lat);
+        maxLon = Math.max(maxLon, lon)
+    }
+
+    return [
+        [minLat, minLon],
+        [maxLat, maxLon]
+    ]
+}
 
 $(document).ready(function() {
 
@@ -138,10 +156,8 @@ $(document).ready(function() {
         plans_markers[newKey] = info.markers
     }
 
-    console.log("------");
-    console.log(plans_markers);
-
-
+    //console.log("------");
+    //console.log(plans_markers);
 
     var newplan = true; // used to resume plan
 
@@ -149,24 +165,6 @@ $(document).ready(function() {
     //console.log(type_of_plan)
 
 
-    var minLat = 1000;
-    var minLon = 1000;
-    var maxLat = -1000;
-    var maxLon = -1000;
-    for(var i=0; i<visitplan.plans.asis.to_visit.length;i++) {
-
-        var lat = visitplan.plans.asis.to_visit[i].visit.geometry.coordinates[1];
-        var lon = visitplan.plans.asis.to_visit[i].visit.geometry.coordinates[0];
-
-        minLat = Math.min(minLat, lat);
-        minLon = Math.min(minLon, lon);
-        maxLat = Math.max(maxLat, lat);
-        maxLon = Math.max(maxLon, lon)
-    }
-
-
-    var lat  = visitplan.plans[type_of_plan].departure.geometry.coordinates[1];
-    var lng  = visitplan.plans[type_of_plan].departure.geometry.coordinates[0];
     console.log(type_of_plan+" --> "+markerName2Key(type_of_plan));
     mymap = L.map('mapid',{
         attributionControl: false,
@@ -177,12 +175,7 @@ $(document).ready(function() {
         dragging: true,
         layers: [plans_markers[markerKey2Name(type_of_plan)]]
     });
-
-
-    mymap.fitBounds([
-        [minLat, minLon],
-        [maxLat, maxLon]
-    ]);
+    mymap.fitBounds(getBbox(visitplan.plans.asis));
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
     L.control.layers(plans_markers,null).addTo(mymap);
     //$.when(translateObjKeys(plans_markers)).done(function(){L.control.layers(plans_markers,null).addTo(mymap)})

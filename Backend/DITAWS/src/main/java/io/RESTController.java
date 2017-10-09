@@ -3,6 +3,7 @@ package io;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import services.CheckUser;
+import services.ItineraryGenerator;
 import services.timdatapipe.BILMean;
 import services.timdatapipe.CrowdDataManager;
 import services.timdatapipe.DataPipeDownload;
@@ -91,10 +92,36 @@ public class RESTController {
 
 	@RequestMapping(value = "itineraries", headers="Accept=application/json", method = RequestMethod.GET)
 	public @ResponseBody List<Itinerary> sendItineraries(@RequestParam(value="city", defaultValue="unknown") String city,
-														 @RequestParam(value="user", defaultValue="unknown") String user) {
-		tracelog.info("user "+user+ " got itineraries of " +city);
-		return dao.retrieveItineraries(city);
+														 @RequestParam(value="user", defaultValue="unknown") String user,
+														 @RequestParam(value="lat", defaultValue="0") String lat,
+														 @RequestParam(value="lng", defaultValue="0") String lng) {
+		tracelog.info("user "+user+ " got itineraries of " +city + " from position "+lat+","+lng);
+
+		double[] latlng = new double[]{Double.parseDouble(lat),Double.parseDouble(lng)};
+
+		List<Itinerary> itineraries = dao.retrieveItineraries(city);
+
+		ItineraryGenerator ig = new ItineraryGenerator(dao, city, user, latlng);
+		if(!lat.equals("unknown") && !lng.equals("unknown"))
+			ig.overrideTimeOfVisit(itineraries);
+		itineraries.addAll(ig.generate());
+
+		Collections.sort(itineraries,new Comparator<Itinerary>() {
+			@Override
+			public int compare(Itinerary i1, Itinerary i2) {
+				int t1 = Integer.parseInt(i1.getApprox_time().split(" ")[0]);
+				int t2 = Integer.parseInt(i2.getApprox_time().split(" ")[0]);
+
+				if(t1 > t2) return 1;
+				if(t1 < t2) return -1;
+				return 0;
+			}
+		});
+
+		return itineraries;
 	}
+
+
 
 
 	@RequestMapping(value = "route", headers="Accept=application/json", method = RequestMethod.GET)

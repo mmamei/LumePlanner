@@ -110,7 +110,8 @@ function localize(position) {
     var accuracy = position.coords.accuracy;
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
-
+    window.sessionStorage.setItem("lat",lat);
+    window.sessionStorage.setItem("lng",lng);
 
     var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
         cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
