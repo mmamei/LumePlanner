@@ -46,7 +46,8 @@ function getInfo() {
                 findEvent(idLikes[i],all);
 
 
-            $("#userName").text(data.first_name+" "+data.last_name);
+            $("#userName").text(data.first_name);
+            //$("#userName").text(data.first_name+" "+data.last_name);
             $("#userPic").attr("src","http://graph.facebook.com/" + data.id + "/picture?type=normal");
         },
         error: errorHandler});
