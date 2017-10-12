@@ -2,16 +2,10 @@ $(document).ready(function(){
 
 
     function cleanup() {
-        var user = JSON.parse(window.localStorage.getItem("user"));
-        var city = window.sessionStorage.getItem("city");
+        var user = window.localStorage.getItem("user");
 
-        var request = {
-            user: user.email,
-            email: user.email,
-            city: city
-        };
 
-        $.postJSON(conf.dita_server + "finish", request, function (data, status) {
+        $.postJSON(conf.dita_server + "finish", user, function (data, status) {
             console.log("User plan deleted:" + data);
         });
         window.sessionStorage.setItem("spois",JSON.stringify([]));

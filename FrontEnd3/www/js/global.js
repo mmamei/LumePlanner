@@ -103,7 +103,7 @@ $( document ).ready(function() {
     if(city != null) menu += "<li data-filtertext='viaggi' data-icon = 'camera'><a href='checkuser.html' target='_top' data-icon='location' data-ajax='false' tkey='my_itineraries'>I miei viaggi</a></li>";
     if(city != null) menu += "<li data-filtertext='percorsi' data-icon = 'star'><a href='itineraries.html' target='_top' data-ajax='false' tkey='itineraries'>I percorsi più visti</a></li>";
     if(city != null) menu += "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html?crowd=true' target='_top' data-icon='location' data-ajax='false'>Affollamento</a></li>";
-    menu += "<li data-filtertext='account' data-icon = 'user'><a href='fb.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
+    menu += "<li data-filtertext='account' data-icon = 'user'><a href='user.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
     menu +="<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>";
     menu += "</ul>";
 

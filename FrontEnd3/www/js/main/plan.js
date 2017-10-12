@@ -141,7 +141,7 @@ function getBbox(plan) {
 
 $(document).ready(function() {
 
-    var user = JSON.parse(window.localStorage.getItem("user"));
+    var user = window.localStorage.getItem("user");
     visitplan = JSON.parse(window.sessionStorage.getItem("visitplan"));
     var type_of_plan = JSON.parse(window.sessionStorage.getItem("type_of_plan"));
     //console.log(visitplan.plans)

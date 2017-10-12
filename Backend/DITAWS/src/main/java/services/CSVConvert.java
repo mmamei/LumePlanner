@@ -2,7 +2,7 @@ package services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.CityProperties;
+import model.City;
 import model.POI;
 
 import java.io.*;
@@ -89,13 +89,13 @@ public class CSVConvert {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         if (divide_by_city) {
             // map to cities
-            List<CityProperties> cities = CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
+            List<City> cities = City.getInstance();
             Map<String, List<POI>> hm = new HashMap<>();
-            for (CityProperties city : cities)
+            for (City city : cities)
                 hm.put(city.getName(), new ArrayList<POI>());
 
             for (POI p : list) {
-                for (CityProperties cp : cities) {
+                for (City cp : cities) {
                     if (cp.contains(p.getGeometry().getCoordinates().getLatitude(), p.getGeometry().getCoordinates().getLongitude()))
                         hm.get(cp.getName()).add(p);
                 }

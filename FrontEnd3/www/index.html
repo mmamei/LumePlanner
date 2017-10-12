@@ -22,30 +22,21 @@
             window.location = "phone.html"
         }
 
-        function  formatCityBlock(name,img) {
-            var lname = name;
-            if(lname == "Forli") lname = "Forlì";
-            if(lname == "ReggioEmilia") lname = "Reggio Emilia";
-            return "<div class='ui-block-a show-page-loading-msg' data-textonly='false' data-textvisible='true' data-msgtext='' data-inline='true'>"+
-                    "<h3 align = 'center'>"+lname+"</h3><img src='"+img+"' class='img-responsive img-rounded' alt='"+name+"' id='"+name+"'>"+
+        function  formatCityBlock(name,pretty_name,img) {
+            return "<div>"+
+                    "<h3 align = 'center'>"+pretty_name+"</h3><img src=\""+img+"\" class='img-responsive img-rounded' alt='"+name+"' id=\""+name+"\">"+
                     "</div>"
         }
     </script>
 
 
     <style>
-        .ui-grid-a img {
-            width  : 100%;
-            height : auto;
+
+        img {
+             width  : 100%;
+             height : auto;
         }
-        .ui-grid-b img {
-            width  : 100%;
-            height : auto;
-        }
-        .ui-grid-c img {
-            width  : 100%;
-            height : auto;
-        }
+
     </style>
 
 
@@ -67,16 +58,12 @@
 
     <div role="main" class="ui-content jqm-content">
 
-        <p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>
+        <!--<p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>-->
 
+        <input type="search" id="search" value="" data-mini="false" />
 
-        <!--
-        <label for="search-mini"></label>
-        <input type="search" name="search-mini" id="search-mini" value="" data-mini="true" />
-        -->
+        <div id="cities" style='text-align: center'></div>
 
-        <div id="cities" class="ui-grid-a ui-responsive"></div>
-        <button id="more" class="btn btn-primary" tkey="more_cities">Altre Città</button>
 
         <div data-role="popup" id="infoPopup" style="max-width:350px;text-align: center" class="ui-corner-all">
         </div>
@@ -85,7 +72,6 @@
     </div><!-- /content -->
 
 </div><!-- /page -->
-
 
 
 

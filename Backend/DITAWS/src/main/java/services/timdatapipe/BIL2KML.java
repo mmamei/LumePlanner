@@ -1,6 +1,6 @@
 package services.timdatapipe;
 
-import model.CityProperties;
+import model.City;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import util.Colors;
 import util.KMLSquare;
@@ -19,12 +19,12 @@ public class BIL2KML {
 
     public static void main(String[] args) {
         HeaderBil hb = BILReader.read("D:\\LUME-ER\\Nrealtime_Emilia-Romagna_15_20170413_1700.zip");
-        CityProperties city = CityProperties.getInstanceHash("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv").get("Modena");
+        City city = City.getInstance("Modena");
         String fileKml = "D:\\"+city.getName()+".kml";
         drawKML(city,hb,fileKml);
     }
 
-    public static void drawKML(CityProperties city, HeaderBil hb, String fileKml) {
+    public static void drawKML(City city, HeaderBil hb, String fileKml) {
 
         System.out.println(city.getName()+" *********************************************************************");
 
@@ -33,13 +33,13 @@ public class BIL2KML {
         double ulymap = Double.parseDouble(hb.header.get("ulymap"));
         double xdim = Double.parseDouble(hb.header.get("xdim"));
         double ydim = Double.parseDouble(hb.header.get("ydim"));
-        double[][] lonLatBbox = city.getLonLatBbox();
+        double[] lonLatBbox = city.getLonLatBBox();
 
-        int minj = (int)Math.floor((lonLatBbox[0][0] - ulxmap + xdim/2)/xdim);
-        int maxi = (int)Math.ceil((ulymap - lonLatBbox[0][1] + ydim/2)/ydim);
+        int minj = (int)Math.floor((lonLatBbox[0] - ulxmap + xdim/2)/xdim);
+        int maxi = (int)Math.ceil((ulymap - lonLatBbox[1] + ydim/2)/ydim);
 
-        int maxj = (int)Math.ceil((lonLatBbox[1][0] - ulxmap + xdim/2)/xdim);
-        int mini = (int)Math.floor((ulymap - lonLatBbox[1][1] + ydim/2)/ydim);
+        int maxj = (int)Math.ceil((lonLatBbox[2] - ulxmap + xdim/2)/xdim);
+        int mini = (int)Math.floor((ulymap - lonLatBbox[3] + ydim/2)/ydim);
 
         int nrows = maxi - mini;
         int ncols = maxj - minj;

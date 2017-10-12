@@ -19,6 +19,7 @@ var city = window.sessionStorage.getItem("city");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+var user_prefs = JSON.parse(window.sessionStorage.getItem("preferences"));
 console.log(mIcons);
 
 var markerIcons = {};
@@ -142,7 +143,7 @@ function localize(position) {
 
     //console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
     if(getDistanceFromLatLonInM(lat,lng,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + JSON.parse(window.localStorage.getItem("user")).email, function (data, status) {
+        $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + window.localStorage.getItem("user"), function (data, status) {
         });
         prevLat = lat;
         prevLon = lng;
@@ -198,8 +199,12 @@ function poiMarkers() {
     }
 
     visiblePois.sort(function(a,b) {
-        if(a.importance < b.importance) return 1;
-        if(a.importance > b.importance) return -1;
+
+        var aimp = a.importance + 2 * user_prefs[a.category];
+        var bimp = b.importance + 2 * user_prefs[b.category];
+
+        if(aimp < bimp) return 1;
+        if(aimp > bimp) return -1;
         return 0
     });
 
@@ -255,7 +260,7 @@ function poiMarkers() {
 function getCrowdedPOIS() {
 
         $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
-            console.log("********* getting crowded pois *********");
+            //console.log("********* getting crowded pois *********");
 
             crowded_markers.clearLayers();
             crowded_markers = new L.LayerGroup();
@@ -582,11 +587,11 @@ function visit() {
 
 
         //if(!currentVisit) {
-        var user = JSON.parse(window.localStorage.getItem("user"));
+        var user = window.localStorage.getItem("user");
         var city = window.sessionStorage.getItem("city");
         var d = new Date().getTime();
         var request = {
-            user: user.email,
+            user: user,
             visited: currentDestination,
             time: d,
             rating: 10, // ???

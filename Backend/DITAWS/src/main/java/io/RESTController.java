@@ -1,6 +1,5 @@
 package io;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import services.CheckUser;
 import services.ItineraryGenerator;
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import services.pathfinder.FindPath;
 import services.SaveItineraries2DB;
 import services.SavePOIs2DB;
+import util.StringUtils;
 
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,25 +31,26 @@ public class RESTController {
 	private  GHopper gHopper;
 	private Mongo dao;
 	CrowdDataManager cdm;
-	private List<String> cities;
+	private List<City> cities;
 
 	public RESTController() {
 		logger.info("Server initialization started");
 		dao = new Mongo();
 		gHopper = new GHopper();
 		cdm = new CrowdDataManager();
-		cities = new ArrayList<>();
-		for(CityProperties cp: CityProperties.getInstance(this.getClass().getResource("/../data/cities.csv").getPath())) {
-			String city = cp.getName();
-			double[][] lonlatBB = cp.getLonLatBbox();
-			cities.add(city+","+lonlatBB[0][0]+","+lonlatBB[0][1]+","+lonlatBB[1][0]+","+lonlatBB[1][1]);
+		cities = City.getInstance();
+
+
+
+		for(City c: cities) {
+			String city = c.getName();
+			//cities.add(city+","+lonlatBB[0][0]+","+lonlatBB[0][1]+","+lonlatBB[1][0]+","+lonlatBB[1][1]);
 			if (!dao.checkActivities(city)) {
-				logger.info("/../data/"+cp.getDataDir());
 				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
-				new SavePOIs2DB().run(city, dao, this.getClass().getResource("/../data/"+cp.getDataDir()+"/pois").getPath());
+				new SavePOIs2DB().run(city, dao, this.getClass().getResource("/../data/cities/"+city+"/pois").getPath());
 				logger.info("POIs collected");
 			}
-			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/"+cp.getDataDir()).getPath()+"/itineraries.json");
+			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/cities/"+city).getPath()+"/itineraries.json");
 		}
 
 		/*
@@ -61,24 +63,29 @@ public class RESTController {
 			e.printStackTrace();
 		}
 		*/
+
 	}
 
 	@RequestMapping(value = "cities", headers="Accept=application/json", method = RequestMethod.GET)
-	public @ResponseBody List<String> sendCities() {
+	public @ResponseBody List<City> sendCities() {
 		return cities;
 	}
 
 
-	@RequestMapping(value = "signin", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody Integer performLogin(@RequestBody User user) {
-		tracelog.info("user "+user.getEmail()+" signin");
-		return dao.login(user);
+
+	@RequestMapping(value = "updatepref", headers="Accept=application/json", method = RequestMethod.POST)
+	public @ResponseBody boolean updatePreferences(@RequestBody UserPreferences up) {
+		dao.updatePrefs(up.getUser(),up.getPrefs());
+		tracelog.info("user "+up.getUser()+" update preferences "+up.getPrefs());
+		return true;
 	}
 
-	@RequestMapping(value = "signup", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody boolean performSignup(@RequestBody User user) {
-		tracelog.info("user "+user.getEmail()+" signup");
-		return dao.signup(user);
+	@RequestMapping(value = "loadpref", headers="Accept=application/json", method = RequestMethod.POST)
+	public @ResponseBody Map<String,Double> getPreferences(@RequestBody String user) {
+		user = user.substring(1,user.length()-1);
+		Map<String,Double> prefs = dao.getPrefs(user);
+		tracelog.info("user "+user+" got preferences "+prefs);
+		return prefs;
 	}
 
 
@@ -172,8 +179,9 @@ public class RESTController {
 
 	// Questo metodo per ora non viene usato. Serve se devo recuperare un piano precedente non terminato
 	@RequestMapping(value = "plan", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody VisitPlanAlternatives getPlan(@RequestBody User user) {
-		return dao.retrievePlan(user.getEmail());
+	public @ResponseBody VisitPlanAlternatives getPlan(@RequestBody String user) {
+
+		return dao.retrievePlan(user);
 	}
 
 
@@ -201,15 +209,17 @@ public class RESTController {
 	@RequestMapping(value = "visited", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
 		tracelog.info("user "+new_visited.getUser()+ " visited (in plan) "+new_visited.toString());
+        dao.updatePrefs(new_visited.getUser(),new_visited.getVisited().getCategory(),0.05);
 		return new FindPath().addVisitedAndReplanWithType(dao,new_visited);
 
 	}
 
 
 	@RequestMapping(value = "finish", headers="Accept=application/json", method = RequestMethod.POST)
-	public @ResponseBody boolean removePlan(@RequestBody User user) {
-		tracelog.info("user "+user.getEmail()+" completed his visiting plan in "+user.getCity());
-		return dao.deletePlan(user.getEmail());
+	public @ResponseBody boolean removePlan(@RequestBody String user) {
+		user = user.substring(1,user.length()-1);
+		tracelog.info("user "+user+" completed his visiting plan");
+		return dao.deletePlan(user);
 	}
 
 
@@ -224,7 +234,7 @@ public class RESTController {
 		String minute = minuteFormatter.format(d);
 		System.out.println("download datapipe data at "+hour+":"+minute);
 		new DataPipeDownload().download();
-		cdm.processCrowdInfo();
+		cdm.processCrowdInfo(false);
 	}
 
 	@Scheduled(fixedRate = 2*7*24*60*1000) // every 2 weeks

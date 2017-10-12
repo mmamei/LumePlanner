@@ -3,8 +3,10 @@ package services;
 import io.Mongo;
 
 import java.io.*;
+import java.util.List;
 
 import io.RESTController;
+import model.City;
 import model.POI;
 
 import org.apache.log4j.Logger;
@@ -16,14 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SavePOIs2DB {
 
-
-
 	public static void main(String[] args) throws Exception  {
 		SavePOIs2DB g = new SavePOIs2DB();
-		String city = "ReggioEmilia";
+		List<City> cities = City.getInstance();
 		Mongo dao = new Mongo();
-		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
-		g.run(city, dao,dir);
+		for(City c: cities) {
+			String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\" + c.getName() + "\\pois";
+			g.run(c.getName(), dao, dir);
+		}
 	}
 
 

@@ -1,3 +1,44 @@
+
+var all_cities = null;
+
+$.getJSON(conf.dita_server+"cities",function(data, status){
+    all_cities = data
+});
+
+
+
+function sort_on_distance(position) {
+
+    if(all_cities == null) {
+        setTimeout(sort_on_distance(position),100);
+        return;
+    }
+    var lat = position.coords.latitude;
+    var lng = position.coords.longitude;
+    window.sessionStorage.setItem("prevLat", lat);
+    window.sessionStorage.setItem("prevLon", lng);
+    all_cities.sort(function (a, b) {
+
+        var lata = (a.lonLatBBox[1]+a.lonLatBBox[3]) / 2;
+        var lnga = (a.lonLatBBox[0]+a.lonLatBBox[2]) / 2;
+
+        var latb = (b.lonLatBBox[1]+b.lonLatBBox[3]) / 2;
+        var lngb = (b.lonLatBBox[0]+b.lonLatBBox[2]) / 2;
+
+        var da = getDistanceFromLatLonInM(lat, lng, lata, lnga);
+        var db = getDistanceFromLatLonInM(lat, lng, latb, lngb);
+        if (da < db) return -1;
+        if (da > db) return 1;
+        return 0;
+    });
+    init()
+}
+
+if (conf.localize && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(sort_on_distance)
+}
+
+
 function loadActivities(city,user) {
     console.log("get activities for city "+city+" from server");
     return  $.getJSON(conf.dita_server + 'activities?city=' + city + "&user="+user,
@@ -11,110 +52,98 @@ function loadActivities(city,user) {
             window.sessionStorage.setItem("pois",JSON.stringify(pois));
             var departure = window.sessionStorage.getItem("departure");
             var arrival = window.sessionStorage.getItem("arrival");
-        });
+    });
+}
+
+function loadPreferences(user) {
+    console.log("get preferences for "+user);
+
+    return $.postJSON(conf.dita_server + "loadpref", user, function (data, status) {
+        console.log(data);
+        window.sessionStorage.setItem("preferences",JSON.stringify(data));
+    });
 }
 
 
+function init(str) {
 
-var showall = false;
+    if(all_cities == null) {
+        setTimeout(init(position,str),100);
+        return;
+    }
 
-var cityBbox = {};
-
-
-function init(position) {
-
-
-    //console.log("localized at " + position.coords.latitude + "," + position.coords.longitude);
-    $.getJSON(conf.dita_server+"cities",function(data, status){
-
-
-        for(var i=0; i<data.length;i++) {
-            var x = data[i].split(",");
-            cityBbox[x[0]] = [Number(x[1]), Number(x[2]), Number(x[3]), Number(x[4])]
-        }
+    if(!str) str = "";
+    str = str.toLowerCase();
+    var data = [];
+    for(var i=0; i<all_cities.length;i++)
+        if(all_cities[i].pretty_name.toLowerCase().startsWith(str))
+            data.push(all_cities[i]);
 
 
-        if(position && position.coords) {
-
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-
-            window.sessionStorage.setItem("prevLat",lat);
-            window.sessionStorage.setItem("prevLon",lng);
-
-            data.sort(function(a,b) {
-                var pa = a.split(",");
-                var pb = b.split(",");
+    data = data.slice(0,3);
+    $("#cities").html("");
+    console.log("Selected cities");
+    for(var i=0; i<data.length;i++) {
+        console.log(data[i]);
+        $("#cities").append(formatCityBlock(data[i].name,data[i].pretty_name, encodeURI(conf.dita_server_img+"cities/"+data[i].imgFile)));
+    }
 
 
 
-                var lata = (Number(pa[2]) + Number(pa[4])) / 2;
-                var lnga = (Number(pa[1]) + Number(pa[3])) / 2;
 
-                var latb = (Number(pb[2]) + Number(pb[4])) / 2;
-                var lngb = (Number(pb[1]) + Number(pb[3])) / 2;
 
-                var da = getDistanceFromLatLonInM(lat, lng, lata, lnga);
-                var db = getDistanceFromLatLonInM(lat, lng, latb, lngb);
-                if(da < db) return -1;
-                if(da > db) return 1;
-                return 0;
-            })
+    $("img").click(function(event) {
+        console.log(event);
+        $(this).css("opacity","0.5");
+        console.log("the user selected "+event.target.id);
+        // update city
+        if(window.sessionStorage.getItem("city") !== event.target.id) {
+            console.log("update city");
+
+            var city = event.target.id;
+
+
+
+            var citybbox = null;
+            for(var i=0; i<data.length;i++)
+                if(data[i].name == city)
+                    citybbox = data[i].lonLatBBox;
+
+            window.sessionStorage.setItem("city", city);
+            window.sessionStorage.setItem("citybbox", JSON.stringify(citybbox));
+            //alert(city)
+            //alert(JSON.stringify(cityBbox[city]))
+            $.when(loadActivities(city,user)).done(function(){
+                go2Map()
+            });
         }
         else {
-            conf.localize = false;
+            go2Map()
         }
-
-        if(!showall)
-            data = data.slice(0,3);
-        $("#cities").html("");
-        for(var i=0; i<data.length;i++) {
-            console.log("-----"+data[i]);
-            var city = data[i].split(",")[0];
-            var img = conf.dita_server_img+"cities/"+city+".jpg";
-            $("#cities").append(formatCityBlock(city,img));
-        }
-
-
-        $.getJSON(conf.dita_server_files+'alert.json', function (alertdata, status) {
-            if(alertdata && alertdata.id !== window.localStorage.getItem("last_seen_alert")) {
-                //console.log(alertdata)
-                var content = alertdata.it;
-                if(langCode == "en") content = alertdata.en;
-                //console.log(langCode)
-                $("#infoPopup").html(content);
-                $("#infoPopup").popup("open");
-                window.localStorage.setItem("last_seen_alert",alertdata.id);
-            }
-
-        });
-
-
-        $("img").click(function(event) {
-
-            $(this).css("opacity","0.5");
-
-            console.log("the user selected "+event.target.id);
-            // update city
-            if(window.sessionStorage.getItem("city") !== event.target.id) {
-                console.log("update city");
-
-                var city = event.target.id;
-                window.sessionStorage.setItem("city", event.target.id);
-                window.sessionStorage.setItem("citybbox", JSON.stringify(cityBbox[event.target.id]));
-
-
-                $.when(loadActivities(city,user.email)).done(function(){
-                    window.location.href = "map.html";
-                });
-            }
-            else {
-                window.location.href = "map.html";
-            }
-        });
-
     });
+}
 
+function go2Map() {
+    if(window.sessionStorage.getItem("preferences") == null) {
+        setTimeout(go2Map, 100);
+        return;
+    }
+    window.location.href = "map.html";
+}
+
+
+function checkAlertPopup(){
+    $.getJSON(conf.dita_server_files+'alert.json', function (alertdata, status) {
+        if(alertdata && alertdata.id !== window.localStorage.getItem("last_seen_alert")) {
+            //console.log(alertdata)
+            var content = alertdata.it;
+            if(langCode == "en") content = alertdata.en;
+            //console.log(langCode)
+            $("#infoPopup").html(content);
+            $("#infoPopup").popup("open");
+            window.localStorage.setItem("last_seen_alert",alertdata.id);
+        }
+    });
 }
 
 var user;
@@ -130,50 +159,29 @@ function onDeviceReady() {
         }, function (error) {
             console.log("The following error occurred: " + error);
         });
-    } catch(e) {
+    } catch (e) {
         console.log("cordova.plugins.diagnostic not available")
     }
+
+
     $(document).ready(function () {
-        if (conf.localize && navigator.geolocation)
-            navigator.geolocation.getCurrentPosition(init, init,{timeout:5000});
-        else init();
 
-        $("#more").click(function (event) {
-            showall = true;
-            $("#cities").html("");
-            if (conf.localize && navigator.geolocation) navigator.geolocation.getCurrentPosition(init, init,{timeout:5000});
-            else init()
-
-        });
-
+        //checkAlertPopup()
+        init();
 
         // login user
         user = window.localStorage.getItem("user");
         if (!user) {
             console.log("user must be created");
-            var r = "" + Math.random();
-            user = {id: "", email: r, password: r};
-            console.log(user);
-            $.postJSON(conf.dita_server + "signup", user,
-                function (data, status) {
-                    console.log("Data: " + data + "\nStatus: " + status);
-                    if (data === "true" || data === true) {
-                        console.log("registration succedded");
-                        window.localStorage.setItem("user", JSON.stringify(user))
-                    }
-                    else console.log("registration failed");
-
-                });
+            user = ("" + Math.random()).substring(2);
+            window.localStorage.setItem("user",user)
         }
-        else {
-            user = JSON.parse(user);
-        }
+        loadPreferences(user);
 
+        $("#search").keyup(function() {
+            init($("#search").val())
+        })
 
-        // login was used only to retrieve an existing unfinished plan.
-        // for now, we just remove it
-
-        //console.log("user: "+window.localStorage.getItem("hashed_user"));
     });
 }
 document.addEventListener("deviceready", onDeviceReady, false);

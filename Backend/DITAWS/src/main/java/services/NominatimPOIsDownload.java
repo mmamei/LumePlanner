@@ -3,20 +3,20 @@ package services;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.RESTController;
-import model.CityProperties;
+import model.City;
 import model.POI;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import util.StringUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static services.CategoriesDictionary.NOMINATIM_TO_CAT;
+import static util.StringUtils.array2string;
 
 /**
  * Created by marco on 14/04/2017.
@@ -29,25 +29,28 @@ public class NominatimPOIsDownload {
 
 
     public static void main(String[] args) {
-        for(CityProperties cp: CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv"))
+        for(City cp: City.getInstance())
             go(cp);
     }
 
-    public static void go(CityProperties cp) {
+    public static void go(City cp) {
 
-        new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois").mkdirs();
+        String sname = StringUtils.removeAccent(cp.getName());
+
+        File dir = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\"+sname+"\\pois");
+        dir.mkdirs();
 
 
-        String bbox = cp.getBbox();
-        String out_file = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+cp.getName()+"\\pois\\nominatim.json";
+        double[] bbox = cp.getLonLatBBox();
+        String out_file = dir+"/nominatim.json";
         if(!OVERWRITE && new File(out_file).exists())
             System.out.println(out_file+" Already Exists");
         else
-            download(cp.getName(),bbox,out_file);
-        System.out.println("Completed "+cp.getName());
+            download(sname,bbox,out_file);
+        System.out.println("Completed "+sname);
     }
 
-    public static void download(String city, String bbox, String out_file) {
+    public static void download(String city, double[] bbox, String out_file) {
         try {
             Logger logger = Logger.getLogger(RESTController.class);
             ObjectMapper mapper = new ObjectMapper();
@@ -66,7 +69,7 @@ public class NominatimPOIsDownload {
                 for(int i=0; i<typesAndvtime.length;i=i+2) {
                     String typeCategory = typesAndvtime[i];
                     double visiting_time = Double.parseDouble(typesAndvtime[i+1]);
-                    URL url = new URL(NOMINATIM_URL + "search?q=" + typeCategory + "&format=json&viewbox=" + bbox + "&bounded=1&limit=1000");
+                    URL url = new URL(NOMINATIM_URL + "search?q=" + typeCategory + "&format=json&viewbox=" + array2string(bbox) + "&bounded=1&limit=1000");
                     logger.info(url.toString());
                     BufferedReader url_br = new BufferedReader(new InputStreamReader(url.openStream()));
                     JSONArray parsed = new JSONArray(url_br.readLine());

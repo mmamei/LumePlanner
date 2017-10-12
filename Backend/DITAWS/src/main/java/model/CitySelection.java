@@ -12,11 +12,10 @@ public class CitySelection {
     private String city;
 
 
-    public CitySelection() {
-
+    private CitySelection() {
     }
 
-    public CitySelection(String email, String city) {
+    private CitySelection(String email, String city) {
         this.email = email;
         this.city = city;
     }

@@ -2,7 +2,7 @@ var mymap;
 
 var tdistance = 100; // 100 meters tolerance
 
-var userid = JSON.parse(window.localStorage.getItem("user")).email.substring(2);
+var userid = window.localStorage.getItem("user");
 
 function check() {
     var usr = $("#user").val();

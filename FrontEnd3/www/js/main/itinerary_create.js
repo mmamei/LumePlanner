@@ -225,7 +225,7 @@ $(document).ready(function() {
 
         var time = $("#datetimepicker").val();
         var request = {
-            user :  JSON.parse(window.localStorage.getItem("user")).email,
+            user :  window.localStorage.getItem("user"),
             city: city,
             start_time : time,
             visits : visits,

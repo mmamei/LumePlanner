@@ -2,13 +2,10 @@ package io;
 
 import java.text.Normalizer;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
+import com.mongodb.*;
 import model.*;
 
 import org.apache.log4j.Logger;
@@ -20,10 +17,6 @@ import util.PointCodec;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -32,6 +25,7 @@ import com.mongodb.client.result.DeleteResult;
 import static io.LoginInfo.MONGO_DB;
 import static io.LoginInfo.MONGO_PASSWORD;
 import static io.LoginInfo.MONGO_USER;
+import static services.CategoriesDictionary.CAT;
 
 
 public class Mongo {
@@ -43,6 +37,18 @@ public class Mongo {
 	private MongoClient mongoClient;
 	private MongoDatabase db;
 	private java.util.logging.Logger mongoLogger;
+
+
+	public static void main(String[] args) {
+		Mongo dao = new Mongo();
+		Map<String,Double> prefs = dao.getPrefs("marco");
+		System.out.println(prefs);
+		dao.updatePrefs("marco","attractions",0.05);
+		dao.updatePrefs("marco","attractions",0.05);
+		dao.updatePrefs("marco","attractions",0.05);
+		prefs = dao.getPrefs("marco");
+		System.out.println(prefs);
+	}
 
 
 	public Mongo () {
@@ -111,6 +117,7 @@ public class Mongo {
 
 	public void insertFBData(String fbdata) {
 		db.getCollection("fbdata").insertOne(Document.parse(fbdata));
+
 	}
 
 	public MongoCollection<Document> retrieveFBData() {
@@ -182,37 +189,57 @@ public class Mongo {
 	 */
 
 
-	public boolean signup(User user) {
-		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(user.getEmail().getBytes()).toString())).first();
+	private Document signup(String user) {
+		Document userRecord = db.getCollection("users").find(new Document("user", user)).first();
 		if (null == userRecord) {
-			logger.info("Creating new user account for "+user.getEmail());
-			db.getCollection("users").insertOne(Document.parse(user.toJSONString()));
-			return true;
+			logger.info("Creating new user account for "+user);
+			userRecord = new Document();
+			userRecord.append("user",user);
+
+			Map<String,Double> prefs = new HashMap<>();
+			for(String cat: CAT)
+				prefs.put(cat, 1.0 / CAT.size());
+
+			userRecord.append("prefs",prefs);
+
+			db.getCollection("users").insertOne(userRecord);
+			return userRecord;
 		} else {
-			logger.info("User "+user.getEmail()+" already exists");
-			return false;
+			logger.info("User "+user+" already exists");
+			return userRecord;
 		}
 	}
 
-	public Integer login(User user) {
-		Document userRecord = db.getCollection("users").find(new Document("id", UUID.nameUUIDFromBytes(user.getEmail().getBytes()).toString())).first();
-		if (null != userRecord) {
-			if (userRecord.get("password").equals(user.getPassword())) {
-				logger.info("User "+user.getEmail()+" successfully logged in");
-				if (null == db.getCollection("plans").find(new Document("crowd.user", user.getEmail())).first()) {
-					return 1;
-				} else {
-					return 2;
-				}
-
-			} else {
-				logger.info("Wrong password for "+user.getEmail());
-				return 0; //wrong password
-			}
-		}
-		logger.info("User "+user.getEmail()+" not found");
-		return -1; //user not found
+	public Map<String,Double> getPrefs(String user) {
+		Document userRecord = db.getCollection("users").find(new Document("user", user)).first();
+		if(userRecord == null) userRecord = signup(user);
+		return (Map<String,Double>)userRecord.get("prefs");
 	}
+
+	public void updatePrefs(String user,Map<String,Double> newprefs) {
+		Document userRecord = db.getCollection("users").find(new Document("user", user)).first();
+		if(userRecord == null) userRecord = signup(user);
+		userRecord.put("prefs",newprefs);
+		db.getCollection("users").replaceOne(new BasicDBObject().append("user", user),userRecord);
+	}
+
+	public Map<String,Double> updatePrefs(String user, String cat, double delta) {
+		Document userRecord = db.getCollection("users").find(new Document("user", user)).first();
+		if(userRecord == null) userRecord = signup(user);
+		Map<String,Double> prefs = (Map<String,Double>)userRecord.get("prefs");
+
+		if(prefs.get(cat)+delta > 1) return prefs;
+
+		for(String c: prefs.keySet()) {
+			double v = prefs.get(c);
+			if(cat.equals(c)) prefs.put(c,v+delta);
+			else prefs.put(c,v - (delta/(prefs.size()-1)));
+		}
+
+		db.getCollection("users").replaceOne(new BasicDBObject().append("user", user),userRecord);
+		return prefs;
+	}
+
 
 
 
@@ -239,13 +266,13 @@ public class Mongo {
 		}
 	}
 
-	public VisitPlanAlternatives retrievePlan(String user_email) {
+	public VisitPlanAlternatives retrievePlan(String user) {
 		try{
-			Document userPlanRecord = db.getCollection("plans").find(new Document("user", user_email)).first();
+			Document userPlanRecord = db.getCollection("plans").find(new Document("user", user)).first();
 			if (null == userPlanRecord) {
 				return null;
 			} else {
-				logger.info("Getting visit plan for user "+user_email);
+				logger.info("Getting visit plan for user "+user);
 				return mapper.readValue(userPlanRecord.toJson(), VisitPlanAlternatives.class);
 			}
 		} catch (Exception e) {

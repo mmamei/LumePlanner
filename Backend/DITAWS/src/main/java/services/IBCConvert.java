@@ -2,8 +2,9 @@ package services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.CityProperties;
+import model.City;
 import model.POI;
+import util.StringUtils;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -57,10 +58,10 @@ public class IBCConvert {
 
 
 
-        List<CityProperties> cities = CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
+        List<City> cities = City.getInstance();
 
         Map<String,List<POI>> hm = new HashMap<>();
-        for(CityProperties city : cities)
+        for(City city : cities)
             hm.put(city.getName(),new ArrayList<POI>());
 
 
@@ -89,7 +90,7 @@ public class IBCConvert {
                 String[] e = line.replaceAll("\"","").split(";");
                 double[] lonlat = new double[]{format.parse(e[2]).doubleValue(),format.parse(e[1]).doubleValue()};
 
-                for(CityProperties cp: cities) {
+                for(City cp: cities) {
                     if (cp.contains(lonlat[1], lonlat[0])) {
                         //System.out.println(line);
                         String www = e[3];
@@ -137,7 +138,7 @@ public class IBCConvert {
 
         for(List<Object> v: trees.values()) {
             double[] lonlat = new double[]{(double)v.get(2),(double)v.get(1)};
-            for(CityProperties cp: cities) {
+            for(City cp: cities) {
                 if (cp.contains(lonlat[1], lonlat[0])) {
                     String img = v.size() > 3 ? (String)v.get(3) : null;
                     String category = IBC_TO_CAT.get("Tree");
@@ -158,8 +159,11 @@ public class IBCConvert {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         for(String city: hm.keySet()) {
             System.out.println(city+" ==> "+hm.get(city).size());
-            File f = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\ibc.json");
-            mapper.writeValue(f, hm.get(city));
+
+            File dir = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\"+ StringUtils.removeAccent(city)+"\\pois");
+            dir.mkdirs();
+            mapper.writeValue(new File(dir+"/ibc.json"), hm.get(city));
+
         }
     }
 }

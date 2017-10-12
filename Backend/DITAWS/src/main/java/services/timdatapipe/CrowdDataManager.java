@@ -2,14 +2,15 @@ package services.timdatapipe;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.CityProperties;
+import model.City;
 import model.CrowdData;
+import util.StringUtils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static services.timdatapipe.BILReader.NO_DATA;
@@ -20,25 +21,25 @@ import static services.timdatapipe.BILReader.NO_DATA;
  */
 public class CrowdDataManager {
 
-    private Map<String,CityProperties> cities;
+    private List<City> cities;
     private String last_time = "";
 
     public static void main(String[] args) {
         long starttime = System.currentTimeMillis();
         CrowdDataManager cdm = new CrowdDataManager();
-        cdm.processCrowdInfo();
-        cdm.processCrowdInfo();
+        cdm.processCrowdInfo(true);
+        cdm.processCrowdInfo(true);
         long endtime = System.currentTimeMillis();
         System.out.println("Completed in: "+(endtime - starttime) / 1000);
     }
 
     public CrowdDataManager() {
-        cities = CityProperties.getInstanceHash("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
+        cities = City.getInstance();
     }
 
     public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm"); //20170413_1700
 
-    public void processCrowdInfo() {
+    public void processCrowdInfo(boolean verbose) {
 
         File file = lastFileModified("D:/LUME-ER");
         int day = -1;
@@ -101,15 +102,17 @@ public class CrowdDataManager {
         */
 
 
-        for(String city: cities.keySet()) {
+        for(City city: cities) {
 
-            double[][] lonLatBbox = cities.get(city).getLonLatBbox();
+            if(verbose) System.out.println(city);
 
-            int minj = (int)Math.floor((lonLatBbox[0][0] - ulxmap + xdim/2)/xdim);
-            int maxi = (int)Math.ceil((ulymap - lonLatBbox[0][1] + ydim/2)/ydim);
+            double[] lonLatBbox = city.getLonLatBBox();
 
-            int maxj = (int)Math.ceil((lonLatBbox[1][0] - ulxmap + xdim/2)/xdim);
-            int mini = (int)Math.floor((ulymap - lonLatBbox[1][1] + ydim/2)/ydim);
+            int minj = (int)Math.floor((lonLatBbox[0] - ulxmap + xdim/2)/xdim);
+            int maxi = (int)Math.ceil((ulymap - lonLatBbox[1] + ydim/2)/ydim);
+
+            int maxj = (int)Math.ceil((lonLatBbox[2] - ulxmap + xdim/2)/xdim);
+            int mini = (int)Math.floor((ulymap - lonLatBbox[3] + ydim/2)/ydim);
 
             int nrows = maxi - mini;
             int ncols = maxj - minj;
@@ -144,7 +147,7 @@ public class CrowdDataManager {
             CrowdData dc = new CrowdData(last_time,ulxmap,ulymap,xdim,ydim,minj,maxi,maxj,
                     mini,nrows,ncols,ox,oy,avalues,mvalues);
 
-            File dir = new File("C:\\Tomcat7\\webapps\\DITA\\files\\data\\" + city);
+            File dir = new File("C:\\Tomcat7\\webapps\\DITA\\files\\data\\" + city.getName());
             dir.mkdirs();
             File f = new File(dir+"\\crowd.json");
             try {

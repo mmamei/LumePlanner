@@ -29,7 +29,7 @@ function submit(lat, lng, spois) {
 
 
     var request = {
-        user :  JSON.parse(window.localStorage.getItem("user")).email,
+        user :  window.localStorage.getItem("user"),
         city: window.sessionStorage.getItem("city"),
         start_time : $.format.date(new Date(), 'yyyy/MM/dd HH:mm:ss'),
         visits : visits,
@@ -54,13 +54,14 @@ var lng = window.sessionStorage.getItem("lng");
 $(document).ready(function(){
 
     console.log("get itineraries for city "+city+" from server");
-    $.getJSON(conf.dita_server + 'itineraries?city=' + city + "&user="+user.email+"&lat="+lat+"&lng="+lng,
+    $.getJSON(conf.dita_server + 'itineraries?city=' + city + "&user="+user+"&lat="+lat+"&lng="+lng,
         function (data, status) {
             if (data.length > 0) {
                 for (var i = 0; i < data.length; i++) {
-                    var name = data[i].display_name + "," + data[i].approx_time;
+                    var name = data[i].display_name;
+                    var time = data[i].approx_time;
                     var img = data[i].img ? conf.dita_server_img + "itineraries/" + data[i].img : null;
-                    $("#itineraries").append(formatButton(i, name, img, data[i].description));
+                    $("#itineraries").append(formatButton(i, name, time, img, data[i].description));
                 }
                 translate();
                 $("#itineraries").trigger('create');

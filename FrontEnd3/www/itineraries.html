@@ -21,11 +21,12 @@
 
 
     <script>
-        function formatButton(index,name,img,description) {
+        function formatButton(index,name,time,img,description) {
             //console.log(img);
-            return  "<div data-role='collapsible'><h4>"+name+"</h4>" +
+            return  "<div data-role='collapsible'><h4><span class='time ui-corner-all'>"+time+"</span> "+name+"</h4>" +
                     "<div style='font-size: 10pt; text-align: justify;'>"+
                     (img ? "<img style='margin-right:5px; float: left' width='200px' src='"+img+"'>" : "")+
+                    "<h4>"+name+"</h4>"+
                     (description ? description+"<br>" : "")+
                     "<span style='font-weight:bold' tkey='check_time_price'>Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate</span>"+
                     "<div num='"+index+"' class='itiner btn btn-primary ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persis' tkey='start'>Inizia il percorso</div>"+
@@ -48,6 +49,13 @@
             width  : 100%;
             height : auto;
         }
+
+        .time {
+            background-color: #38c;
+            color:white;
+            padding: 90px 5px 90px 5px;
+        }
+
     </style>
 
 

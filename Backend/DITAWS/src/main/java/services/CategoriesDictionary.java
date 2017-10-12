@@ -1,13 +1,16 @@
 package services;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by marco on 13/05/2017.
  */
 public class CategoriesDictionary {
 
+    public static final Set<String> CAT = new HashSet<>();
     static final Map<String,String> CSV_TO_CAT = new HashMap<>();
     static final Map<String,String> IBC_TO_CAT = new HashMap<>();
     static final Map<String,String> MIBACT_TO_CAT = new HashMap<>();
@@ -15,7 +18,18 @@ public class CategoriesDictionary {
     static final String DEFAULT_CAT = "attractions";
 
 
+
+
     static {
+
+        CAT.add("attractions");
+        CAT.add("tree");
+        CAT.add("parks");
+        CAT.add("eating");
+        CAT.add("resting");
+        CAT.add("lifestyle");
+
+
         CSV_TO_CAT.put("attractions", "attractions");
         CSV_TO_CAT.put("parking", "parking");
         CSV_TO_CAT.put("medical", "medical");

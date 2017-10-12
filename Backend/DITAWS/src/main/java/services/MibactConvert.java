@@ -2,8 +2,9 @@ package services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.CityProperties;
+import model.City;
 import model.POI;
+import util.StringUtils;
 
 import java.io.*;
 import java.util.*;
@@ -70,10 +71,10 @@ public class MibactConvert {
 
 
 
-        List<CityProperties> cities = CityProperties.getInstance("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv");
+        List<City> cities = City.getInstance();
 
         Map<String,List<POI>> hm = new HashMap<>();
-        for(CityProperties city : cities)
+        for(City city : cities)
             hm.put(city.getName(),new ArrayList<POI>());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\patrimonioculturale-er.csv"), "UTF8"));
@@ -104,7 +105,7 @@ public class MibactConvert {
 
 
             double[] lonlat = convert(e[0]);
-            for(CityProperties cp: cities) {
+            for(City cp: cities) {
                 if(cp.contains(lonlat[1],lonlat[0])) {
 
                     if(!GUIDA_ROSSA_ONLY || (GUIDA_ROSSA_ONLY && e.length > 26 && !e[26].isEmpty())) {
@@ -144,8 +145,10 @@ public class MibactConvert {
 
         for(String city: hm.keySet()) {
             System.out.println(city+" ==> "+hm.get(city).size());
-            File f = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois\\mibact.json");
-            mapper.writeValue(f, hm.get(city));
+
+            File dir = new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\"+ StringUtils.removeAccent(city)+"\\pois");
+            dir.mkdirs();
+            mapper.writeValue(new File(dir+"/mibact.json"), hm.get(city));
         }
     }
     //"POINT (11.586493673133132 44.806869144609884)"

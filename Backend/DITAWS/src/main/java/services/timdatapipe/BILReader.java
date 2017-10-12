@@ -1,23 +1,14 @@
 package services.timdatapipe;
 
 import com.google.common.io.LittleEndianDataInputStream;
-import com.google.common.io.LittleEndianDataOutputStream;
-import model.CityProperties;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import util.Colors;
-import util.KMLSquare;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import static util.GeoJson2KML.printFooterDocument;
-import static util.GeoJson2KML.printHeaderDocument;
 
 /**
  * Created by marco on 24/04/2017.

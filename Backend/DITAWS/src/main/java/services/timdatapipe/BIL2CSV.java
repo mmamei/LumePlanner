@@ -1,13 +1,11 @@
 package services.timdatapipe;
 
-import model.CityProperties;
-import sun.java2d.pipe.SpanShapeRenderer;
+import model.City;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -18,14 +16,14 @@ public class BIL2CSV {
     public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm"); //20170413_1700
     public static void main(String[] args) throws  Exception {
         long startx = System.currentTimeMillis();
-        CityProperties city = CityProperties.getInstanceHash("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv").get("Modena");
+        City city = City.getInstance("Modena");
         Calendar start = new GregorianCalendar(2017, Calendar.JUNE, 1, 0, 0, 0);
         Calendar end = new GregorianCalendar(2017, Calendar.JULY, 4,  24, 0, 0);
         run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
         long endx = System.currentTimeMillis();
         System.out.println("Completed in "+(endx-startx)/(60*1000)+" mins");
     }
-    public static void run(CityProperties city,Calendar start,Calendar end,String outfile) throws Exception{
+    public static void run(City city, Calendar start, Calendar end, String outfile) throws Exception{
 
         PrintWriter out = new PrintWriter(new FileWriter(outfile));
 
@@ -35,13 +33,13 @@ public class BIL2CSV {
         double ulymap = Double.parseDouble(hb.header.get("ulymap"));
         double xdim = Double.parseDouble(hb.header.get("xdim"));
         double ydim = Double.parseDouble(hb.header.get("ydim"));
-        double[][] lonLatBbox = city.getLonLatBbox();
+        double[] lonLatBbox = city.getLonLatBBox();
 
-        int minj = (int)Math.floor((lonLatBbox[0][0] - ulxmap + xdim/2)/xdim);
-        int maxi = (int)Math.ceil((ulymap - lonLatBbox[0][1] + ydim/2)/ydim);
+        int minj = (int)Math.floor((lonLatBbox[0] - ulxmap + xdim/2)/xdim);
+        int maxi = (int)Math.ceil((ulymap - lonLatBbox[1] + ydim/2)/ydim);
 
-        int maxj = (int)Math.ceil((lonLatBbox[1][0] - ulxmap + xdim/2)/xdim);
-        int mini = (int)Math.floor((ulymap - lonLatBbox[1][1] + ydim/2)/ydim);
+        int maxj = (int)Math.ceil((lonLatBbox[2] - ulxmap + xdim/2)/xdim);
+        int mini = (int)Math.floor((ulymap - lonLatBbox[3] + ydim/2)/ydim);
 
         int nrows = maxi - mini;
         int ncols = maxj - minj;

@@ -1,8 +1,8 @@
 {
     "resting": "fa,fa-bed,orange",
     "attractions":"fa,fa-map-marker,red",
-    "tree":"fa,fa-home,darkred",
-    "eating":"fa,fa-cutlery,darkgreen",
+    "tree":"fa,fa-tree,darkgreen",
+    "eating":"fa,fa-cutlery,darkred",
     "parks":"fa,fa-tree,green",
     "parking":"fa,fa-product-hunt,purple",
     "medical":"fa,fa-ambulance,gray",
