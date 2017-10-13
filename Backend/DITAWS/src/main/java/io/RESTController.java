@@ -50,7 +50,7 @@ public class RESTController {
 				new SavePOIs2DB().run(city, dao, this.getClass().getResource("/../data/cities/"+city+"/pois").getPath());
 				logger.info("POIs collected");
 			}
-			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/cities/"+city).getPath()+"/itineraries.json");
+			new SaveItineraries2DB().run(city, dao,this.getClass().getResource("/../data/cities/"+city).getPath()+"/itineraries/itineraries.json");
 		}
 
 		/*

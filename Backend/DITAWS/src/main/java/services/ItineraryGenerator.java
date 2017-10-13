@@ -19,7 +19,6 @@ public class ItineraryGenerator {
     public static void main(String[] args) {
 
         String user = "0.75634758345786";
-
         String city = "Modena"; double[] latlng = new double[]{44.6290051,10.8701162};
         //String city = "ReggioEmilia"; double[] latlng = new double[]{44.687561,10.667276};
 
@@ -28,7 +27,8 @@ public class ItineraryGenerator {
         ItineraryGenerator ig = new ItineraryGenerator(dao,city,user,latlng);
         List<Itinerary> itineraries = dao.retrieveItineraries(city);
         ig.overrideTimeOfVisit(itineraries);
-        itineraries.addAll(ig.generate());
+        List<Itinerary> gen_itineraries = ig.generate();
+        itineraries.addAll(gen_itineraries);
 
         Collections.sort(itineraries,new Comparator<Itinerary>() {
             @Override
@@ -51,12 +51,14 @@ public class ItineraryGenerator {
     private String city;
     private String user;
     private double[] latlng;
+    private int count;
 
     public ItineraryGenerator(Mongo dao, String city, String user, double[] latlng) {
         this.dao = dao;
         this.city = city;
         this.user = user;
         this.latlng = latlng;
+        this.count = 1;
     }
 
     public void overrideTimeOfVisit(List<Itinerary> itineraries) {
@@ -64,15 +66,36 @@ public class ItineraryGenerator {
             computeApproxTimeMins(latlng,it);
     }
 
+    public static final int MAX_STOPS = 5;
     public List<Itinerary> generate() {
+        List<POI> pois = dao.retrieveActivities(city);
+        POIComparator comparator = new POIComparator(dao,user);
+        List<Itinerary> itineraries = new ArrayList<>();
+        double[] mins = new double[]{60,120,240};
+        for(int i=0; i<mins.length;i++)
+            for(Itinerary iti: generate(pois,comparator,mins[i]*60,MAX_STOPS))
+                if(!contains(itineraries,iti))
+                    itineraries.add(iti);
+        return itineraries;
+    }
+
+    private boolean contains(List<Itinerary> itineraries, Itinerary a) {
+        for(Itinerary i: itineraries)
+            if(compare(i,a)) return true;
+        return false;
+    }
+
+    private boolean compare(Itinerary a, Itinerary b) {
+        return a.getVisits().toString().equals(b.getVisits().toString());
+    }
+
+
+    private List<Itinerary> generate(List<POI> pois, POIComparator comparator, double maxtime, int max_stops) {
         List<Itinerary> itineraries = new ArrayList<>();
 
-        List<POI> pois = dao.retrieveActivities(city);
         List<POI> pois_in_reach = new ArrayList<>();
 
-        double maxtime = 30*60; // 30 mins
-        double maxd = maxtime / 0.78; // meters
-
+        double maxd = maxtime / 2 / 0.78; // Divido per 2 per tenere conto di andata e ritorno. Divido per 0.78 per convertire in metri
 
         for(POI p: pois) {
             double d = haverDist(latlng,new double[]{p.getGeometry().getCoordinates().getLatitude(),
@@ -81,27 +104,18 @@ public class ItineraryGenerator {
                 pois_in_reach.add(p);
         }
 
+        Collections.sort(pois_in_reach,comparator);
 
-        Collections.sort(pois_in_reach,new Comparator<POI>() {
-            @Override
-            public int compare(POI o1, POI o2) {
-                if(o1.getImportance() < o2.getImportance()) return 1;
-                if(o1.getImportance() > o2.getImportance()) return -1;
-                return 0;
-            }
-        });
-
-
-        if(pois_in_reach.size() > 5) {
+        if(pois_in_reach.size() > 0) {
 
             List<String> visits = new ArrayList<>(); // this is to create the itinerary
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < Math.min(max_stops,pois_in_reach.size()); i++)
                 visits.add(pois_in_reach.get(i).getPlace_id());
-            Itinerary it = new Itinerary("auto_geg_iti1", "Itinerario 1", visits, null, null, "Un itinerario tra le "+visits.size()+" attrazioni più interessanti vicino a te");
+
+            Itinerary it = new Itinerary("auto_geg_iti"+count, "Itinerario "+count, visits, null, null, "Un itinerario tra le "+visits.size()+" attrazioni più interessanti vicino a te");
             computeApproxTimeMins(latlng, it);
-
-
             itineraries.add(it);
+            count++;
         }
         return itineraries;
     }

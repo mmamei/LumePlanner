@@ -39,6 +39,10 @@ public class SavePOIs2DB {
 			File dir = new File(pois_dir);
 			for(File f: dir.listFiles()) {
 
+				if(city.equals("Modena")) {
+					System.out.println(f);
+				}
+
 				String file = f.getAbsolutePath();
 				if(file.endsWith("json")) {
 					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));

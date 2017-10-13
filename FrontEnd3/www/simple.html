@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUMEPlanner</title>
+    <script src="js/jquery.min.js"></script>
+<script>
+
+$(document).ready(function() {
+
+var partenza = [];
+	partenza.push({
+		name:       "Punto da mappa",
+		externalId: "partenza_input",
+		x:          "10.91477",
+		y:          "44.63795",
+		tipo:       "coordinate"
+	});
+	var arrivo = [];
+	arrivo.push({
+		name:       "Punto da mappa",
+		externalId: "arrivo_input",
+		x:          "10.91752",
+		y:          "44.64885",
+		tipo:       "coordinate"
+	});
+	
+	var data           = "13/10/2017";
+	var ora            = "16:11";
+	
+
+	//creo l'oggetto per l'invio
+		var oggetto_transito = {
+			partenza:      partenza,
+			arrivo:        arrivo,
+			data:          data,
+			ora:           ora,
+			scelta_orario: "partenza",
+			mezzi_usati:   ["AU", "AS", "AE", "R", "IC", "ES"],
+			transito:      ""
+		};
+	
+	
+	var json_oggetto = 'percorso=' + JSON.stringify(oggetto_transito);
+
+	$.ajax({
+		url:     'http://travelplanner.cup2000.it/ricerca/', //<--chiamata alle mappe
+		type:    'POST',
+		data:    json_oggetto,
+		async:   false, //<-- senza questo, non passa i dati fuori
+		success: function(html){
+			//console.log(html)
+			$("#content").html(html)
+		}
+	});	
+
+
+})
+
+	
+	
+</script>
+</head>
+<body>
+<div id="content"></div>
+</body>
+</html>

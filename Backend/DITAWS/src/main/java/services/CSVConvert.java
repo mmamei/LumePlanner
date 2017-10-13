@@ -22,10 +22,10 @@ public class CSVConvert {
 
 
     public static void main(String[] args) throws Exception {
-        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Maranello\\pois\\pois.csv",",from:Maranello",false);
-        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\ReggioEmilia\\pois\\pois19092017.csv",",from:Reggio-Emilia",false);
-        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\Modena\\pois\\pois20092017.csv",",from:Modena",false);
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\extra-pois\\extra-pois.csv",",from:Lume",true);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Maranello\\pois\\pois.csv",",from:Maranello",false);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Reggio_nell'Emilia\\pois\\pois19092017.csv",",from:Reggio-Emilia",false);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Modena\\pois\\pois20092017.csv",",from:Modena",false);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\extra-pois\\extra-pois.csv",",from:Lume",true);
         System.out.println("Done");
     }
 
@@ -55,7 +55,7 @@ public class CSVConvert {
 
             if (category == null) {
                 System.out.println(line);
-                category = type;
+                category = "attractions";
             }
             float importance = Float.parseFloat(e[2]);
             String name = e[3];

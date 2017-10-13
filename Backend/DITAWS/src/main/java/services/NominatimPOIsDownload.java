@@ -29,8 +29,12 @@ public class NominatimPOIsDownload {
 
 
     public static void main(String[] args) {
+        // run all
         for(City cp: City.getInstance())
             go(cp);
+
+        //go(City.getInstance("Modena"));
+
     }
 
     public static void go(City cp) {
@@ -77,6 +81,7 @@ public class NominatimPOIsDownload {
                         JSONObject currentJPOI = (JSONObject) parsed.get(j);
                         System.out.println(currentJPOI.toString());
                         POI currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
+
                         currentPOI.setCategory(NOMINATIM_TO_CAT.get(poi_category));
                         currentPOI.setVisiting_time(visiting_time);
                         modified.add(currentPOI);

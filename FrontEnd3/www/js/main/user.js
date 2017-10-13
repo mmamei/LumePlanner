@@ -1,10 +1,10 @@
 
 
 
-
+var prefs = null;
 $(document).ready(function () {
     $.postJSON(conf.dita_server + "loadpref", window.localStorage.getItem("user"), function (data, status) {
-        var prefs = data;
+        prefs = data;
         window.sessionStorage.setItem("preferences",JSON.stringify(prefs));
         var size = 0;
         for(var k in prefs) size++
