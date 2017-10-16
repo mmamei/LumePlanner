@@ -98,8 +98,8 @@
 var prev_path_coords;
 var timed_update;
 function simulatedMovement() {
-    prevLat = (cityLonLatBbox[1] +  cityLonLatBbox[3]) / 2;
-    prevLon = (cityLonLatBbox[0] +  cityLonLatBbox[2]) / 2;
+    prevLat = (cityLonLatBbox[1] + cityLonLatBbox[3]) / 2;
+    prevLon = (cityLonLatBbox[0] + cityLonLatBbox[2]) / 2;
     var t = 0;
     timed_update = setInterval(function() {
         if(path_coords == null || t >= path_coords.coordinates.length) {
