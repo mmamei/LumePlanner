@@ -89,7 +89,7 @@
         var to_lat = currentDestination.geometry.coordinates[1];
         var to_lng = currentDestination.geometry.coordinates[0];
 
-        tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng,);
+        tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng);
         $("#visit_popup").show()
     })
 
