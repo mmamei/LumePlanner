@@ -105,7 +105,6 @@ $( document ).ready(function() {
     if(city != null) menu += "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html?crowd=true' target='_top' data-icon='location' data-ajax='false'>Affollamento</a></li>";
     menu += "<li data-filtertext='account' data-icon = 'user'><a href='user.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
     menu +="<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>";
-    menu +="<li data-filtertext='test'  data-icon = 'phone'><a href='simple.html' target='_top' data-ajax='false' tkey='test'>Test</a></li>";
     menu += "</ul>";
 
     $("#list_menu").append(menu);

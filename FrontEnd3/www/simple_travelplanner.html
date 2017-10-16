@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LUMEPlanner</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LUMEPlanner</title>
     <script src="js/jquery.min.js"></script>
-<script>
+    <script src="js/travelplanner/risultati.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/travelplanner/main.css">
+    <link rel="stylesheet" href="css/travelplanner/table.css">
+    <script>
+
+
+
+
+
+
+
+
 
 $(document).ready(function() {
 
@@ -44,14 +56,26 @@ var partenza = [];
 	
 	var json_oggetto = 'percorso=' + JSON.stringify(oggetto_transito);
 
-	$.ajax({
+
+
+    //map.zoomToExtent(new OpenLayers.Bounds(10.911825, 44.637941, 10.925048, 44.650202).transform(wgs84, map.getProjectionObject()));
+    //percorsoVisualizza0();
+    //$('div#precsucc').show();
+
+
+    $.ajax({
 		url:     'http://travelplanner.cup2000.it/ricerca/', //<--chiamata alle mappe
 		type:    'POST',
 		data:    json_oggetto,
-		async:   false, //<-- senza questo, non passa i dati fuori
+		//async:   false, //<-- senza questo, non passa i dati fuori
 		success: function(html){
-			//console.log(html)
-			$("#content").html(html)
+
+            var lines = html.split("\n");
+            for(var i =0; i<lines.length;i++)
+                if(lines[i].trim().startsWith("map."))
+                    lines[i] = "";
+
+			$("#content").html(lines.join("\n"))
 		}
 	});	
 
