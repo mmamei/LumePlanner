@@ -79,7 +79,15 @@
     });
 
     $("#bus").click(function(){
-        window.location.href = "http://travelplanner.cup2000.it";
+        //window.location.href = "http://travelplanner.cup2000.it";
+
+        var from_lat = window.sessionStorage.getItem("lat");
+        var from_lng = window.sessionStorage.getItem("lng");
+
+        var to_lat = currentDestination.geometry.coordinates[1];
+        var to_lng = currentDestination.geometry.coordinates[0];
+        tpricerca("visit_popup",from_lat,from_lng,to_lat,to_lng);
+        $("#visit_popup").show()
     })
 
 });
