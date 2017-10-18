@@ -41,6 +41,7 @@ function mappaNascondiOggetto(id) {
  * @param {string} tp_div the div where the result will be shown
  */
 
+
 function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng){
 
 
@@ -79,19 +80,25 @@ function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng){
 
     var json_oggetto = 'percorso=' + JSON.stringify(oggetto_transito);
 
-
+    console.log($.support.cors);
     $.ajax({
         url:     'http://travelplanner.cup2000.it/ricerca/', //<--chiamata alle mappe
         type:    'POST',
         data:    json_oggetto,
-        //async:   false, //<-- senza questo, non passa i dati fuori
         success: function(html){
-
             var lines = html.split("\n");
             for(var i =0; i<lines.length;i++)
                 if(lines[i].trim().startsWith("map."))
                     lines[i] = "";
             var str = lines.join("\n") + "<div onclick='$(\"#"+tp_div+"\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
+            $("#"+tp_div).html(str)
+        },
+        error: function(data,textStatus,error) {
+            var str = "Error<br>";
+            str += JSON.stringify(data)+"<br>";
+            str += textStatus+"<br>";
+            str += error+"<br>";
+            str += "<div onclick='$(\"#"+tp_div+"\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
             $("#"+tp_div).html(str)
         }
     });

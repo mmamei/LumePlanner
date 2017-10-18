@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>LUME PLANNER</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
 
         body {
@@ -53,10 +54,26 @@
         }
     </style>
     <script src="js/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/global.js"></script>
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
     <script>
         $(document).ready(function(){
+
+            if(!conf.localize) $("#localization").html("Localization OFF");
+
+            $("#localization").click(function(){
+                if(conf.localize) {
+                    conf.localize = false;
+                    $("#localization").html("Localization OFF")
+                }
+                else {
+                    conf.localize = true;
+                    $("#localization").html("Localization ON")
+                }
+                console.log(conf.localize)
+            });
+
             var i = window.location.href.indexOf("page=");
             if(i > 0) {
                 var url = window.location.href.substr(i+"page=".length);
@@ -72,9 +89,9 @@
             $.when(loadDictionary(langCode)).done(function(){
                 location.reload()
             });
-
-
         }
+
+
 
 
     </script>
@@ -86,8 +103,9 @@
 </div>
 
 <div id="lang">
-    <img onclick="change_lang('it')" src="img/IT.png" width="50px">&emsp;
-    <img onclick="change_lang('en')" src="img/EN.png" width="50px">
+    <img onclick="change_lang('it')" src="img/IT.png" width="50px">&emsp;<img onclick="change_lang('en')" src="img/EN.png" width="50px">
+    <br><br>
+    <button id="localization" type="button" class="btn btn-primary">Localization ON</button>
 </div>
 
 <div id="footer">

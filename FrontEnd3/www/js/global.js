@@ -10,13 +10,17 @@ conf = {
     "localize" : true
 };
 
+var isChrome = !!window.chrome && !!window.chrome.webstore;
+if(isChrome) conf.localize = false;
+
+/*
 var platform = navigator.platform;
 //console.log(navigator)
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 //console.log(isChrome)
 if(platform == "Win32" && isChrome == true)
-    conf.localize = false;
-
+conf.localize = false;
+*/
 
 $.postJSON = function(url, data, callback) {
     return jQuery.ajax({
@@ -42,7 +46,8 @@ $.getJSON = function(url, callback) {
         },
         'type': 'GET',
         'url': url,
-        'success': callback
+        'success': callback,
+        'error' : callback
     });
 };
 
@@ -95,6 +100,7 @@ if(!mIcons) {
 }
 
 $( document ).ready(function() {
+
     var city = window.sessionStorage.getItem("city");
 
     var menu = "<ul id='list_menu' class='jqm-list ui-alt-icon ui-nodisc-icon'>";
@@ -103,14 +109,13 @@ $( document ).ready(function() {
     if(city != null) menu += "<li data-filtertext='viaggi' data-icon = 'camera'><a href='checkuser.html' target='_top' data-icon='location' data-ajax='false' tkey='my_itineraries'>I miei viaggi</a></li>";
     if(city != null) menu += "<li data-filtertext='percorsi' data-icon = 'star'><a href='itineraries.html' target='_top' data-ajax='false' tkey='itineraries'>I percorsi più visti</a></li>";
     if(city != null) menu += "<li data-filtertext='luoghi' data-icon = 'location'><a href='map.html?crowd=true' target='_top' data-icon='location' data-ajax='false'>Affollamento</a></li>";
-    menu += "<li data-filtertext='account' data-icon = 'user'><a href='user.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
-    menu +="<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>";
+                     menu += "<li data-filtertext='account' data-icon = 'user'><a href='user.html' target='_top' data-ajax='false' tkey='user'>Utente</a></li>";
+                     menu += "<li data-filtertext='assistenza' data-icon = 'phone'><a href='help.html' target='_top' data-ajax='false' tkey='help'>Assistenza</a></li>";
     menu += "</ul>";
 
     $("#list_menu").append(menu);
     $("#list_menu").trigger('pagecreate');
 });
-
 
 
 

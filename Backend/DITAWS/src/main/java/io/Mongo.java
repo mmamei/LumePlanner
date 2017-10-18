@@ -40,13 +40,14 @@ public class Mongo {
 
 
 	public static void main(String[] args) {
+        String user = "a5464575677";
 		Mongo dao = new Mongo();
-		Map<String,Double> prefs = dao.getPrefs("marco");
+		Map<String,Double> prefs = dao.getPrefs(user);
 		System.out.println(prefs);
-		dao.updatePrefs("marco","attractions",0.05);
-		dao.updatePrefs("marco","attractions",0.05);
-		dao.updatePrefs("marco","attractions",0.05);
-		prefs = dao.getPrefs("marco");
+		dao.updatePrefs(user,"attractions",1);
+		dao.updatePrefs(user,"attractions",1);
+		dao.updatePrefs(user,"attractions",1);
+		prefs = dao.getPrefs(user);
 		System.out.println(prefs);
 	}
 
@@ -198,7 +199,7 @@ public class Mongo {
 
 			Map<String,Double> prefs = new HashMap<>();
 			for(String cat: CAT)
-				prefs.put(cat, 1.0 / CAT.size());
+				prefs.put(cat, 0.0);
 
 			userRecord.append("prefs",prefs);
 
@@ -227,15 +228,7 @@ public class Mongo {
 		Document userRecord = db.getCollection("users").find(new Document("user", user)).first();
 		if(userRecord == null) userRecord = signup(user);
 		Map<String,Double> prefs = (Map<String,Double>)userRecord.get("prefs");
-
-		if(prefs.get(cat)+delta > 1) return prefs;
-
-		for(String c: prefs.keySet()) {
-			double v = prefs.get(c);
-			if(cat.equals(c)) prefs.put(c,v+delta);
-			else prefs.put(c,v - (delta/(prefs.size()-1)));
-		}
-
+		prefs.put(cat,prefs.get(cat)+delta);
 		db.getCollection("users").replaceOne(new BasicDBObject().append("user", user),userRecord);
 		return prefs;
 	}

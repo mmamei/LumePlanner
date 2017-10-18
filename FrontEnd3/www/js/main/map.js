@@ -55,7 +55,7 @@
 
 
     if(conf.localize && navigator.geolocation)
-        navigator.geolocation.watchPosition(localize,localize,{enableHighAccuracy: true});
+        navigator.geolocation.watchPosition(localize,function(){console.log("error")},{enableHighAccuracy: true, maximumAge: 5000});
     else simulatedMovement();
 
 

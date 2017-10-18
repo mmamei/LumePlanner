@@ -6,9 +6,6 @@ $(document).ready(function () {
     $.postJSON(conf.dita_server + "loadpref", window.localStorage.getItem("user"), function (data, status) {
         prefs = data;
         window.sessionStorage.setItem("preferences",JSON.stringify(prefs));
-        var size = 0;
-        for(var k in prefs) size++
-
 
         for(var pref in prefs)
             $("#preferences").append(formatUserPrefBox(pref,prefs[pref]))
@@ -20,20 +17,20 @@ $(document).ready(function () {
             var sign = x[0];
             var pref = x[1];
             var delta = 0;
-            if (sign == "plus") delta = 0.05;
-            if (sign == "minus") delta = -0.05;
+            if (sign == "plus") delta = 5;
+            if (sign == "minus") delta = -5;
 
+            prefs[pref] += delta;
+            if(prefs[pref] < 0) prefs[pref] = 0;
+
+            var sum = 0;
+            for (var k in prefs)
+                sum += prefs[k]
+
+            prefs01 = {};
             for (var k in prefs) {
-                if (k == pref) {
-                    prefs[k] += delta;
-                    $("#bar_" + k).css("width", 100 * prefs[k] + "%")
-                }
-                else {
-                    //console.log(delta / (size - 1))
-                    prefs[k] -= (delta / (size - 1));
-                    $("#bar_" + k).css("width", 100 * prefs[k] + "%")
-                }
-                //console.log(k+" ==> "+prefs[k])
+                prefs01[k] = sum == 0 ? 0 : prefs[k] / sum;
+                $("#bar_" + k).css("width", 100 * prefs01[k] + "%")
             }
         })
     });

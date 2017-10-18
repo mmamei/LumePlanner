@@ -1,8 +1,7 @@
 package io;
 
 import org.json.JSONObject;
-import services.CheckUser;
-import services.ItineraryGenerator;
+import services.*;
 import services.timdatapipe.BILMean;
 import services.timdatapipe.CrowdDataManager;
 import services.timdatapipe.DataPipeDownload;
@@ -12,8 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import services.pathfinder.FindPath;
-import services.SaveItineraries2DB;
-import services.SavePOIs2DB;
 import util.StringUtils;
 
 import java.io.*;
@@ -32,14 +29,14 @@ public class RESTController {
 	private Mongo dao;
 	CrowdDataManager cdm;
 	private List<City> cities;
-
+	private String app_version;
 	public RESTController() {
 		logger.info("Server initialization started");
 		dao = new Mongo();
 		gHopper = new GHopper();
 		cdm = new CrowdDataManager();
 		cities = City.getInstance();
-
+		app_version = AppVersion.getVersion();
 
 
 		for(City c: cities) {
@@ -71,7 +68,10 @@ public class RESTController {
 		return cities;
 	}
 
-
+	@RequestMapping(value = "version", headers="Accept=application/json", method = RequestMethod.GET)
+	public @ResponseBody String version() {
+		return app_version;
+	}
 
 	@RequestMapping(value = "updatepref", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody boolean updatePreferences(@RequestBody UserPreferences up) {
@@ -209,7 +209,7 @@ public class RESTController {
 	@RequestMapping(value = "visited", headers="Accept=application/json", method = RequestMethod.POST)
 	public @ResponseBody VisitPlanAlternatives addVisitedAndReplan(@RequestBody Visit new_visited) {
 		tracelog.info("user "+new_visited.getUser()+ " visited (in plan) "+new_visited.toString());
-        dao.updatePrefs(new_visited.getUser(),new_visited.getVisited().getCategory(),0.05);
+        dao.updatePrefs(new_visited.getUser(),new_visited.getVisited().getCategory(),1);
 		return new FindPath().addVisitedAndReplanWithType(dao,new_visited);
 
 	}

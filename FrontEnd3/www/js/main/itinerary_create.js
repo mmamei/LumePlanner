@@ -99,32 +99,36 @@ $(document).ready(function() {
 
     $("#departure").append(formatDepartureArrival(curr_loc));
     $("#arrival").append(formatDepartureArrival(curr_loc));
-    var i;
-    for (i = 0; i < pois.resting.length; i++) {
-        //console.log(hotels[i])
-        var name = pois.resting[i].display_name.split(',')[0];
-        $("#departure").append(formatDepartureArrival(name, name===departure));
-        $("#arrival").append(formatDepartureArrival(name, name===arrival));
+
+    if(pois.resting) {
+
+        var i;
+        for (i = 0; i < pois.resting.length; i++) {
+            //console.log(hotels[i])
+            var name = pois.resting[i].display_name.split(',')[0];
+            $("#departure").append(formatDepartureArrival(name, name === departure));
+            $("#arrival").append(formatDepartureArrival(name, name === arrival));
+        }
+
+
+        $("#departure").change(function () {
+            var v = $(this).val();
+            //console.log("----"+v)
+            //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
+            $("#arrival option[value='" + v + "']").prop('selected', true);
+            $('#arrival').selectmenu('refresh', true);
+            //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
+
+
+            window.sessionStorage.setItem("departure", v);
+            window.sessionStorage.setItem("arrival", v)
+        });
+
+        $("#arrival").change(function () {
+            var v = $(this).val();
+            window.sessionStorage.setItem("arrival", v)
+        });
     }
-
-
-    $("#departure").change(function() {
-        var v = $(this).val();
-        //console.log("----"+v)
-        //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
-        $("#arrival option[value='"+v+"']").prop('selected', true);
-        $('#arrival').selectmenu('refresh', true);
-        //console.log( $("#arrival option[value='"+v+"']").prop('selected'))
-
-
-        window.sessionStorage.setItem("departure",v);
-        window.sessionStorage.setItem("arrival",v)
-    });
-
-    $("#arrival").change(function() {
-        var v = $(this).val();
-        window.sessionStorage.setItem("arrival",v)
-    });
 
 
     $(".attractions").click(function(){

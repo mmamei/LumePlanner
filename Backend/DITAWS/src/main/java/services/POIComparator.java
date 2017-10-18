@@ -15,6 +15,12 @@ public class POIComparator implements Comparator<POI> {
 
     public POIComparator(Mongo dao, String user) {
         user_prefs = dao.getPrefs(user);
+        // normalize
+        double sum = 0;
+        for(Double v: user_prefs.values()) sum += v;
+        for(String k: user_prefs.keySet())
+            if(sum > 0) user_prefs.put(k,user_prefs.get(k) / sum);
+
     }
 
     @Override

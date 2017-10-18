@@ -6,19 +6,21 @@
     <title>LUMEPlanner</title>
 
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+
     <link rel="stylesheet" href="assets/css/jqm-demos.css">
+
     <script type="text/javascript" src="cordova.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="assets/js/modernizr-custom.js"></script>
     <script src="assets/js/index.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="js/global.js"></script>
     <script src="js/main/index.js"></script>
-    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+
 
 
     <script>
-        // if(window.self == window.top) I am not in an iframe
-        if(platform == "Win32" && window.self == window.top){
+        if (window.self == window.top && !navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
             window.location = "phone.html"
         }
 
@@ -35,6 +37,23 @@
         img {
              width  : 100%;
              height : auto;
+        }
+
+        .info_popup {
+            background-color: white;
+            border:solid;
+            position:absolute;
+            z-index:1001;
+            top:1%;
+            width:95%;
+            height:95%;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            text-align:center;
+            padding: 10px;
+            text-shadow: none;
+            overflow-y: scroll;
         }
 
     </style>
@@ -55,7 +74,6 @@
     <div id="list_menu" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"></div>
 
 
-
     <div role="main" class="ui-content jqm-content">
 
         <!--<p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>-->
@@ -65,9 +83,7 @@
         <div id="cities" style='text-align: center'></div>
 
 
-        <div data-role="popup" id="infoPopup" style="max-width:350px;text-align: center" class="ui-corner-all">
-        </div>
-
+        <div id="info_popup" class="ui-corner-all"></div>
 
     </div><!-- /content -->
 

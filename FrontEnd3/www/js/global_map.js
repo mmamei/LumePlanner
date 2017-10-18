@@ -19,8 +19,14 @@ var city = window.sessionStorage.getItem("city");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+
 var user_prefs = JSON.parse(window.sessionStorage.getItem("preferences"));
-console.log(mIcons);
+var sum = 0;
+for(k in user_prefs)
+    sum += user_prefs[k]
+for(k in user_prefs)
+    if(sum > 0) user_prefs[k] = user_prefs[k]/sum;
+console.log(user_prefs);
 
 var markerIcons = {};
 for(k in mIcons) {
@@ -105,14 +111,20 @@ function checkNextStep() {
     return true;
 }
 
-
-
+var accuracy = 0;
+var lat = 0;
+var lng = 0;
 function localize(position) {
-    var accuracy = position.coords.accuracy;
-    var lat = position.coords.latitude;
-    var lng = position.coords.longitude;
+
+    if(getDistanceFromLatLonInM(lat,lng,position.coords.latitude,position.coords.longitude) < 20)
+        return;
+
+    accuracy = position.coords.accuracy;
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
     window.sessionStorage.setItem("lat",lat);
     window.sessionStorage.setItem("lng",lng);
+
 
     var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
         cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
@@ -121,7 +133,14 @@ function localize(position) {
     //console.log(inCity);
     if(map_type != MAP_TYPES.NEXT_STEP && !inCity && !out_city_alert_fired) {
         out_city_alert_fired = true;
-        alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa")
+
+        alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa");
+
+
+        //var txt = "Sei ancora troppo lontano dalla città per posizionarti sulla mappa"
+        //txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
+        //$("#popup").html(txt);
+        //$("#popup").show();
     }
 
 
@@ -148,9 +167,8 @@ function localize(position) {
         prevLat = lat;
         prevLon = lng;
     }
-
-
     selectMarkers();
+
     if(map_type == MAP_TYPES.NEXT_STEP) {
         var dist = getDistanceFromLatLonInM(currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0], lat, lng);
         $("#dist").html("mancano " + dist.toFixed(0) + " metri");
@@ -166,8 +184,9 @@ var crowded_markers = new L.LayerGroup();
 
 
 function selectMarkers() {
+    //alert("selectMarkers")
     if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
-    if(map_type == MAP_TYPES.CROWD) crowdMarkers();
+    if(map_type == MAP_TYPES.CROWD) crowdMarkers(1);
 }
 
 function poiMarkers() {
@@ -292,7 +311,7 @@ function getCrowdedPOIS() {
                 }
             mymap.addLayer(crowded_markers);
         });
-    setTimeout(getCrowdedPOIS,1*60*1000)
+    setTimeout(function(){getCrowdedPOIS()},1*60*1000)
 }
 
 
@@ -326,16 +345,15 @@ function nlegend(crowd_type) {
 var crowd  = null;
 
 
-
-
-function crowdMarkers() {
+function crowdMarkers(count) {
 
     if(crowd == null) {
 
         $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
-            crowd = data;
-            console.log(crowd);
 
+            crowd = data;
+            console.log(count);
+            //alert(count)
             var legend = L.control({position: 'bottomright'});
             legend.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'info legend');
@@ -348,14 +366,16 @@ function crowdMarkers() {
             $("#legend_switch").click(function() {
                 if(crowd_type == CROWD_TYPES.ABS) {
                     crowd_type = CROWD_TYPES.REL;
-                    nlegend(crowd_type)
+                    nlegend(crowd_type);
+                    crowdMarkers(++count)
                 }
                 else {
                     crowd_type = CROWD_TYPES.ABS;
-                    nlegend(crowd_type)
+                    nlegend(crowd_type);
+                    crowdMarkers(++count)
                 }
             });
-            crowdMarkers()
+            crowdMarkers(++count)
         })
     }
     else {
@@ -475,7 +495,7 @@ function computeRoute() {
             mymap.removeLayer(path);
         path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
     });
-    if(conf.localize) window.setTimeout(computeRoute,REROUTE_EVERY)
+    if(conf.localize) window.setTimeout(function(){computeRoute()},REROUTE_EVERY)
 }
 
 

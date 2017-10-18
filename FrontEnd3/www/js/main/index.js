@@ -2,17 +2,17 @@
 var all_cities = null;
 
 $.getJSON(conf.dita_server+"cities",function(data, status){
+    //console.log(data)
     all_cities = data
 });
 
 
-
 function sort_on_distance(position) {
-
     if(all_cities == null) {
-        setTimeout(sort_on_distance(position),100);
+        setTimeout(function(){sort_on_distance(position)},100);
         return;
     }
+
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
     window.sessionStorage.setItem("prevLat", lat);
@@ -33,6 +33,9 @@ function sort_on_distance(position) {
     });
     init()
 }
+
+console.log("conf.localize "+conf.localize);
+console.log("navigator.geolocation "+navigator.geolocation);
 
 if (conf.localize && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(sort_on_distance)
@@ -68,7 +71,7 @@ function loadPreferences(user) {
 function init(str) {
 
     if(all_cities == null) {
-        setTimeout(init(position,str),100);
+        setTimeout(function(){init(str)},100);
         return;
     }
 
@@ -132,17 +135,26 @@ function go2Map() {
 }
 
 
-function checkAlertPopup(){
-    $.getJSON(conf.dita_server_files+'alert.json', function (alertdata, status) {
-        if(alertdata && alertdata.id !== window.localStorage.getItem("last_seen_alert")) {
-            //console.log(alertdata)
-            var content = alertdata.it;
-            if(langCode == "en") content = alertdata.en;
-            //console.log(langCode)
-            $("#infoPopup").html(content);
-            $("#infoPopup").popup("open");
-            window.localStorage.setItem("last_seen_alert",alertdata.id);
-        }
+function checkVersion(){
+    console.log("check version from: "+conf.dita_server+"version");
+
+    $.getJSON(conf.dita_server+"version",function(data, status){
+        var latest_version = data.responseText;
+        cordova.getAppVersion.getVersionNumber().then(function (version) {
+           if(version != latest_version) {
+
+               var str = "<h2>Aggiorna Lume Planner!</h2>"+
+                         "<p>La tua versione è <strong>"+version+"</strong></p>"+
+                         "<p>La versione più recente è <strong>"+latest_version+"</strong></p>"+
+                         "<a href='https://play.google.com/store/apps/details?id=it.unimore.morselli.lume'  " +
+                         "class='ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Aggiorna!</a>"+
+                         "<div id='info_popup_close' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
+
+               $("#info_popup").html(str);
+               $("#info_popup").show();
+               $("#info_popup_close").click(function(){ $("#info_popup").hide();})
+           }
+        });
     });
 }
 
@@ -165,8 +177,8 @@ function onDeviceReady() {
 
 
     $(document).ready(function () {
-
-        //checkAlertPopup()
+        $("#info_popup").hide().addClass("info_popup");
+        checkVersion();
         init();
 
         // login user
