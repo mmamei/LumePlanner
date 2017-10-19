@@ -69,8 +69,6 @@ $(document).ready(function() {
 
 
 
-
-
     var spois  = JSON.parse(window.sessionStorage.getItem("spois"));
     if(!spois) {
         console.log("create spois");

@@ -1,5 +1,0 @@
-{
-    "id":"alert1",
-    "it":"<h2>Suggerimenti?</h1><p>Aiutaci a migliorare l'applicazione</p><a href='#' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' data-rel='back'>Cancel</a><a href='http://www.unimore.it' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' style='background: green; color: white;'>Vai</a>",
-    "en":"<h2>Any Feedback?</h1><p>Help us improving the application</p><a href='#' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' data-rel='back'>Cancel</a><a href='http://www.unimore.it' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' style='background: green; color: white;'>Go</a>"
-}

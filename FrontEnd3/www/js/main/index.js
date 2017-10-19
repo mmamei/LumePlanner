@@ -31,16 +31,21 @@ function sort_on_distance(position) {
         if (da > db) return 1;
         return 0;
     });
-    init()
+    if($("#search").val()) init($("#search").val());
+    else init()
 }
 
-console.log("conf.localize "+conf.localize);
-console.log("navigator.geolocation "+navigator.geolocation);
-
-if (conf.localize && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(sort_on_distance)
+var watch = null;
+function checkLocalization() {
+    console.log("conf.localize " + conf.localize);
+    console.log("navigator.geolocation " + navigator.geolocation);
+    if (conf.localize && navigator.geolocation) {
+        watch = navigator.geolocation.watchPosition(sort_on_distance)
+    }
+    else setTimeout(function(){checkLocalization()},1000)
 }
 
+checkLocalization();
 
 function loadActivities(city,user) {
     console.log("get activities for city "+city+" from server");
@@ -97,6 +102,7 @@ function init(str) {
 
     $("img").click(function(event) {
         console.log(event);
+
         $(this).css("opacity","0.5");
         console.log("the user selected "+event.target.id);
         // update city
@@ -162,7 +168,7 @@ var user;
 function onDeviceReady() {
 
     try {
-        cordova.plugins.diagnostic.isLocationAvailable(function (available) {
+        cordova.plugins.diagnostic.isLocationEnabled(function (available) {
             if (available) conf.localize = true;
             if (!available) {
                 alert("Attiva la localizzazione per utilizzare l'applicazione al meglio");

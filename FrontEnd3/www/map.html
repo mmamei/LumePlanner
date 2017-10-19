@@ -4,38 +4,31 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <title>LumePlanner</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="js/jquery.md5.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <script src="js/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="js/leaflet.css" />
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-providers.js"></script>
         <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-        <script src="js/LeafletPlayback.min.js"></script>
-        <link rel="stylesheet" href="css/ionicons.min.css">
-        <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
-        <script src="js/leaflet.awesome-markers.min.js"></script>
 
         <link rel="stylesheet" href="js/easy-button.css">
         <script src="js/easy-button.js"></script>
-        <!-- ALKET ADD -->
 
         <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
         <link rel="stylesheet" href="assets/css/jqm-demos.css">
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
         <script src="js/jquery.min.js"></script>
         <script src="assets/js/index.js"></script>
         <script src="js/jquery.mobile-1.4.5.min.js"></script>
-        <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0-beta.1/jquery-ui.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0-beta.1/themes/smoothness/jquery-ui.css" />
+        <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="js/jquery-ui.min.css" />
         <link rel="stylesheet" type="text/css" href="js/leaflet-jquerydialog.css" />
         <script src="js/leaflet-jquerydialog.js"></script>
         <script src="js/aforismi.js"></script>
         <script src="js/openfb.js"></script>
+        <script src="js/marker_icons.js"></script>
         <script src="js/global.js"></script>
         <script src="js/global_map.js"></script>
         <script src="js/main/map.js"></script>
-
 
         <script src="js/travelplanner/risultati.js"></script>
         <script src="js/travelplanner/travelplanner.js"></script>
@@ -140,7 +133,7 @@
         </div>
         <div id="visit_popup"  class="ui-corner-all"></div>
 
-        <div id="bus" style="height:10%; margin:0px; background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="use_public_transport">Usa i mezzi pubblici</div></div>
+        <div id="bus" style="height:10%; margin:0px; background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div>Raggiungi con i mezzi pubblici</div></div>
 
         <a id="quit" style="height:10%; margin:0px; background: darkblue; color: white;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
            class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist" tkey="quit">Abbandona il percorso</a>

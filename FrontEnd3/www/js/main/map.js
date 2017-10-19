@@ -29,6 +29,7 @@
         touchZoom: true,
         dragging: true,
     });
+    //L.tileLayer.provider('OpenStreetMap.BlackAndWhite').addTo(mymap);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 

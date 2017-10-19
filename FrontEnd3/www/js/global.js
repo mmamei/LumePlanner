@@ -89,15 +89,6 @@ function format_name_from(name) {
 
 
 
-var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
-//console.log(mIcons);
-if(!mIcons) {
-    $.getJSON(conf.dita_server_files + 'markerIcons.json', function (jsdata) {
-        mIcons = jsdata;
-        window.sessionStorage.setItem("mIcons", JSON.stringify(mIcons));
-        console.log(mIcons)
-    })
-}
 
 $( document ).ready(function() {
 

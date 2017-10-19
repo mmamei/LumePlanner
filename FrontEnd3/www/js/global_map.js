@@ -18,7 +18,7 @@ var mymap;
 var city = window.sessionStorage.getItem("city");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-var mIcons = JSON.parse(window.sessionStorage.getItem("mIcons"));
+
 
 var user_prefs = JSON.parse(window.sessionStorage.getItem("preferences"));
 var sum = 0;
@@ -28,46 +28,7 @@ for(k in user_prefs)
     if(sum > 0) user_prefs[k] = user_prefs[k]/sum;
 console.log(user_prefs);
 
-var markerIcons = {};
-for(k in mIcons) {
-    var x = mIcons[k].split(",");
-    markerIcons[k] = L.AwesomeMarkers.icon({
-        prefix: x[0],
-        icon: x[1],
-        markerColor: x[2]
-    });
-}
 
-
-var startIcon = L.divIcon({
-    type: 'div',
-    className: 'marker',
-    html: "<span class=\"fa-col-blue fa-stack fa-lg\"><i class=\"fa fa-home fa-stack-2x\"></i></span>"
-});
-
-var endIcon = L.divIcon({
-    type: 'div',
-    className: 'marker',
-    html: "<span class='fa-stack fa-lg'>" +
-    "<i class='fa fa-circle fa-stack-2x'></i> " +
-    "<i class='fa fa-flag fa-stack-1x fa-inverse'></i> " +
-    "</span>"
-});
-
-var centerIcon = L.divIcon({
-    type: 'div',
-    className: 'marker',
-    html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
-});
-
-var pathStyle = {
-    fillColor: "green",
-    weight: 5,
-    opacity: 1,
-    color: 'blue',
-    dashArray: '3',
-    fillOpacity: 0.7
-};
 
 var REROUTE_EVERY = 20000;
 var SEND_POSITION_EVERY_METERS = 20;
@@ -134,13 +95,13 @@ function localize(position) {
     if(map_type != MAP_TYPES.NEXT_STEP && !inCity && !out_city_alert_fired) {
         out_city_alert_fired = true;
 
-        alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa");
+        //alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa");
 
 
-        //var txt = "Sei ancora troppo lontano dalla città per posizionarti sulla mappa"
-        //txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
-        //$("#popup").html(txt);
-        //$("#popup").show();
+        var txt = "<h3>Sei ancora troppo lontano dalla città per posizionarti sulla mappa</h3>";
+        txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
+        $("#popup").html(txt);
+        $("#popup").show();
     }
 
 
@@ -219,13 +180,35 @@ function poiMarkers() {
 
     visiblePois.sort(function(a,b) {
 
-        var aimp = a.importance + 2 * user_prefs[a.category];
-        var bimp = b.importance + 2 * user_prefs[b.category];
+        var aimp = getPersImportance(a);
+        var bimp = getPersImportance(b);
 
         if(aimp < bimp) return 1;
         if(aimp > bimp) return -1;
         return 0
     });
+
+
+    function getPersImportance(poi) {
+        return poi.importance + 2 * user_prefs[poi.category];
+    }
+
+    /*
+    cordova.plugins.notification.local.schedule({
+        title: "New Message",
+        message: "Hi, are you ready? We are waiting.",
+        icon: "img/home_candle_piccola.png"
+    });
+    navigator.vibrate(1500);
+    */
+
+    for(var i=0; i<visiblePois.length;i++) {
+        if(visiblePois[i].place_id == "44,68030802768300")
+            navigator.vibrate(1500);
+    }
+
+    //if(getDistanceFromLatLonInM(lat,lng,position.coords.latitude,position.coords.longitude) < 20)
+    //navigator.vibrate(1500);
 
 
     var num = Math.min(MAX_POIS_IN_MAP,visiblePois.length);
@@ -236,6 +219,11 @@ function poiMarkers() {
         var lat = x.geometry.coordinates[1];
         var lon = x.geometry.coordinates[0];
         var id = x.place_id;
+        var imp = getPersImportance(x);
+        var size = imp > 2.5 ? 5 :
+                   imp > 1.9 ? 4 :
+                   imp > 1.5 ? 3 : 2;
+        //console.log(imp)
 
 
         var info =
@@ -247,9 +235,8 @@ function poiMarkers() {
             "<div style='color:lightsteelblue'>"+format_name_from(x.display_name)+": "+x.type+"</div>";
 
 
-
-        var icon = markerIcons[type];
-        if(!icon) icon = markerIcons["attractions"];
+        var icon = markerIcons[type+size];
+        if(!icon) icon = markerIcons["attractions"+size];
 
 
         var marker = L.marker([lat, lon], {icon: icon, mypopup:info});
