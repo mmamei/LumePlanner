@@ -35,4 +35,5 @@
     <plugin name="cordova.plugins.diagnostic" spec="^3.6.5" />
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
     <plugin name="cordova-plugin-vibration" spec="~2.1.5" />
+    <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
 </widget>

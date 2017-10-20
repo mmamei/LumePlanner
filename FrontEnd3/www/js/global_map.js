@@ -194,17 +194,23 @@ function poiMarkers() {
     }
 
     /*
-    cordova.plugins.notification.local.schedule({
-        title: "New Message",
-        message: "Hi, are you ready? We are waiting.",
-        icon: "img/home_candle_piccola.png"
-    });
-    navigator.vibrate(1500);
+    for the icon:
+    copy a transparent background png of the right dimension (96*96) in
+    platform/android/res/drawable-xxhdpi/
+    then icon: "res://nome_senza_estensione"
+    Io ho chiamato 'ic_action_next_item' perchè era un nome già presente
+    In teoria sarebbe da fare in tutte le cartelle in modo che c'è un'immagine per ogni schermo
     */
 
     for(var i=0; i<visiblePois.length;i++) {
-        if(visiblePois[i].place_id == "44,68030802768300")
+        if(visiblePois[i].place_id == "44,68030802768300" || visiblePois[i].place_id == "92920010") {
+            cordova.plugins.notification.local.schedule({
+                title: "Lume Planner: Interessante!",
+                message: "POI: "+ visiblePois[i].place_id,
+                icon: "res://ic_action_next_item"
+            });
             navigator.vibrate(1500);
+        }
     }
 
     //if(getDistanceFromLatLonInM(lat,lng,position.coords.latitude,position.coords.longitude) < 20)
