@@ -125,7 +125,9 @@ function simulatedMovement() {
     prevLon = (cityLonLatBbox[0] + cityLonLatBbox[2]) / 2;
     var t = 0;
     timed_update = setInterval(function() {
-        if(path_coords2Itinerary == null || t >= path_coords2Itinerary.coordinates.length) {
+        var path_coords = path_coords2Clicked != null ? path_coords2Clicked :
+                          path_coords2Itinerary != null ? path_coords2Itinerary : null;
+        if(path_coords == null || t >= path_coords.coordinates.length) {
             localize({
                 coords: {
                     latitude: prevLat,
@@ -135,14 +137,14 @@ function simulatedMovement() {
             })
         }
         else {
-            if(JSON.stringify(path_coords2Itinerary)!=JSON.stringify(prev_path_coords)) {
+            if(JSON.stringify(path_coords)!=JSON.stringify(prev_path_coords)) {
                 t = 0;
-                prev_path_coords = path_coords2Itinerary
+                prev_path_coords = path_coords
             }
             localize({
                 coords: {
-                    latitude: path_coords2Itinerary.coordinates[t][1],
-                    longitude: path_coords2Itinerary.coordinates[t][0],
+                    latitude: path_coords.coordinates[t][1],
+                    longitude: path_coords.coordinates[t][0],
                     accuracy: 1
                 }
             });

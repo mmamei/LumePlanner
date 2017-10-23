@@ -177,6 +177,7 @@ function localize(position) {
 
     if(clickedDestination.geometry) {
         computeDistance(clickedDestination,"#clickedDist");
+        if(path2Clicked != null) computeRoute(clickedDestination,ROUTE_TYPE.CLICKED)
     }
 }
 
@@ -298,7 +299,7 @@ function poiMarkers() {
             "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
-            "<span onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
+            "<span place='"+type+"__"+id+"' onclick='closePopup(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
             "</div>"+
             "<div style='color:lightsteelblue'>"+format_name_from(x.display_name)+": "+x.type+"</div>";
 
@@ -330,6 +331,16 @@ function poiMarkers() {
     var count= 0;
     markers.eachLayer(function(marker) {count++});
     //console.log(count)
+}
+
+function closePopup(poi) {
+    if (path2Clicked != null)
+        mymap.removeLayer(path2Clicked);
+    clickedDestination = {};
+    path2Clicked = null;
+    path_coords2Clicked = null;
+    $("#popup").hide()
+
 }
 
 function getCrowdedPOIS() {
