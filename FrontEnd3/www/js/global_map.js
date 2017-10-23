@@ -4,6 +4,11 @@ var CROWD_TYPES = {
     REL: 1
 };
 
+var ROUTE_TYPE = {
+    ITINERARY: 0,
+    CLICKED: 1
+};
+
 var cutoff = {
     ABS : [1000,500,200,100,0],
     REL : [10,5,2,1,0]
@@ -30,7 +35,6 @@ console.log(user_prefs);
 
 
 
-var REROUTE_EVERY = 20000;
 var SEND_POSITION_EVERY_METERS = 20;
 var MAX_POIS_IN_MAP = 10;
 
@@ -46,6 +50,7 @@ var out_city_alert_fired = false;
 
 
 var currentDestination = {};
+var clickedDestination = {};
 
 var MAP_TYPES = {
     MAP: 0,
@@ -60,6 +65,31 @@ if(getUrlParameter("crowd")) map_type = MAP_TYPES.CROWD;
 var path=null;
 var path_coords = null;
 
+
+function getClickedPOI(id) {
+    var place = "";
+    if(id) {
+        var start = id.indexOf("<span place=")+13;
+        var end = id.indexOf("'",start);
+        place = id.substring(start,end)
+    }
+    else place = $(event.target).attr("place");
+    if(place) {
+        var type_id = place.split("__");
+        var type = type_id[0];
+        var id = type_id[1];
+
+        if (type && id) {
+            var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+            for (var i = 0; i < pois[type].length; i++)
+                if (pois[type][i].place_id == id) {
+                    clickedDestination = pois[type][i];
+                    //console.log(clickedDestination.display_name)
+                    return clickedDestination;
+                }
+        }
+    }
+}
 
 function checkNextStep() {
     var vp = JSON.parse(window.sessionStorage.getItem("visitplan"));
@@ -142,6 +172,10 @@ function localize(position) {
         computeDistance(currentDestination,"#dist");
         computeRoute(currentDestination)
     }
+
+    if(clickedDestination.geometry) {
+        computeDistance(clickedDestination,"#clickedDist");
+    }
 }
 
 function computeDistance(poi,htmlID) {
@@ -161,6 +195,8 @@ function selectMarkers() {
     if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
     if(map_type == MAP_TYPES.CROWD) crowdMarkers(++crowdMarkers_count);
 }
+
+var notified = [];
 
 function poiMarkers() {
     var bbox = mymap.getBounds();
@@ -219,7 +255,7 @@ function poiMarkers() {
 
     // deal with notifications
 
-    var notified = {};
+
     for(var i=0; i<num;i++) {
         if(visiblePois[i].place_id == "44,68030802768300" || // mauriziano (debug)
            visiblePois[i].place_id == "92920010" || // parco di cognento (debug)
@@ -227,8 +263,8 @@ function poiMarkers() {
 
            getPersImportance(visiblePois[i]) > 2) { // actual condition
 
-            if(!notified[visiblePois[i].place_id]) { // notify a place just once
-                notified[visiblePois[i].place_id] = 1;
+            if($.inArray(visiblePois[i].place_id,notified)) {
+                notified.push(visiblePois[i].place_id);
                 cordova.plugins.notification.local.schedule({
                     title: "Lume Planner: Interessante!",
                     message: "POI: " + visiblePois[i].place_id,
@@ -466,7 +502,7 @@ function crowdMarkers(count) {
     }
 }
 
-
+/*
 function getClickedPOI(id) {
 
     var clickedVisit = null;
@@ -499,7 +535,7 @@ function getClickedPOI(id) {
     return clickedVisit
 
 }
-
+*/
 
 function getBusInfo(poi) {
 
@@ -560,7 +596,7 @@ function computeRoute(poi) {
         path_coords = data.points;
         if (path != null)
             mymap.removeLayer(path);
-        path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
+        path = L.geoJSON(data.points, {style: pathStyle2Itinerary}).addTo(mymap);
     });
     //if(conf.localize) window.setTimeout(function(){computeRoute(poi)},REROUTE_EVERY)
 }

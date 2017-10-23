@@ -54,7 +54,7 @@ var centerIcon = L.divIcon({
     html: "<span class=\"fa-col-blue\"><i class=\"fa fa-dot-circle-o fa-3x fa-rotate-dyn\"></i></span>"
 });
 
-var pathStyle = {
+var pathStyle2Itinerary = {
     fillColor: "green",
     weight: 5,
     opacity: 1,
@@ -62,3 +62,12 @@ var pathStyle = {
     dashArray: '3',
     fillOpacity: 0.7
 };
+
+ var pathStyle2Clicked = {
+     fillColor: "green",
+     weight: 5,
+     opacity: 1,
+     color: 'yellow',
+     dashArray: '3',
+     fillOpacity: 0.7
+ };
