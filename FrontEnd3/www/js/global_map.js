@@ -75,10 +75,15 @@ function checkNextStep() {
 var accuracy = 0;
 var lat = 0;
 var lng = 0;
+var time = 0;
 function localize(position) {
 
-    if(getDistanceFromLatLonInM(lat,lng,position.coords.latitude,position.coords.longitude) < 20)
-        return;
+    var ntime = new Date().getTime();
+
+    console.log("localize: ntime = "+ntime+" time = "+time);
+
+    if((ntime - time) < 2000) return;
+    time = ntime;
 
     accuracy = position.coords.accuracy;
     lat = position.coords.latitude;
@@ -111,6 +116,7 @@ function localize(position) {
         else mymap.setZoom(16);
         getCrowdedPOIS()
     }
+
     centerMarker.setLatLng([lat, lng]);
     if((map_type == MAP_TYPES.NEXT_STEP && !dragged) || (map_type != MAP_TYPES.NEXT_STEP && !dragged && inCity))
         mymap.panTo([lat, lng]);
@@ -128,15 +134,20 @@ function localize(position) {
         prevLat = lat;
         prevLon = lng;
     }
+
+    console.log("call selectMarkers from localize");
     selectMarkers();
 
     if(map_type == MAP_TYPES.NEXT_STEP) {
-        var dist = getDistanceFromLatLonInM(currentDestination.geometry.coordinates[1], currentDestination.geometry.coordinates[0], lat, lng);
-        $("#dist").html("mancano " + dist.toFixed(0) + " metri");
-        computeRoute()
+        computeDistance(currentDestination,"#dist");
+        computeRoute(currentDestination)
     }
 }
 
+function computeDistance(poi,htmlID) {
+    var dist = getDistanceFromLatLonInM(poi.geometry.coordinates[1], poi.geometry.coordinates[0], lat, lng);
+    $(htmlID).html("dista " + dist.toFixed(0) + " metri");
+}
 
 
 
@@ -144,10 +155,11 @@ var markers = new L.LayerGroup();
 var crowded_markers = new L.LayerGroup();
 
 
+var crowdMarkers_count = 0;
 function selectMarkers() {
-    //alert("selectMarkers")
+
     if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
-    if(map_type == MAP_TYPES.CROWD) crowdMarkers(1);
+    if(map_type == MAP_TYPES.CROWD) crowdMarkers(++crowdMarkers_count);
 }
 
 function poiMarkers() {
@@ -202,22 +214,32 @@ function poiMarkers() {
     In teoria sarebbe da fare in tutte le cartelle in modo che c'è un'immagine per ogni schermo
     */
 
-    for(var i=0; i<visiblePois.length;i++) {
-        if(visiblePois[i].place_id == "44,68030802768300" || visiblePois[i].place_id == "92920010") {
-            cordova.plugins.notification.local.schedule({
-                title: "Lume Planner: Interessante!",
-                message: "POI: "+ visiblePois[i].place_id,
-                icon: "res://ic_action_next_item"
-            });
-            navigator.vibrate(1500);
+
+    var num = Math.min(MAX_POIS_IN_MAP,visiblePois.length);
+
+    // deal with notifications
+
+    var notified = {};
+    for(var i=0; i<num;i++) {
+        if(visiblePois[i].place_id == "44,68030802768300" || // mauriziano (debug)
+           visiblePois[i].place_id == "92920010" || // parco di cognento (debug)
+           visiblePois[i].place_id == "44,67667670197560" || // vicino al fit village (degub)
+
+           getPersImportance(visiblePois[i]) > 2) { // actual condition
+
+            if(!notified[visiblePois[i].place_id]) { // notify a place just once
+                notified[visiblePois[i].place_id] = 1;
+                cordova.plugins.notification.local.schedule({
+                    title: "Lume Planner: Interessante!",
+                    message: "POI: " + visiblePois[i].place_id,
+                    icon: "res://ic_action_next_item"
+                });
+                navigator.vibrate(1500);
+            }
         }
     }
 
-    //if(getDistanceFromLatLonInM(lat,lng,position.coords.latitude,position.coords.longitude) < 20)
-    //navigator.vibrate(1500);
-
-
-    var num = Math.min(MAX_POIS_IN_MAP,visiblePois.length);
+    // draw pois on map
 
     for(var i=0; i<num;i++) {
         var x = visiblePois[i];
@@ -233,9 +255,11 @@ function poiMarkers() {
 
 
         var info =
-            "<div>"+format_name(x.display_name)+"</div>" +
+            "<div>"+format_name(x.display_name)+"<br><span id='clickedDist'></span></div>" +
             "<div>"+
-            "<span place='"+type+"__"+id+"' onclick='visit()' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Informazioni</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
             "<span onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
             "</div>"+
             "<div style='color:lightsteelblue'>"+format_name_from(x.display_name)+": "+x.type+"</div>";
@@ -250,7 +274,8 @@ function poiMarkers() {
         marker.on('click',function(e) {
             //console.log(e.target.options.mypopup)
             $("#popup").html(e.target.options.mypopup);
-            $("#popup").show()
+            $("#popup").show();
+            computeDistance(getClickedPOI(e.target.options.mypopup),"#clickedDist")
         });
 
         marker.addTo(markers);
@@ -340,7 +365,7 @@ var crowd  = null;
 
 function crowdMarkers(count) {
 
-    if(crowd == null) {
+    if((crowd == null && count == 1)) {
 
         $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
 
@@ -442,6 +467,55 @@ function crowdMarkers(count) {
 }
 
 
+function getClickedPOI(id) {
+
+    var clickedVisit = null;
+
+
+    var place = "";
+    if(id) {
+        var start = id.indexOf("<span place=")+13;
+        var end = id.indexOf("'",start);
+        place = id.substring(start,end)
+    }
+    else place = $(event.target).attr("place");
+
+
+
+    if(place) {
+        var type_id = place.split("__");
+        var type = type_id[0];
+        var id = type_id[1];
+
+        if (type && id) {
+            var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+            for (var i = 0; i < pois[type].length; i++)
+                if (pois[type][i].place_id == id) {
+                    clickedVisit = pois[type][i];
+                    break;
+                }
+        }
+    }
+    return clickedVisit
+
+}
+
+
+function getBusInfo(poi) {
+
+
+
+    var from_name = "Tua Posizione";
+    var from_lat = window.sessionStorage.getItem("lat");
+    var from_lng = window.sessionStorage.getItem("lng");
+
+    var to_name = poi.display_name.split(",")[0];
+    var to_lat = poi.geometry.coordinates[1];
+    var to_lng = poi.geometry.coordinates[0];
+
+    tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng);
+    $("#visit_popup").show()
+}
 
 
 function getColor(d, crowd_type) {
@@ -471,10 +545,10 @@ function getCellBorder(i, j, ox, oy, xdim, ydim, size) {
     return ll;
 }
 
-function computeRoute() {
+function computeRoute(poi) {
 
     var start = prevLat+","+prevLon;
-    var end = currentDestination.geometry.coordinates[1] + "," + currentDestination.geometry.coordinates[0];
+    var end = poi.geometry.coordinates[1] + "," + poi.geometry.coordinates[0];
 
     //console.log(start);
     //console.log(end);
@@ -488,27 +562,11 @@ function computeRoute() {
             mymap.removeLayer(path);
         path = L.geoJSON(data.points, {style: pathStyle}).addTo(mymap);
     });
-    if(conf.localize) window.setTimeout(function(){computeRoute()},REROUTE_EVERY)
+    //if(conf.localize) window.setTimeout(function(){computeRoute(poi)},REROUTE_EVERY)
 }
 
 
-function visit() {
-    var clickedVisit = null;
-    var place = $(event.target).attr("place");
-    if(place) {
-        var type_id = place.split("__");
-        var type = type_id[0];
-        var id = type_id[1];
-
-        if (type && id) {
-            var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-            for (var i = 0; i < pois[type].length; i++)
-                if (pois[type][i].place_id == id) {
-                    clickedVisit = pois[type][i];
-                    break;
-                }
-        }
-    }
+function visit(clickedVisit) {
 
     var currentDestination = JSON.parse(window.sessionStorage.getItem("currentDestination"));
 

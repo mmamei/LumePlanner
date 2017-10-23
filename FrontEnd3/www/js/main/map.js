@@ -44,15 +44,48 @@
 
 
     mymap.on('zoom', function(e) {
+        console.log("call selectMarkers from zoom");
         selectMarkers()
     });
 
     mymap.on('drag', function(e) {
         dragged = true;
+        console.log("call selectMarkers from drag");
         selectMarkers();
     });
 
     if(map_type == MAP_TYPES.NEXT_STEP) setupDestination();
+
+    document.addEventListener('deviceready', onDeviceReady, false);
+        function onDeviceReady() {
+            //alert("xxx")
+            if (conf.localize) {
+                // BackgroundGeolocation is highly configurable. See platform specific configuration options
+                backgroundGeolocation.configure(
+                    function (location) {
+                        //console.log('[js] BackgroundGeolocation callback:  ' + location.latitude + ',' + location.longitude);
+                        localize({
+                            coords: {
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                                accuracy: 1
+                            }
+                        });
+                        backgroundGeolocation.finish();
+                    }, function (error) {
+                        console.log('BackgroundGeolocation error')
+                    }, {
+                        desiredAccuracy: 10,
+                        stationaryRadius: 20,
+                        distanceFilter: 20,
+                        interval: 10000
+                    });
+                // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
+                //alert("start")
+                backgroundGeolocation.start();
+            }
+    }
+
 
 
     if(conf.localize && navigator.geolocation)
@@ -80,18 +113,7 @@
     });
 
     $("#bus").click(function(){
-        //window.location.href = "http://travelplanner.cup2000.it";
-
-        var from_name = "Tua Posizione";
-        var from_lat = window.sessionStorage.getItem("lat");
-        var from_lng = window.sessionStorage.getItem("lng");
-
-        var to_name = currentDestination.display_name.split(",")[0];
-        var to_lat = currentDestination.geometry.coordinates[1];
-        var to_lng = currentDestination.geometry.coordinates[0];
-
-        tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng);
-        $("#visit_popup").show()
+        getBusInfo(currentDestination)
     })
 
 });

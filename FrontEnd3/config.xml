@@ -36,4 +36,8 @@
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
     <plugin name="cordova-plugin-vibration" spec="~2.1.5" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
+    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.2.5">
+        <variable name="ACCOUNT_TYPE" value="$PACKAGE_NAME.account" />
+        <variable name="CONTENT_AUTHORITY" value="$PACKAGE_NAME" />
+    </plugin>
 </widget>

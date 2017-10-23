@@ -5,6 +5,8 @@
 
 function submit(lat, lng, spois) {
 
+
+
     var start_place = {
             display_name: "0",
             place_id: "0",
@@ -51,9 +53,20 @@ var city = window.sessionStorage.getItem("city");
 var user = window.localStorage.getItem("user");
 var lat = window.sessionStorage.getItem("lat");
 var lng = window.sessionStorage.getItem("lng");
+var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
+var inCity = cityLonLatBbox[0] <= lng && lng <= cityLonLatBbox[2] &&
+             cityLonLatBbox[1] <= lat && lat <= cityLonLatBbox[3];
+
 $(document).ready(function(){
 
+    if(!inCity) {
+        lat = (cityLonLatBbox[1] + cityLonLatBbox[3]) / 2;
+        lng = (cityLonLatBbox[0] + cityLonLatBbox[2]) / 2;
+    }
+
+
     console.log("get itineraries for city "+city+" from server");
+    console.log('itineraries?city=' + city + "&user="+user+"&lat="+lat+"&lng="+lng);
     $.getJSON(conf.dita_server + 'itineraries?city=' + city + "&user="+user+"&lat="+lat+"&lng="+lng,
         function (data, status) {
             if (data.length > 0) {
