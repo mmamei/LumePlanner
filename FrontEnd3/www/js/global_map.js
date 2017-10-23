@@ -62,9 +62,11 @@ var map_type = MAP_TYPES.MAP;
 if(checkNextStep()) map_type = MAP_TYPES.NEXT_STEP;
 if(getUrlParameter("crowd")) map_type = MAP_TYPES.CROWD;
 
-var path=null;
-var path_coords = null;
+var path2Itinerary = null;
+var path_coords2Itinerary = null;
 
+var path2Clicked = null;
+var path_coords2Clicked = null;
 
 function getClickedPOI(id) {
     var place = "";
@@ -170,7 +172,7 @@ function localize(position) {
 
     if(map_type == MAP_TYPES.NEXT_STEP) {
         computeDistance(currentDestination,"#dist");
-        computeRoute(currentDestination)
+        computeRoute(currentDestination,ROUTE_TYPE.ITINERARY)
     }
 
     if(clickedDestination.geometry) {
@@ -294,7 +296,7 @@ function poiMarkers() {
             "<div>"+format_name(x.display_name)+"<br><span id='clickedDist'></span></div>" +
             "<div>"+
             "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
-            "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
             "<span onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
             "</div>"+
@@ -502,40 +504,6 @@ function crowdMarkers(count) {
     }
 }
 
-/*
-function getClickedPOI(id) {
-
-    var clickedVisit = null;
-
-
-    var place = "";
-    if(id) {
-        var start = id.indexOf("<span place=")+13;
-        var end = id.indexOf("'",start);
-        place = id.substring(start,end)
-    }
-    else place = $(event.target).attr("place");
-
-
-
-    if(place) {
-        var type_id = place.split("__");
-        var type = type_id[0];
-        var id = type_id[1];
-
-        if (type && id) {
-            var pois = JSON.parse(window.sessionStorage.getItem("pois"));
-            for (var i = 0; i < pois[type].length; i++)
-                if (pois[type][i].place_id == id) {
-                    clickedVisit = pois[type][i];
-                    break;
-                }
-        }
-    }
-    return clickedVisit
-
-}
-*/
 
 function getBusInfo(poi) {
 
@@ -581,7 +549,7 @@ function getCellBorder(i, j, ox, oy, xdim, ydim, size) {
     return ll;
 }
 
-function computeRoute(poi) {
+function computeRoute(poi,type) {
 
     var start = prevLat+","+prevLon;
     var end = poi.geometry.coordinates[1] + "," + poi.geometry.coordinates[0];
@@ -593,10 +561,18 @@ function computeRoute(poi) {
     //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
     //        '&point=' + newstart + '&point=' + end, function (data, status) {
     $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
-        path_coords = data.points;
-        if (path != null)
-            mymap.removeLayer(path);
-        path = L.geoJSON(data.points, {style: pathStyle2Itinerary}).addTo(mymap);
+        if(type == ROUTE_TYPE.ITINERARY) {
+            path_coords2Itinerary = data.points;
+            if (path2Itinerary != null)
+                mymap.removeLayer(path2Itinerary);
+            path2Itinerary = L.geoJSON(data.points, {style: pathStyle2Itinerary}).addTo(mymap);
+        }
+        if(type == ROUTE_TYPE.CLICKED) {
+            path_coords2Clicked = data.points;
+            if (path2Clicked != null)
+                mymap.removeLayer(path2Clicked);
+            path2Clicked = L.geoJSON(data.points, {style: pathStyle2Clicked}).addTo(mymap);
+        }
     });
     //if(conf.localize) window.setTimeout(function(){computeRoute(poi)},REROUTE_EVERY)
 }
