@@ -1,26 +1,5 @@
 
-    $(document).ready(function(){
-
-    $("#popup").hide();
-    $("#visit_popup").hide();
-    if(map_type == MAP_TYPES.NEXT_STEP)
-          $("#itinerary").hide();
-    if(map_type == MAP_TYPES.MAP) {
-        $("#mapid").css("height","90%");
-        $("#popup").css("bottom","60px");
-        $("#visit").hide();
-        $("#bus").hide();
-        $("#quit").hide()
-    }
-    if(map_type == MAP_TYPES.CROWD) {
-        $("#mapid").css("height","100%");
-        $("#popup").css("bottom","60px");
-        $("#itinerary").hide();
-        $("#visit").hide();
-        $("#bus").hide();
-        $("#quit").hide()
-    }
-
+$(document).ready(function(){
     mymap = L.map('mapid',{
         attributionControl: false,
         scrollWheelZoom: true,
@@ -98,25 +77,39 @@
         window.location.href = "itineraries.html";
     });
 
-    $("#visit").click(function(){
-        $(this).css("opacity","0.5");
-        if (items.to_visit.length > 0) {
-           //window.location.href = "visit.html"
-            visit()
-        } else {
-            window.location.href = "finish.html"
-        }
-    });
 
     $("#real_quit").click(function(){
-        window.location.href = "finish.html"
+        cleanupItinerary();
+        window.location.href = "map.html"
     });
 
-    $("#bus").click(function(){
-        getBusInfo(currentDestination)
-    })
-
 });
+
+
+function visitItinerary() {
+    if (items.to_visit.length > 0) {
+        //window.location.href = "visit.html"
+        visit()
+    } else {
+        // the itinerary is over!
+        console.log(visitplan);
+        var txt = "<h2 id='title' align='center'>Questo itinerario è terminato!</h2>";
+        txt += "Hai visto:<br>";
+        for(var i=0; i<visitplan.plans[type_of_plan].visited.length;i++)
+            txt += "<span style='font-weight: bold;line-height:150%'>"+format_name(visitplan.plans[type_of_plan].visited[i].visit.display_name)+"</span><br>"
+
+        txt += "<br><br>";
+        txt += "<div id='share_btn' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Condividi con  <i id='fb' class='fa fa-facebook-f'></i>acebook </div><br>";
+        txt += "<div onclick=\"window.location.href = 'map.html'\" class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
+        $("#visit_popup").html(txt);
+        $("#visit_popup").show();
+        cleanupItinerary();
+
+        $("#share_btn").click(function() {
+            shareFB(visitplan.city)
+        });
+    }
+}
 
 var prev_path_coords;
 var timed_update;

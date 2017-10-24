@@ -294,26 +294,28 @@ function poiMarkers() {
 
 
         var info =
-            "<div>"+format_name(x.display_name)+"<br><span id='clickedDist'></span></div>" +
+            "<span>"+format_name(x.display_name)+"</span><br>" +
+            "<span style='font-size:small' id='clickedDist'></span>" +
             "<div>"+
-            "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='closePopup(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
             "</div>"+
-            "<div style='color:lightsteelblue'>"+format_name_from(x.display_name)+": "+x.type+"</div>";
+            "<span style='font-size:x-small'>"+format_name_from(x.display_name)+": "+x.type+"</span>";
 
 
         var icon = markerIcons[type+size];
         if(!icon) icon = markerIcons["attractions"+size];
 
-
         var marker = L.marker([lat, lon], {icon: icon, mypopup:info});
 
         marker.on('click',function(e) {
             //console.log(e.target.options.mypopup)
+            $("#mapid").css("height", "70%");
             $("#popup").html(e.target.options.mypopup);
             $("#popup").show();
+            if (map_type == MAP_TYPES.NEXT_STEP) $("#visit").hide();
             computeDistance(getClickedPOI(e.target.options.mypopup),"#clickedDist")
         });
 
@@ -339,6 +341,11 @@ function closePopup(poi) {
     clickedDestination = {};
     path2Clicked = null;
     path_coords2Clicked = null;
+    if (map_type == MAP_TYPES.NEXT_STEP) {
+        $("#mapid").css("height", "70%");
+        $("#visit").show();
+    }
+    else $("#mapid").css("height", "90%");
     $("#popup").hide()
 
 }
@@ -648,30 +655,7 @@ function visit(clickedVisit) {
     $("#visit_popup").show();
 
     $("#share_btn").click(function() {
-        var place_name = $("#title").html();
-        //alert(place_name)
-        openFB.api({
-            method: 'POST',
-
-            path: '/me/feed',
-            params: {
-                message: "Ho scoperto "+place_name+" grazie a Lume Planner!",
-                //place: actualVisit.place_id,
-                //coordinates: JSON.stringify({
-                //    'latitude' : actualVisit.geometry.coordinates[1],
-                //    'longitude' : actualVisit.geometry.coordinates[0]
-                //}),
-                link: "https://play.google.com/store/apps/details?id=it.unimore.morselli.lume"
-            },
-            success: function() {
-                alert('Informazione condivisa su Facebook!');
-            },
-            error: function(err) {
-                //alert(actualVisit.geometry.coordinates[1]+","+actualVisit.geometry.coordinates[0])
-                //alert(JSON.stringify(err))
-                window.location = "fb.html"
-            }
-        });
+        shareFB($("#title").html())
     });
 
     $("#next").click(function() {
@@ -701,6 +685,32 @@ function visit(clickedVisit) {
 
     });
 
+}
+
+
+function shareFB(title) {
+    openFB.api({
+        method: 'POST',
+
+        path: '/me/feed',
+        params: {
+            message: "Ho scoperto "+place_name+" grazie a Lume Planner!",
+            //place: actualVisit.place_id,
+            //coordinates: JSON.stringify({
+            //    'latitude' : actualVisit.geometry.coordinates[1],
+            //    'longitude' : actualVisit.geometry.coordinates[0]
+            //}),
+            link: "https://play.google.com/store/apps/details?id=it.unimore.morselli.lume"
+        },
+        success: function() {
+            alert('Informazione condivisa su Facebook!');
+        },
+        error: function(err) {
+            //alert(actualVisit.geometry.coordinates[1]+","+actualVisit.geometry.coordinates[0])
+            //alert(JSON.stringify(err))
+            window.location = "fb.html"
+        }
+    });
 }
 
 
@@ -734,6 +744,20 @@ function setupDestination() {
             $("#missing_stops").html("mancano altre "+(items.to_visit.length)+" tappe")
     }
     window.sessionStorage.setItem("currentDestination",JSON.stringify(currentDestination));
+}
+
+function cleanupItinerary() {
+    var user = window.localStorage.getItem("user");
+
+
+    $.postJSON(conf.dita_server + "finish", user, function (data, status) {
+        console.log("User plan deleted:" + data);
+    });
+    window.sessionStorage.setItem("spois",JSON.stringify([]));
+    window.sessionStorage.removeItem("time");
+    window.sessionStorage.removeItem("departure");
+    window.sessionStorage.removeItem("arrival");
+    window.sessionStorage.removeItem("visitplan");
 }
 
 
