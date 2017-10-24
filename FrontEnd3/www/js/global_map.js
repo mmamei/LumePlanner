@@ -24,6 +24,9 @@ var city = window.sessionStorage.getItem("city");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 
+var notified = JSON.parse(window.sessionStorage.getItem("notified"));
+if(notified == null) notified = [];
+
 
 var user_prefs = JSON.parse(window.sessionStorage.getItem("preferences"));
 var sum = 0;
@@ -135,8 +138,8 @@ function localize(position) {
         //alert("Sei ancora troppo lontano dalla città per posizionarti sulla mappa");
 
 
-        var txt = "<h3>Sei ancora troppo lontano dalla città per posizionarti sulla mappa</h3>";
-        txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
+        var txt = "<span>Sei troppo lontano per posizionarti sulla mappa</span>";
+        txt += "<div onclick='$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
         $("#popup").html(txt);
         $("#popup").show();
     }
@@ -198,8 +201,6 @@ function selectMarkers() {
     if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
     if(map_type == MAP_TYPES.CROWD) crowdMarkers(++crowdMarkers_count);
 }
-
-var notified = [];
 
 function poiMarkers() {
     var bbox = mymap.getBounds();
@@ -264,16 +265,21 @@ function poiMarkers() {
            visiblePois[i].place_id == "92920010" || // parco di cognento (debug)
            visiblePois[i].place_id == "44,67667670197560" || // vicino al fit village (degub)
 
-           getPersImportance(visiblePois[i]) > 2) { // actual condition
+           getPersImportance(visiblePois[i]) > 2.5) { // actual condition
 
-            if($.inArray(visiblePois[i].place_id,notified)) {
+            //if(!$.inArray(visiblePois[i].place_id,notified)) {
+            if(notified.indexOf(visiblePois[i].place_id) == -1 && mymap.getZoom() >= 16) {
                 notified.push(visiblePois[i].place_id);
-                cordova.plugins.notification.local.schedule({
-                    title: "Lume Planner: Interessante!",
-                    message: "POI: " + visiblePois[i].place_id,
-                    icon: "res://ic_action_next_item"
-                });
-                navigator.vibrate(1500);
+                window.sessionStorage.setItem("notified",JSON.stringify(notified));
+                if(navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+                    cordova.plugins.notification.local.schedule({
+                        title: "Lume Planner: Interessante!",
+                        message: format_name(visiblePois[i].display_name),
+                        icon: "res://ic_action_next_item"
+                    });
+                    navigator.vibrate(1500);
+                }
+                else alert(format_name(visiblePois[i].display_name)+" => "+getPersImportance(visiblePois[i]))
             }
         }
     }
@@ -287,9 +293,8 @@ function poiMarkers() {
         var lon = x.geometry.coordinates[0];
         var id = x.place_id;
         var imp = getPersImportance(x);
-        var size = imp > 2.5 ? 5 :
-                   imp > 1.9 ? 4 :
-                   imp > 1.5 ? 3 : 2;
+        var size = imp > 2.5 ? 3 :
+                   imp > 1.9 ? 2 : 1;
         //console.log(imp)
 
 
@@ -297,7 +302,7 @@ function poiMarkers() {
             "<span>"+format_name(x.display_name)+"</span><br>" +
             "<span style='font-size:small' id='clickedDist'></span>" +
             "<div>"+
-            "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Altre Info</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Info</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='closePopup(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
@@ -646,7 +651,7 @@ function visit(clickedVisit) {
 
     if(next_icon)
         txt += "<div id='next' class='ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Prossima Visita</div></div>";
-    txt += "<div onclick='$(\"#visit_popup\").hide();$(\"#popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
+    txt += "<div onclick='$(\"#visit_popup\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'><div style='margin:0px'>Chiudi</div></div>";
 
     txt += "<button style='width:300px;margin: 0 auto;' class='ui-btn ui-shadow ui-corner-all ui-btn-active ui-state-persist' id='share_btn'>Condividi con  <i id='fb' class='fa fa-facebook-f'></i>acebook </button>";
 
@@ -661,7 +666,7 @@ function visit(clickedVisit) {
     $("#next").click(function() {
 
         $("#visit_popup").hide();
-        $("#popup").hide();
+        //$("#popup").hide();
 
 
         //if(!currentVisit) {

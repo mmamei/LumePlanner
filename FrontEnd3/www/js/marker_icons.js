@@ -20,7 +20,7 @@
 var markerIcons = {};
 for(k in mIcons) {
     var x = mIcons[k].split(",");
-    for(var size=2;size<=5;size++) {
+    for(var size=1;size<=3;size++) {
         markerIcons[k+size] = L.divIcon({
             type: 'div',
             className: 'marker',
