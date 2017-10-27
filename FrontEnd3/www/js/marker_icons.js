@@ -67,7 +67,7 @@ var pathStyle2Itinerary = {
      fillColor: "green",
      weight: 5,
      opacity: 1,
-     color: 'yellow',
+     color: 'orange',
      dashArray: '3',
      fillOpacity: 0.7
  };

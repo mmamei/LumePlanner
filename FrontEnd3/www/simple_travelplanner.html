@@ -6,6 +6,7 @@
     <title>LUMEPlanner</title>
     <script src="js/jquery.min.js"></script>
     <script src="js/travelplanner/risultati.js"></script>
+    <script src="js/travelplanner/travelplanner.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/travelplanner/main.css">
     <link rel="stylesheet" href="css/travelplanner/table.css">
@@ -66,7 +67,13 @@ var partenza = [];
     $.ajax({
 		url:     'http://travelplanner.cup2000.it/ricerca/', //<--chiamata alle mappe
 		type:    'POST',
+        crossDomain: true,
+        contentType: 'application/x-www-form-urlencoded',
 		data:    json_oggetto,
+        // This is the important part
+        xhrFields: {
+            withCredentials: true
+        },
 		//async:   false, //<-- senza questo, non passa i dati fuori
 		success: function(html){
 

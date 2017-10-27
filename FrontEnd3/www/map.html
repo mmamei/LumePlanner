@@ -32,12 +32,12 @@
         <script src="js/global_map.js"></script>
         <script src="js/main/map.js"></script>
 
+        <script src="js/travelplanner/icons.js"></script>
         <script src="js/travelplanner/risultati.js"></script>
         <script src="js/travelplanner/travelplanner.js"></script>
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/travelplanner/main.css">
         <link rel="stylesheet" href="css/travelplanner/table.css">
-
 
         <style>
             #mapPage {
@@ -45,26 +45,23 @@
                 z-index: 1;
                 padding:0px;
                 margin:0px;
-                overflow:hidden;
+                /* overflow:hidden;*/
             }
             #mapid {
-                height: 60%;
+                height: 70%;
                 z-index: 1;
                 padding:0px;
                 margin:0px;
                 overflow:hidden;
             }
-            #popup {
-                background-color: white;
-                border:solid;
-                position:absolute;
-                z-index:2;
-                bottom:190px;
-                width:95%;
+            #popup,#visit {
+                width:100%;
                 left: 0;
                 right: 0;
                 margin: 0 auto;
                 text-align: center;
+                bottom: 1px !important;
+                height: 20% !important;
             }
 
             #visit_popup {
@@ -109,6 +106,33 @@
                 opacity: 0.7;
             }
         </style>
+
+        <script>
+            $(document).ready(function() {
+
+                $("#popup").hide();
+                $("#visit_popup").hide();
+
+                if (map_type == MAP_TYPES.NEXT_STEP)
+                    $("#itinerary").hide();
+                if (map_type == MAP_TYPES.MAP) {
+                    $("#mapid").css("height", "90%");
+                    $("#popup").css("bottom", "60px");
+                    $("#visit").hide();
+                    $("#bus").hide();
+                    $("#quit").hide()
+                }
+                if (map_type == MAP_TYPES.CROWD) {
+                    $("#mapid").css("height", "100%");
+                    $("#popup").css("bottom", "60px");
+                    $("#itinerary").hide();
+                    $("#visit").hide();
+                    $("#bus").hide();
+                    $("#quit").hide()
+                }
+            })
+        </script>
+
     </head>
     <body>
 
@@ -122,22 +146,24 @@
         <div id="list_menu" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"></div>
 
         <div id="mapid" data-role="content"></div>
-        <div id="popup" data-role="header" class="ui-corner-all ui-shadow"></div>
+        <div id="popup" class="ui-corner-all ui-header" style="background-color: #38c; color:white"></div>
 
-        <div id="itinerary" style="height:10%;margin:0px" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="itineraries_go">Fai un percorso!</div></div>
 
-        <div id="visit" style="height:20%;margin:0px" class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist">
-            <div style="margin:0px">
+        <div id="visit" class="ui-corner-all ui-header" style="background-color: #38c; color:white">
                 <span id="destination"></span><br>
-                <span style="font-size:small" id="dist"></span><br>
+                <span style="font-size:small" id="dist"></span>
+                <div>
+                <span onclick='visitItinerary()' class='ui-btn ui-btn-b ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Visita</span>&nbsp;
+                <!--<span onclick='computeRoute(currentDestination,ROUTE_TYPE.ITINERARY)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;-->
+                <span onclick='getBusInfo(currentDestination,ROUTE_TYPE.ITINERARY)' class='ui-btn ui-btn-b ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;
+                <!--<span onclick='visitItinerary()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>-->
+                </div>
                 <span style="font-size:x-small" id="missing_stops"></span>
-            </div>
         </div>
         <div id="visit_popup"  class="ui-corner-all"></div>
 
-        <div id="bus" style="height:10%; margin:0px; background:cornflowerblue; color: white;" class="ui-btn btn-primary ui-shadow ui-corner-all ui-mini ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div>Raggiungi con i mezzi pubblici</div></div>
-
-        <a id="quit" style="height:10%; margin:0px; background: darkblue; color: white;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
+        <div id="itinerary" style="height:10%;margin:0px" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist"><div tkey="itineraries_go">Fai un percorso!</div></div>
+        <a id="quit" style="height:10%; margin:0px;" href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop"
            class="ui-btn btn-primary ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist" tkey="quit">Abbandona il percorso</a>
         <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false">
             <div data-role="header" data-theme="a">
@@ -146,7 +172,7 @@
             <div role="main" class="ui-content">
                 <h3 class="ui-title">Sei sicuro di voler abbandonare il percorso?</h3>
                 <div id="real_quit" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Conferma</div>
-                <div class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">No</div>
+                <div class="ui-btn ui-corner-all ui-btn-inline ui-btn-b" data-rel="back">No</div>
             </div>
         </div>
     </div>

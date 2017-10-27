@@ -118,7 +118,9 @@ function simulatedMovement() {
     prevLon = (cityLonLatBbox[0] + cityLonLatBbox[2]) / 2;
     var t = 0;
     timed_update = setInterval(function() {
-        var path_coords = path_coords2Clicked != null ? path_coords2Clicked :
+        var path_coords = tp_coords2Clicked != null ? tp_coords2Clicked :
+                          path_coords2Clicked != null ? path_coords2Clicked :
+                          tp_coords2Itinerary != null ? tp_coords2Itinerary :
                           path_coords2Itinerary != null ? path_coords2Itinerary : null;
         if(path_coords == null || t >= path_coords.coordinates.length) {
             localize({

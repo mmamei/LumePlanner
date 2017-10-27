@@ -115,7 +115,7 @@ function localize(position) {
 
     var ntime = new Date().getTime();
 
-    console.log("localize: ntime = "+ntime+" time = "+time);
+    //console.log("localize: ntime = "+ntime+" time = "+time);
 
     if((ntime - time) < 2000) return;
     time = ntime;
@@ -170,7 +170,7 @@ function localize(position) {
         prevLon = lng;
     }
 
-    console.log("call selectMarkers from localize");
+    //console.log("call selectMarkers from localize");
     selectMarkers();
 
     if(map_type == MAP_TYPES.NEXT_STEP) {
@@ -263,7 +263,7 @@ function poiMarkers() {
     for(var i=0; i<num;i++) {
         if(visiblePois[i].place_id == "44,68030802768300" || // mauriziano (debug)
            visiblePois[i].place_id == "92920010" || // parco di cognento (debug)
-           visiblePois[i].place_id == "44,67667670197560" || // vicino al fit village (degub)
+           visiblePois[i].place_id == "44,67667670197560" || // vicino al fit vil+lage (degub)
 
            getPersImportance(visiblePois[i]) > 2.5) { // actual condition
 
@@ -304,7 +304,7 @@ function poiMarkers() {
             "<div>"+
             "<span place='"+type+"__"+id+"' onclick='visit(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Info</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='computeRoute(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Cammina</span>&nbsp;" +
-            "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
+            "<span place='"+type+"__"+id+"' onclick='getBusInfo(getClickedPOI(),ROUTE_TYPE.CLICKED)' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-right ui-btn-active ui-state-persist'>Bus</span>&nbsp;" +
             "<span place='"+type+"__"+id+"' onclick='closePopup(getClickedPOI())' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</span>" +
             "</div>"+
             "<span style='font-size:x-small'>"+format_name_from(x.display_name)+": "+x.type+"</span>";
@@ -343,9 +343,16 @@ function poiMarkers() {
 function closePopup(poi) {
     if (path2Clicked != null)
         mymap.removeLayer(path2Clicked);
+
+    for(k in tp_markers)
+        mymap.removeLayer(tp_markers[k])
+
     clickedDestination = {};
     path2Clicked = null;
+    tp_markers = {};
+    tp_coords2Clicked = null;
     path_coords2Clicked = null;
+    tp_coords2Itinerary = null;
     if (map_type == MAP_TYPES.NEXT_STEP) {
         $("#mapid").css("height", "70%");
         $("#visit").show();
@@ -528,7 +535,7 @@ function crowdMarkers(count) {
 }
 
 
-function getBusInfo(poi) {
+function getBusInfo(poi,type) {
 
 
 
@@ -540,7 +547,7 @@ function getBusInfo(poi) {
     var to_lat = poi.geometry.coordinates[1];
     var to_lng = poi.geometry.coordinates[0];
 
-    tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng);
+    tpricerca("visit_popup",from_name, from_lat,from_lng,to_name,to_lat,to_lng,type);
     $("#visit_popup").show()
 }
 
@@ -584,6 +591,7 @@ function computeRoute(poi,type) {
     //        'vehicle=foot&locale=en-US&key=e32cc4fb-5d06-4e90-98e2-3331765d5d77&instructions=false&points_encoded=false' +
     //        '&point=' + newstart + '&point=' + end, function (data, status) {
     $.getJSON(conf.dita_server + 'route?vehicle=foot&start=' + start + '&end=' + end, function (data, status) {
+        console.log(data.points);
         if(type == ROUTE_TYPE.ITINERARY) {
             path_coords2Itinerary = data.points;
             if (path2Itinerary != null)

@@ -14,25 +14,55 @@
 */
 
 
+
+function convert2geojson(punti) {
+    var coords = [];
+    for(var i=0; i<punti.length;i++)
+        coords.push([punti[i].x,punti[i].y])
+    console.log(coords);
+    var geoj = {
+        type: "LineString",
+        coordinates: coords
+    };
+    return geoj
+}
+
+var iti_type; // clicked or itinerary
+
+var tp_coords2Clicked = null;
+var tp_coords2Itinerary = null;
+var tp_markers = {};
+
 function mappaCreaPercorso(id, mezzo, punti) {
+    if(iti_type == ROUTE_TYPE.CLICKED) {
+        tp_coords2Clicked = convert2geojson(punti);
+        tp_markers[id] = L.geoJSON(tp_coords2Clicked, {style: pathStyle2Clicked}).bindPopup("percorso,"+id+","+mezzo)
+    }
+    if(iti_type == ROUTE_TYPE.ITINERARY) {
+        tp_coords2Itinerary = convert2geojson(punti);
+        tp_markers[id] = L.geoJSON(tp_coords2Itinerary, {style: pathStyle2Itinerary}).bindPopup("percorso,"+id+","+mezzo)
+    }
+    console.log("--------------------------------------------------------------");
     console.log("mappaCreaPercorso: "+id+","+mezzo+","+punti)
 }
 
 function mappaCreaStep(id, mezzo, punti) {
-    console.log("mappaCreaStep: "+id+","+mezzo+","+punti)
+    //tp_markers[id] = L.geoJSON(convert2geojson(punti), {style: pathStyle2Itinerary}).bindPopup("step,"+id+","+mezzo);
+    //console.log("mappaCreaStep: "+id+","+mezzo+","+punti)
 }
 
-function mappaCreaFermata(id, x, y, tipo, testo) {
-    console.log("mappaCreaFermata: "+id+", "+x+", "+y+", "+tipo+", "+testo)
+function mappaCreaFermata(id, lng, lat, tipo, testo) {
+    if(tipo=="Partenza" || tipo == "Arrivo") return;
+    console.log("mappaCreaFermata: "+id+", "+lng+", "+lat+", "+tipo+", "+testo);
+    tp_markers[id] = L.marker([lat,lng], {icon: tpIcons[tipo]}).bindPopup("<b>"+id+": "+tipo+"</b><br>"+testo);
 }
 
 function mappaVisualizzaOggetto(id) {
-    console.log("mappaVisualizzaOggetto: "+id)
-
+    if(tp_markers[id]) tp_markers[id].addTo(mymap)
 }
 
 function mappaNascondiOggetto(id) {
-    console.log("mappaNascondiOggetto: "+id)
+    if(tp_markers[id]) tp_markers[id].remove()
 }
 
 /**
@@ -42,9 +72,10 @@ function mappaNascondiOggetto(id) {
  */
 
 
-function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng){
 
+function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng,type){
 
+    iti_type = type;
     var partenza = [];
     partenza.push({
         name:       from_name,
@@ -87,9 +118,29 @@ function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng){
         data:    json_oggetto,
         success: function(html){
             var lines = html.split("\n");
-            for(var i =0; i<lines.length;i++)
-                if(lines[i].trim().startsWith("map."))
+            for(var i =0; i<lines.length;i++) {
+                if (lines[i].trim().startsWith("map."))
                     lines[i] = "";
+
+                if(lines[i].indexOf("<img src=\"\" class") != -1) {
+                    var classS = lines[i].indexOf("<img src=\"\" class=\"")+"<img src=\"\" class=\"".length;
+                    var classE = lines[i].indexOf("\"",classS);
+                    var mezzo =  lines[i].substring(classS,classE);
+                    console.log("********* "+mezzo);
+                    lines[i] = lines[i].replace("<img src=\"\"","<img src=\"img/travelplanner/mezzi/"+mezzo+".png\"")
+                }
+
+                if(lines[i].indexOf("<img src=\"#\" class") != -1) {
+                    var classS = lines[i].indexOf("<img src=\"#\" class=\"")+"<img src=\"#\" class=\"".length;
+                    var classE = lines[i].indexOf("\"",classS);
+                    var mezzo =  lines[i].substring(classS,classE);
+                    console.log("********* "+mezzo);
+                    lines[i] = lines[i].replace("<img src=\"#\"","<img src=\"img/travelplanner/mezzi/"+mezzo+".png\"")
+                }
+
+                lines[i] = lines[i].replace(new RegExp("onmouseover", 'g'), "onclick")
+            }
+
             var str = lines.join("\n") + "<div onclick='$(\"#"+tp_div+"\").hide()' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
             $("#"+tp_div).html(str)
         },
