@@ -95,7 +95,10 @@ function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng,typ
 
     var d = new Date();
 
-    var data           = d.getDate()+"/"+(1+d.getMonth())+"/"+d.getFullYear();
+    var day = d.getDate() < 10 ? "0"+d.getDate() : d.getDate();
+    var month = (1+d.getMonth()) < 10 ? "0"+(1+d.getMonth()) : (1+d.getMonth());
+
+    var data           = day+"/"+month+"/"+d.getFullYear();
     var ora            = d.getHours()+":"+d.getMinutes();
 
     //creo l'oggetto per l'invio
@@ -111,12 +114,17 @@ function  tpricerca(tp_div,from_name,from_lat,from_lng,to_name,to_lat,to_lng,typ
 
     var json_oggetto = 'percorso=' + JSON.stringify(oggetto_transito);
 
-    console.log($.support.cors);
     $.ajax({
         url:     'http://travelplanner.cup2000.it/ricerca/', //<--chiamata alle mappe
         type:    'POST',
+        crossDomain: true,
+        contentType: 'application/x-www-form-urlencoded',
         data:    json_oggetto,
+        xhrFields: {
+            withCredentials: true
+        },
         success: function(html){
+            console.log(html);
             var lines = html.split("\n");
             for(var i =0; i<lines.length;i++) {
                 if (lines[i].trim().startsWith("map."))
