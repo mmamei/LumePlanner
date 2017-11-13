@@ -18,8 +18,13 @@ import static util.GeoJson2KML.printHeaderDocument;
 public class BIL2KML {
 
     public static void main(String[] args) {
-        HeaderBil hb = BILReader.read("D:\\LUME-ER\\Nrealtime_Emilia-Romagna_15_20170413_1700.zip");
+        HeaderBil hb = BILReader.read("D:\\LUME-ER\\Nrealtime_Emilia-Romagna_15_20170621_0930.zip");
         City city = City.getInstance("Modena");
+
+        city = new City("Modena","Modena","",new double[]{10.886880,44.617892,10.953896,44.657667});
+
+
+
         String fileKml = "D:\\"+city.getName()+".kml";
         drawKML(city,hb,fileKml);
     }
@@ -72,7 +77,7 @@ public class BIL2KML {
                     String key = (mini + i)+"-"+(minj + j);
                     int v = hb.bil[mini+i][minj+j];
                     String color = v < NO_DATA ? Colors.val01_to_color(1.0 * v / ds.getMax()) : "770000ff";
-                    String desc = v < NO_DATA ? v/10 + " / " + ds.getMax()/10 : "NO DATA";
+                    String desc = v < NO_DATA ? 1.0*v/10 + " / " + ds.getMax()/10 : "NO DATA";
                     out.println(kmlsq.draw(getCellBorder(i, j, ox, oy, xdim, ydim), key, color, color, i + "," + j + " = " + desc));
                 }
             printFooterDocument(out);

@@ -17,8 +17,9 @@ public class BIL2CSV {
     public static void main(String[] args) throws  Exception {
         long startx = System.currentTimeMillis();
         City city = City.getInstance("Modena");
+        city = new City("Modena","Modena","",new double[]{10.886880,44.617892,10.953896,44.657667});
         Calendar start = new GregorianCalendar(2017, Calendar.JUNE, 1, 0, 0, 0);
-        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 4,  24, 0, 0);
+        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 10,  24, 0, 0);
         run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
         long endx = System.currentTimeMillis();
         System.out.println("Completed in "+(endx-startx)/(60*1000)+" mins");

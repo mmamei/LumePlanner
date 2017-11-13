@@ -73,6 +73,7 @@ function loadPreferences(user) {
 }
 
 
+
 function init(str) {
 
     if(all_cities == null) {
