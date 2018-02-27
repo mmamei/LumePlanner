@@ -22,10 +22,22 @@ public class SavePOIs2DB {
 		SavePOIs2DB g = new SavePOIs2DB();
 		List<City> cities = City.getInstance();
 		Mongo dao = new Mongo();
+
+		/*
 		for(City c: cities) {
 			String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\" + c.getName() + "\\pois";
 			g.run(c.getName(), dao, dir);
 		}
+		*/
+
+
+		City c = City.getInstance("Regali_A_Palazzo");
+		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\" + c.getName() + "\\pois";
+		g.run(c.getName(), dao, dir);
+
+
+
+
 	}
 
 
@@ -46,23 +58,28 @@ public class SavePOIs2DB {
 				String file = f.getAbsolutePath();
 				if(file.endsWith("json")) {
 					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-					JSONArray parsed = new JSONArray(br.readLine());
+					StringBuffer sb = new StringBuffer();
+					String line;
+					while((line=br.readLine()) != null) {
+						sb.append(line);
+					}
+					br.close();
+					JSONArray parsed = new JSONArray(sb.toString());
 					for (int j = 0; j < parsed.length(); j++) {
 						JSONObject currentJPOI = (JSONObject) parsed.get(j);
 
 						POI currentPOI = null;
 						try {
 							currentPOI = mapper.readValue(currentJPOI.toString(), POI.class);
-						} catch(Exception pe) {
+						} catch (Exception pe) {
 							logger.warn("Error parsing " + currentJPOI.toString());
 							pe.printStackTrace();
 						}
-							//logger.info("**** " + currentPOI.getDisplay_name());
+						//logger.info("**** " + currentPOI.getDisplay_name());
 
-						if(currentPOI!=null)
+						if (currentPOI != null)
 							dao.insertActivity(city, currentPOI);
 					}
-					br.close();
 				}
 			}
 		} catch(Exception e) {

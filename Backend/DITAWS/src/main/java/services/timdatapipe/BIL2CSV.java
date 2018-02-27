@@ -18,11 +18,23 @@ public class BIL2CSV {
         long startx = System.currentTimeMillis();
         City city = City.getInstance("Modena");
         city = new City("Modena","Modena","",new double[]{10.886880,44.617892,10.953896,44.657667});
-        Calendar start = new GregorianCalendar(2017, Calendar.JUNE, 1, 0, 0, 0);
-        Calendar end = new GregorianCalendar(2017, Calendar.JULY, 10,  24, 0, 0);
+        Calendar start = new GregorianCalendar(2017, Calendar.APRIL, 16, 0, 0, 0);
+        Calendar end = new GregorianCalendar(2017, Calendar.AUGUST, 16,  24, 0, 0);
         run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
         long endx = System.currentTimeMillis();
         System.out.println("Completed in "+(endx-startx)/(60*1000)+" mins");
+
+
+
+        startx = System.currentTimeMillis();
+        city = new City("AereoportoBLQ","AereoportoBLQ","",new double[]{11.281752,44.520770,11.309602, 44.536488});
+        start = new GregorianCalendar(2017, Calendar.APRIL, 16, 0, 0, 0);
+        end = new GregorianCalendar(2017, Calendar.AUGUST, 16,  24, 0, 0);
+        run(city,start,end,"D:\\"+city.getName()+"_"+sdf_day.format(start.getTime())+"_"+sdf_day.format(end.getTime()));
+        endx = System.currentTimeMillis();
+        System.out.println("Completed in "+(endx-startx)/(60*1000)+" mins");
+
+
     }
     public static void run(City city, Calendar start, Calendar end, String outfile) throws Exception{
 

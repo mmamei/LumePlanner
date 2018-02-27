@@ -8,19 +8,24 @@ $(document).ready(function() {
 
     $(this).on("click", "a#open_table",function(){
 
-        var stato_expand_table = $('table#'+ $(this).attr('class')).css("display");
 
-        if(stato_expand_table === 'none'){
-            $('table#'+ $(this).attr('class')).show();
-            $('img', this).attr("src", '/img/travelplanner/freccina_su.png');
-        }else{
-            $('table#'+ $(this).attr('class')).hide();
-            $('img', this).attr("src", '/img/travelplanner/freccina_giu.png');
+        for(var i=0; i<tpresult.alt.length;i++) {
+            var id = tpresult.alt[i].id;
+            $('table#id_apertura_'+id).hide();
+            //eval('percorsoNascondi' + id + '();');
         }
+
+        $('table#'+ $(this).attr('class')).show();
+        var s = $(this).attr('class').substring("id_apertura_".length);
+        console.log(s);
+        console.log('percorsoVisualizza' + s + '();');
+        eval('percorsoVisualizza' + s + '();');
+        tpresult.selected = s;
+
 
 
     });
-
+    /*
     $(this).on("click", "a.occhio",function(){
        var opacity = $(this).css("opacity");
 
@@ -33,7 +38,7 @@ $(document).ready(function() {
        }
 
     });
-
+    */
 
     $(this).on("click", ".expand",function(){
 

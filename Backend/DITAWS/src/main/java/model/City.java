@@ -40,14 +40,16 @@ public class City {
 
     //"G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.csv"
     public static List<City> getInstance() {
-        List<City> cities = null;
+        List<City> cities = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            cities = mapper.readValue(new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.json"),new TypeReference<List<City>>(){});
+            cities.addAll((List<City>)mapper.readValue(new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\citiesExtra.json"),new TypeReference<List<City>>(){}));
+            cities.addAll((List<City>)mapper.readValue(new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.json"),new TypeReference<List<City>>(){}));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return cities;
     }
 

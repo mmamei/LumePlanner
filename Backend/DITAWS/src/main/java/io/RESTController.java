@@ -152,6 +152,20 @@ public class RESTController {
 		return true;
 	}
 
+	@RequestMapping(value = "tp_log", method = RequestMethod.POST, headers = {"content-type=application/json"})
+	public @ResponseBody boolean logpost(@RequestBody TPLog log) {
+		try {
+			PrintWriter out = new PrintWriter(new FileOutputStream(
+					new File("C:\\Users\\marco\\Dropbox\\LumePlanner\\tp_log.txt"),
+					true));
+			out.println(log);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
@@ -221,7 +235,6 @@ public class RESTController {
 		tracelog.info("user "+user+" completed his visiting plan");
 		return dao.deletePlan(user);
 	}
-
 
 	@Scheduled(fixedRate = 5*60*1000) // every five minutes
 	public void downloadData() {
