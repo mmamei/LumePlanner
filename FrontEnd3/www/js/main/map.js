@@ -12,6 +12,15 @@ $(document).ready(function(){
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
 
 
+    console.log("**************************************** "+gpx);
+    if(gpx && gpx!=null && gpx!="null") {
+        var runLayer = omnivore.gpx(conf.dita_server_files + "gpx_itineraries/" + city + "/" +gpx)
+            .on('ready', function() {
+                mymap.fitBounds(runLayer.getBounds());
+            })
+            .addTo(mymap);
+    }
+
     //mymap.fitBounds([
     //    [cityLonLatBbox[1], cityLonLatBbox[0]],
     //    [cityLonLatBbox[3], cityLonLatBbox[2]]
@@ -80,6 +89,7 @@ $(document).ready(function(){
 
     $("#real_quit").click(function(){
         cleanupItinerary();
+        window.sessionStorage.setItem("gpx",null);
         window.location.href = "map.html"
     });
 

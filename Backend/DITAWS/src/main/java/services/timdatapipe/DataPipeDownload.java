@@ -1,7 +1,6 @@
 package services.timdatapipe;
 
 import org.apache.commons.io.IOUtils;
-
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.URL;
@@ -51,9 +50,10 @@ public class DataPipeDownload {
                 while ((bytesRead = is.read(buffer)) != -1) {
                     outStream.write(buffer, 0, bytesRead);
                 }
-                IOUtils.closeQuietly(is);
-                IOUtils.closeQuietly(outStream);
-
+                is.close();
+                outStream.flush();
+                outStream.close();
+                System.out.println(tmpFile);
                 ZipFile zipFile = new ZipFile(tmpFile);
                 String file = zipFile.entries().nextElement().getName().replaceAll("hdr|bil", "zip");
                 System.out.println(file);

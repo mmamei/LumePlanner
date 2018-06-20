@@ -187,7 +187,7 @@ function onDeviceReady() {
         $("#info_popup").hide().addClass("info_popup");
         checkVersion();
         init();
-
+        window.sessionStorage.setItem("gpx",null);
         // login user
         user = window.localStorage.getItem("user");
         if (!user) {

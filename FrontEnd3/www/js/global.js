@@ -1,5 +1,5 @@
 
-conf = {
+confOLD = {
     "dita_server_files" : "http://lume.morselli.unimore.it/DITA/files/",
     "dita_server_img" : "http://lume.morselli.unimore.it/DITA/img/",
     "dita_server" : "http://lume.morselli.unimore.it/DITA/WS/",
@@ -9,6 +9,21 @@ conf = {
     "pin_gg_marker" : "https://chart.googleapis.com/chart?chst=d_map_pin_letter",
     "localize" : true
 };
+
+
+confNEW = {
+    "dita_server_files" : "http://5.144.174.222:8080/DITA/files/",
+    "dita_server_img" : "http://5.144.174.222:8080/DITA/img/",
+    "dita_server" : "http://5.144.174.222:8080/DITA/WS/",
+
+    "osm_tile" : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "home_gg_marker" : "https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|0099ff",
+    "pin_gg_marker" : "https://chart.googleapis.com/chart?chst=d_map_pin_letter",
+    "localize" : true
+};
+
+conf = confNEW;
+
 
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 if(isChrome) conf.localize = false;

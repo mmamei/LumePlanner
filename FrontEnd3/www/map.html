@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="js/leaflet.css" />
         <script src="js/leaflet.js"></script>
         <script src="js/leaflet-providers.js"></script>
+        <script src='js/leaflet-omnivore.min.js'></script>
         <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="js/easy-button.css">
@@ -121,6 +122,13 @@
                     $("#visit").hide();
                     $("#bus").hide();
                     $("#quit").hide()
+                }
+                if (map_type == MAP_TYPES.GPX) {
+                    $("#mapid").css("height", "90%");
+                    $("#popup").css("bottom", "60px");
+                    $("#itinerary").hide();
+                    $("#visit").hide();
+                    $("#bus").hide();
                 }
                 if (map_type == MAP_TYPES.CROWD) {
                     $("#mapid").css("height", "100%");

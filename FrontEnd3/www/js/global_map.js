@@ -21,6 +21,7 @@ var colors = {
 
 var mymap;
 var city = window.sessionStorage.getItem("city");
+var gpx = window.sessionStorage.getItem("gpx");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
 
@@ -58,12 +59,14 @@ var clickedDestination = {};
 var MAP_TYPES = {
     MAP: 0,
     NEXT_STEP: 1,
-    CROWD: 2
+    CROWD: 2,
+    GPX:3,
 };
 
 var map_type = MAP_TYPES.MAP;
 if(checkNextStep()) map_type = MAP_TYPES.NEXT_STEP;
 if(getUrlParameter("crowd")) map_type = MAP_TYPES.CROWD;
+if(gpx && gpx!=null && gpx!="null") map_type = MAP_TYPES.GPX;
 
 var path2Itinerary = null;
 var path_coords2Itinerary = null;
@@ -164,8 +167,7 @@ function localize(position) {
 
     //console.log("localized at (" + lat + "," + lng+") accuracy = "+accuracy);
     if(getDistanceFromLatLonInM(lat,lng,prevLat,prevLon) > SEND_POSITION_EVERY_METERS) {
-        $.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + window.localStorage.getItem("user"), function (data, status) {
-        });
+        //$.getJSON(conf.dita_server + 'localize?lat=' + lat + "&lon=" + lng + "&user=" + window.localStorage.getItem("user"), function (data, status) {});
         prevLat = lat;
         prevLon = lng;
     }
@@ -198,7 +200,7 @@ var crowded_markers = new L.LayerGroup();
 var crowdMarkers_count = 0;
 function selectMarkers() {
 
-    if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP) poiMarkers();
+    if(map_type == MAP_TYPES.MAP || map_type == MAP_TYPES.NEXT_STEP || map_type == MAP_TYPES.GPX) poiMarkers();
     if(map_type == MAP_TYPES.CROWD) crowdMarkers(++crowdMarkers_count);
 }
 

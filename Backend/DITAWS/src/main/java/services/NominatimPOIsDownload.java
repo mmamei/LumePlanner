@@ -73,7 +73,10 @@ public class NominatimPOIsDownload {
                 for(int i=0; i<typesAndvtime.length;i=i+2) {
                     String typeCategory = typesAndvtime[i];
                     double visiting_time = Double.parseDouble(typesAndvtime[i+1]);
-                    URL url = new URL(NOMINATIM_URL + "search?q=" + typeCategory + "&format=json&viewbox=" + array2string(bbox) + "&bounded=1&limit=1000");
+                    String u = NOMINATIM_URL + "search?q=" + typeCategory + "&format=json&viewbox=" + array2string(bbox) + "&bounded=1&limit=1000";
+                    URL url = new URL(u);
+                    System.out.println(u);
+                    if(1==1) System.exit(0);
                     logger.info(url.toString());
                     BufferedReader url_br = new BufferedReader(new InputStreamReader(url.openStream()));
                     JSONArray parsed = new JSONArray(url_br.readLine());

@@ -45,6 +45,26 @@
   "select_attractions":"Seleziona i luoghi da visitare",
   "filters":"Altri filtri",
   "delete":"Cancella Selezione",
-  "check_time_price":"Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate"
+  "check_time_price":"Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate",
+
+  "mappa": "Mappa",
+  "cosedavedere": "Cose da vedere",
+  "itinerari": "Itinerari",
+  "preferiti": "Preriti",
+  "itinerariaccessibili": "Itinerari accessibili",
+  "ciclabili": "Ciclabili",
+  "glutenfree": "Senza glutine",
+  "fashion": "Fashion",
+  "artigianato": "Artigianato",
+  "esploraaltro": "Esplora altre città",
+  "vaiitinerario": "Vai all'itinerario",
+  "info": "Info",
+  "vai": "Vai",
+  "inseriscidescrizione": "Inserisci descrizione",
+  "inviasegnalazione": "Invia segnalazione!",
+  "preferences": "Preferenze",
+  "preferenzesalvate": "Preferenze salvate correttamente",
+  "segnalaproblema": "Segnala un problema",
+  "annulla": "Annulla"
 }
 

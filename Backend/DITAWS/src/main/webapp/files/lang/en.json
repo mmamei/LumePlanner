@@ -45,6 +45,26 @@
   "select_attractions":"Select attractions to visit",
   "filters":"Other filters",
   "delete":"Delete selection",
-  "check_time_price":"Check entrance time and price with selected activities"
+  "check_time_price":"Check entrance time and price with selected activities",
+
+  "mappa": "Map",
+  "cosedavedere": "Sightseeings",
+  "itinerari": "Itineraries",
+  "preferiti": "Preferred",
+  "itinerariaccessibili": "Wheelchair Accessible Itineraries",
+  "ciclabili": "Bike Lanes",
+  "glutenfree": "Gluten Free",
+  "fashion": "Fashion",
+  "artigianato": "Handicraft",
+  "esploraaltro": "Explore other cities",
+  "vaiitinerario": "Go to Itinerary",
+  "info": "Info",
+  "vai": "Go",
+  "inseriscidescrizione": "Enter description",
+  "inviasegnalazione": "Send message!",
+  "preferences": "Preferences",
+  "preferenzesalvate": "Preferences saved!",
+  "segnalaproblema": "Send bug report",
+  "annulla": "Cancel"
 }
 

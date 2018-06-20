@@ -1,3 +1,4 @@
 target/
+src/main/webapp/files/
 src/main/webapp/WEB-INF/data/
 src/main/java/io/MongoLoginInfo.java

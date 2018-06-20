@@ -14,7 +14,7 @@ import java.util.Map;
 public class UserLog {
     String userid;
     private List<double[]> latLon;
-    private Map<String,List<POI>> itineraries;
+    private Map<String,Map<String,List<POI>>> itineraries;
     private boolean gotPrize = false;
 
 
@@ -29,8 +29,11 @@ public class UserLog {
         for(double[] ll: latLon)
             System.out.println(ll[0]+","+ll[1]);
         System.out.println("Itineraries");
-        for(String i: itineraries.keySet())
-            System.out.println(i);
+        for(String city: itineraries.keySet()) {
+            System.out.println(city);
+            for(String i: itineraries.get(city).keySet())
+                System.out.println(i+" ==> "+itineraries.get(city).get(i));
+        }
     }
 
     public String toJSONString() {
@@ -60,11 +63,11 @@ public class UserLog {
         this.latLon = latLon;
     }
 
-    public Map<String, List<POI>> getItineraries() {
+    public Map<String,Map<String,List<POI>>> getItineraries() {
         return itineraries;
     }
 
-    public void setItineraries(Map<String, List<POI>> itineraries) {
+    public void setItineraries(Map<String,Map<String,List<POI>>> itineraries) {
         this.itineraries = itineraries;
     }
 

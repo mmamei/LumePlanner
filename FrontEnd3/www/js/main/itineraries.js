@@ -5,8 +5,6 @@
 
 function submit(lat, lng, spois) {
 
-
-
     var start_place = {
             display_name: "0",
             place_id: "0",
@@ -67,6 +65,8 @@ $(document).ready(function(){
 
     console.log("get itineraries for city "+city+" from server");
     console.log('itineraries?city=' + city + "&user="+user+"&lat="+lat+"&lng="+lng);
+
+    // GET STANDARD ITINERARIES
     $.getJSON(conf.dita_server + 'itineraries?city=' + city + "&user="+user+"&lat="+lat+"&lng="+lng,
         function (data, status) {
             if (data.length > 0) {
@@ -115,6 +115,29 @@ $(document).ready(function(){
                     }
                 }
             });
+    });
+
+    // GET GPX ITINERARIES
+    $.getJSON(conf.dita_server_files + "gpx_itineraries/" + city + "/itineraries.json", function(data,status) {
+        if(status == "error") return;
+        if (data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+                var name = data[i].display_name;
+                var time = data[i].approx_time;
+                var img = data[i].img ? conf.dita_server_files + "gpx_itineraries/" + city + "/" + data[i].img : null;
+                console.log(img);
+                $("#itineraries").append(formatButtonGPX(i, name, time, img, data[i].description));
+            }
+            translate();
+            $("#itineraries").trigger('create');
+        }
+        $(".itinergpx").click(function(){
+            $(this).css("opacity","0.5");
+            var i = $(this).attr("num");
+            window.sessionStorage.setItem("gpx",data[i].gpx);
+            window.location.href = "map.html"
+        })
+
     });
 
     $("#custom").click(function(){

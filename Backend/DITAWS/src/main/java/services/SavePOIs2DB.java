@@ -31,7 +31,7 @@ public class SavePOIs2DB {
 		*/
 
 
-		City c = City.getInstance("Regali_A_Palazzo");
+		City c = City.getInstance("BolognaMappePlurali");
 		String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\" + c.getName() + "\\pois";
 		g.run(c.getName(), dao, dir);
 

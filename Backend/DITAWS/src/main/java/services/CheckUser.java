@@ -8,7 +8,9 @@ import model.UserLog;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by marco on 13/09/2017.
@@ -34,16 +36,20 @@ public class CheckUser {
                         String places = line.substring(line.lastIndexOf("to visit:")+"to visit:".length()).trim();
                         String name = getItineraryName(dao,city,places);
 
-                        if(!ul.getItineraries().containsKey(name)) {
+                        if(ul.getItineraries().get(city) == null)
+                            ul.getItineraries().put(city, new HashMap<String,List<POI>>());
 
+                        Map<String,List<POI>> itiOFcity = ul.getItineraries().get(city);
+                        if(!itiOFcity.containsKey(name)) {
                             List<POI> list = new ArrayList<>();
                             String[] pois = places.replaceAll("\\[|\\]","").split(",");
                             for(String poi: pois) {
                                list.add(dao.retrieveActivity(city,poi.trim()));
                             }
-                            ul.getItineraries().put(name,list);
+                            itiOFcity.put(name,list);
                         }
                     }
+
                     if(line.contains("prize!"))
                         ul.setGotPrize(true);
 
@@ -67,7 +73,7 @@ public class CheckUser {
 
     public static void main(String[] args) {
         Mongo dao = new Mongo();
-        UserLog ul = checkUser(dao, "3662677592101309");
+        UserLog ul = checkUser(dao, "9317737568397064");
         ul.print();
     }
 }

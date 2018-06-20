@@ -167,6 +167,21 @@ public class RESTController {
 	}
 
 
+	@RequestMapping(value = "help", method = RequestMethod.POST, headers = {"content-type=application/json"})
+	public @ResponseBody boolean help(@RequestBody HelpLog h) {
+		try {
+			PrintWriter out = new PrintWriter(new FileOutputStream(
+					new File("C:\\Tomcat7\\help.txt"),
+					true));
+			out.println(h.getUserid()+";"+h.getEmail()+";"+h.getText());
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+
 	@RequestMapping(value = "newplan", method = RequestMethod.POST, headers = {"content-type=application/json"})
 	public @ResponseBody VisitPlanAlternatives getNewVisitPlan(@RequestBody PlanRequest plan_request) {
 		tracelog.info("user "+plan_request.getUser()+" request newplan "+plan_request);

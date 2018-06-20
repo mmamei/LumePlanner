@@ -19,8 +19,9 @@ public class ItineraryGenerator {
     public static void main(String[] args) {
 
         String user = "0.75634758345786";
-        String city = "Modena"; double[] latlng = new double[]{44.6290051,10.8701162};
+        String city = "BolognaMappePlurali"; double[] latlng = new double[]{44.48841069379834,11.331673007896217};
         //String city = "ReggioEmilia"; double[] latlng = new double[]{44.687561,10.667276};
+
 
 
         Mongo dao = new Mongo();
@@ -135,6 +136,9 @@ public class ItineraryGenerator {
             POI closest = null;
             for (String poi : to_visit) {
                 POI current = dao.retrieveActivity(city,poi);
+                if(current == null) {
+                    System.out.println("NULL"+poi);
+                }
                 double current_distance = haverDist(
                         from,
                         new double[] {current.getGeometry().getCoordinates().getLatitude(), current.getGeometry().getCoordinates().getLongitude()});
