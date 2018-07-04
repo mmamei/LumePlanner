@@ -1,15 +1,18 @@
 {
-    "prepare_queue": {
-        "installed": [],
-        "uninstalled": []
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "it.unimore.morselli.lume"
     },
-    "config_munge": {
-        "files": {}
-    },
-    "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "it.unimore.morselli.lume"
-        }
-    },
-    "dependent_plugins": {}
+    "pikkartcordova": {
+      "PACKAGE_NAME": "it.unimore.morselli.lume"
+    }
+  },
+  "dependent_plugins": {}
 }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>LUMEPlanner</title>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/main/itinerary_create.js"></script>
+
+
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
+
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
+
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <!--
+    <link rel="stylesheet" type="text/css" href="js/jquery-ui.min.css" />
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    -->
+    <script src="js/jquery-dateFormat.min.js"></script>
+    <script src="js/jquery.datetimepicker.full.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/jquery.datetimepicker.css"/>
+
+    
+    <style>
+        .ui-grid-a .ui-grid-b img {
+            width  : 100%;
+            height : auto;
+        }
+    </style>
+
+    <script>
+        function initTime(time) {
+            $("#datetimepicker").val($.format.date(time, 'yyyy/MM/dd HH:mm:ss'));
+            $('#datetimepicker').datetimepicker({});
+            $('#datetimepicker').click(function () {
+                $('#datetimepicker').datetimepicker({})
+            })
+        }
+
+        function formatDepartureArrival(name, selected) {
+            return "<option value='" + name + "' "+(selected? "selected ": "")+">" + name + "</option>"
+        }
+
+    </script>
+
+
+</head>
+<body>
+<div data-role="page" class="jqm-demos jqm-home">
+    <div data-role="header" class="jqm-header"  data-position="fixed" >
+        <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
+        <!--<p>Version <span class="jqm-version"></span></p> -->
+        <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    </div>
+    <div id="list_menu" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"></div>
+
+	 <div role="main" class="ui-content jqm-content">
+         <h3 align = "center" tkey="select_time"> Seleziona data </h3>
+         <input type="text" value="" id="datetimepicker"/>
+	<br>
+	
+<h3 align = "center" tkey="select_dep_arr"> Seleziona location di partenza e arrivo </h3>
+  <div class="ui-grid-a">
+    <div class="ui-block-a">
+
+            <select name="speed" id="departure">
+            </select>
+	</div>
+    <div class="ui-block-b">
+
+        <select name="speed" id="arrival">
+        </select>
+	</div>
+ </div>
+         <br>
+
+ <h3 align = "center" tkey="select_attractions"> Seleziona tra le categorie di attrazioni </h3>
+ <div style="text-align:center"><span style="font-size: 10pt; font-weight: bold" tkey="check_time_price">Verificare gli orari di apertura ed i prezzi di ingresso presso le strutture selezionate</span></div>
+ <div id="attraction_buttons"></div>
+
+    <div id="delete" class="ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="delete">Cancella Selezione</span>
+         <input type="button" data-enhanced="true" value="Input value">
+    </div>
+
+    <!--
+    <div id="filters" class="ui-input-btn ui-btn ui-corner-all ui-shadow ui-mini"><span tkey="filters">Altri filtri</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+    -->
+
+    <div id="go" class="ui-input-btn ui-btn ui-corner-all ui-shadow ui-btn-active ui-state-persist"><span tkey="itineraries_go">Vai all'itinerario</span>
+        <input type="button" data-enhanced="true" value="Input value">
+    </div>
+
+
+	</div><!-- /content --> 
+
+</div><!-- /page -->
+
+</body>
+</html>

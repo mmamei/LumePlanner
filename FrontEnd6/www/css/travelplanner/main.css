@@ -1,0 +1,285 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 24-nov-2014, 12.19.14
+    Author     : CUP2000\marcopollacci
+*/
+
+div#header{
+    background: url('../../img/travelplanner/prolunga.jpg');
+}
+
+
+div#header div.destra{
+    float: right;
+}
+
+div#header div.sinistra, div#header div.destra{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    clear:both;
+}
+
+body#travelbodyplanner{
+    width: 100%;
+//    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.errore_field{
+    border: 2px solid #f71818;
+}
+
+div#box_ricerca, div#mappa{
+    display: inline-block;
+}
+
+div#parametri_ricerca{
+    position: relative;
+}
+
+div#box_ricerca{
+    border: 1px solid red;
+    width: 420px;
+    float: left;
+    margin-right: 3px;
+    position: relative;
+    padding: 3px;
+}
+
+div#mappa{
+    transition: all 0.2 linear;
+    -moz-transition: all 0.2 linear;
+    -webkit-transition: all 0.2 linear;
+    border: 1px solid;
+    width:auto;
+}
+
+div#box_ricerca label{
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+img#partenza_img{
+    position: absolute;
+    top: 31px;
+    right: 177px;
+    cursor: pointer;
+}
+
+img#transito_img{
+    position: absolute;
+    right: 178px;
+    cursor: pointer;
+}
+
+label.tempo_di_transito{
+    margin-top: 3px !important;
+}
+
+a.rimuovi_transito{
+    float: left;
+    margin-top: -21px;
+    margin-left: 187px;
+}
+
+img#arrivo_img{
+    position: absolute;
+    top: 64px;
+    right: 177px;
+    cursor: pointer;
+
+}
+p#aggiungi_transitop{
+    margin-left: 57px;
+    margin-bottom: -6px;
+    font-size: 13px;
+    margin-top: 2px;
+}
+div#footer{
+    clear: both;
+}
+
+div#add_transito span, div#start_ricerca label{
+    display: block;
+}
+
+p#data_picker{
+    width: 162px;
+}
+
+p#data_picker, p#ora_picker{
+    display: inline-block;
+    clear:left;
+    margin-top: 10px;
+}
+
+
+p#cerca{
+    background: grey;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+p#cerca a{
+    color: #FFFFFF;
+}
+
+
+div#altre_opzioni{
+    background: #D8D8D8;
+    border-radius: 10px;
+    padding: 1px;
+}
+
+div#altre_opzioni h4{
+    text-align: center;
+    cursor: pointer;
+}
+
+div#altre_opzioni h4:hover{
+    text-decoration: underline;
+}
+
+fieldset#altre_opzioni_fieldset{
+    display:none;
+    padding: 5px 28px 28px 28px;
+}
+
+fieldset#altre_opzioni_fieldset legend{
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-size: 14px;
+}
+
+fieldset#altre_opzioni_fieldset input{
+    font-size: 14px;
+}
+
+a.occhio{
+    opacity: 0.25;
+}
+
+div.prima_soluzione table.soluzioni_tabella{
+    display: table;
+}
+
+a.prima_soluzione{
+    opacity: 1;
+}
+
+div#soluzione_cercata{
+	clear:both;
+    border: 1px solid;
+    font-weight: bold;
+    padding: 8px 0px 0px 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+div#mod_ricerca{
+    background: #D8D8D8;
+    border-radius: 10px;
+    padding: 2px;
+    text-align: center;
+}
+
+div#mod_ricerca a{
+  color: #000000;
+}
+
+
+img.icona_1{
+    background: url('../../img/zf2-logo.png') no-repeat top -10px right 10px;
+    float: right;
+}
+
+div#pippo{
+    height: 200px;
+    width: 200px;
+    background: red;
+}
+
+div#trascina_box{
+    position: absolute;
+    background: #D1E6E7;
+    padding: 10px;
+    width: 177px;
+    height: 121px;
+    top: 0;
+    right: 0;
+    font-size: 11px;
+}
+
+div#trascina_box p{
+    text-align: center;
+}
+
+div.immagini_trascinamento a{
+    float: left;
+    display: inline-block;
+    margin-right: 14px;
+    margin-left: 8px;
+    text-align: center;
+}
+
+div.immagini_trascinamento a>img{
+    margin-left: -3px;
+}
+
+.draggato{
+    position: absolute !important;
+    z-index: 100;
+}
+
+select.select_ricerca{
+    width: 200px;
+    border: 2px solid #f71818;
+}
+
+select.select_ricerca option[tipo="fermata"]{
+    color: #f71818;
+}
+
+.trascinamento_in_progress{
+    position: absolute;
+    z-index: 1000000;
+}
+
+div.ui-dialog{
+    z-index: 10000;
+}
+
+div#precsucc {
+	display: none;
+	margin:  10px;
+}
+
+div#precsucc #input_start_precedenti {
+	float: left;
+	background: none repeat scroll 0% 0% #D8D8D8;
+	text-align: center;
+	border-radius: 10px;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+div#precsucc #input_start_successive {
+	float: right;
+	background: none repeat scroll 0% 0% #D8D8D8;
+	text-align: center;
+	border-radius: 10px;
+	padding: 5px;
+	margin-bottom: 5px;
+}

@@ -1,0 +1,99 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 26-nov-2014, 12.19.09
+    Author     : marcopollacci
+*/
+
+
+div.opzioni_sol p, table.soluzioni_tabella thead tr{
+    background-color: #808080;
+}
+
+div.opzioni_sol{
+    margin-bottom: 6px;
+}
+
+div.opzioni_sol p{
+    margin-bottom: 1px;
+    font-size: 10px;
+}
+
+table.soluzioni_tabella{
+    width: 100%;
+    display: none;
+}
+
+table.soluzioni_tabella tr{
+        line-height: 22px;
+        border: 2px solid #FFFFFF;
+}
+
+table.soluzioni_tabella tr:hover{
+
+    opacity: 0.8;
+}
+
+table.soluzioni_tabella tr.walk{
+    background-color: #C8C8C8;
+}
+
+table.soluzioni_tabella tr.scura_AU{
+    background-color: #FF6A00;
+}
+
+table.soluzioni_tabella tr.chiara_AU{
+    background-color: #FA9954;
+}
+
+
+table.soluzioni_tabella tr.scura_AE{
+    background-color: #006699;
+    color: #FFFFFF; 
+}
+
+table.soluzioni_tabella tr.chiara_AE{
+    background-color: #4197C2;
+    color: #FFFFFF; 
+}
+
+table.soluzioni_tabella tr.scura_R{
+    background-color: #999900;
+}
+
+table.soluzioni_tabella tr.chiara_R{
+    background-color: #BBBB38;
+}
+
+table.soluzioni_tabella tr.scura_ES{
+    background-color: #CC0000;
+    color: #FFFFFF; 
+}
+
+table.soluzioni_tabella tr.chiara_ES{
+    background-color: #D54E4E;
+    color: #FFFFFF; 
+}
+
+
+table.soluzioni_tabella tr.scura_IC{
+    background-color: #5BADFF;
+}
+
+table.soluzioni_tabella tr.chiara_IC{
+    background-color: #81B5EA;
+
+}
+
+
+table.soluzioni_tabella tr.hidden_tr_soluzioni{
+    display: none;
+}
+
+table.soluzioni_tabella td.expand{
+    cursor: pointer;
+}
+

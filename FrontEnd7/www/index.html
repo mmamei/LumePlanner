@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LUMEPlanner</title>
+
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="assets/js/modernizr-custom.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/main/index.js"></script>
+
+    <script>
+        if (window.self == window.top && !navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+            window.location = "phone.html"
+        }
+        function  formatCityBlock(name,pretty_name,img) {
+            return "<div>"+
+                    "<h3 align = 'center'>"+pretty_name+"</h3><img src=\""+img+"\" class='show-page-loading-msg img-responsive img-rounded' alt='"+name+"' id=\""+name+"\">"+
+                    "</div>"
+        }
+    </script>
+
+
+    <style>
+        img {
+            width  : 100%;
+            height : auto;
+        }
+        .info_popup {
+            background-color: white;
+            border:solid;
+            position:absolute;
+            z-index:1001;
+            top:1%;
+            width:95%;
+            height:95%;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            text-align:center;
+            padding: 10px;
+            text-shadow: none;
+            overflow-y: scroll;
+        }
+    </style>
+
+
+</head>
+<body>
+
+
+<div data-role="page" id = "pageone" class="jqm-demos jqm-home">
+
+    <div data-role="header" class="jqm-header"  data-position="fixed" >
+        <h2><img src="assets/img/logo-text.png" alt="jQuery Mobile"></h2>
+        <!--<p>Version <span class="jqm-version"></span></p> -->
+        <a href="" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    </div>
+
+    <div id="list_menu" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"></div>
+
+
+    <div role="main" class="ui-content jqm-content">
+
+        <!--<p align = "center"><strong tkey="plan_title">Visita l'Emilia Romagna!</strong></p>-->
+
+        <input type="search" id="search" value="" data-mini="false" />
+
+        <div id="cities" style='text-align: center'></div>
+
+        <div id="info_popup" class="ui-corner-all"></div>
+
+    </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+
+</body>
+</html>

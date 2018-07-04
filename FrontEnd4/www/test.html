@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #mapid {
+            height: 700px;
+            z-index: 1;
+            padding:0px;
+            margin:0px;
+            overflow:hidden;
+        }
+    </style>
+    <script src="js/jquery.min.js"></script>
+    <link rel="stylesheet" href="js/leaflet.css" />
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet-providers.js"></script>
+    <script src='js/leaflet-omnivore.min.js'></script>
+    <script>
+        var mymap
+        $(document).ready(function() {
+            mymap = L.map('mapid',{
+                attributionControl: false,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                zoomControl: true,
+                touchZoom: true,
+                dragging: true,
+            });
+            //L.tileLayer.provider('OpenStreetMap.BlackAndWhite').addTo(mymap);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
+            var runLayer = omnivore.gpx('MO_039_Modena-Carpi.GPX')
+                    .on('ready', function() {
+                        mymap.fitBounds(runLayer.getBounds());
+                    })
+                    .addTo(mymap);
+        })
+
+
+    </script>
+</head>
+<body>
+<div id="mapid"></div>
+</body>
+</html>
