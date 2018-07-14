@@ -126,7 +126,30 @@ $(document).ready(function(){
                 var time = data[i].approx_time;
                 var img = data[i].img ? conf.dita_server_files + "gpx_itineraries/" + city + "/" + data[i].img : null;
                 console.log(img);
-                $("#itineraries").append(formatButtonGPX(i, name, time, img, data[i].description));
+                $("#itineraries").append(formatButtonGPX(i, name, time, img, data[i].description,"#a8c"));
+            }
+            translate();
+            $("#itineraries").trigger('create');
+        }
+        $(".itinergpx").click(function(){
+            $(this).css("opacity","0.5");
+            var i = $(this).attr("num");
+            window.sessionStorage.setItem("gpx",data[i].gpx);
+            window.location.href = "map.html"
+        })
+
+    });
+
+    // GET GPX ITINERARIES
+    $.getJSON(conf.dita_server_files + "gpx_itineraries/" + city + "/itineraries_disabili.json", function(data,status) {
+        if(status == "error") return;
+        if (data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+                var name = data[i].display_name;
+                var time = data[i].approx_time;
+                var img = data[i].img ? conf.dita_server_files + "gpx_itineraries/" + city + "/" + data[i].img : null;
+                console.log(img);
+                $("#itineraries").append(formatButtonGPX(i, name, time, img, data[i].description,"#6600ff"));
             }
             translate();
             $("#itineraries").trigger('create');

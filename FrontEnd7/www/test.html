@@ -30,7 +30,7 @@
             });
             //L.tileLayer.provider('OpenStreetMap.BlackAndWhite').addTo(mymap);
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
-            var runLayer = omnivore.gpx('MO_039_Modena-Carpi.GPX')
+            var runLayer = omnivore.gpx('BO_01.gpx')
                     .on('ready', function() {
                         mymap.fitBounds(runLayer.getBounds());
                     })

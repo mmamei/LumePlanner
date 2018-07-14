@@ -53,6 +53,7 @@ $(document).ready(function(){
                 backgroundGeolocation.configure(
                     function (location) {
                         //console.log('[js] BackgroundGeolocation callback:  ' + location.latitude + ',' + location.longitude);
+                        //alert("bg loc "+location.latitude+","+location.longitude)
                         localize({
                             coords: {
                                 latitude: location.latitude,
@@ -62,7 +63,7 @@ $(document).ready(function(){
                         });
                         backgroundGeolocation.finish();
                     }, function (error) {
-                        console.log('BackgroundGeolocation error')
+                        //alert('BackgroundGeolocation error')
                     }, {
                         desiredAccuracy: 10,
                         stationaryRadius: 20,

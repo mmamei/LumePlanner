@@ -60,7 +60,7 @@ public class FindPath {
         VisitPlanAlternatives vpa = new VisitPlanAlternatives(city,user);
         vpa.add("shortest", new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
         vpa.add("asis",  new FindPathAsIs().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
-        vpa.add("crowd", new FindShortestPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
+        vpa.add("crowd", new FindCrowdPath().newPlan(city,dao,plan_request.getUser(), departure, arrival, start_time, POIsList));
 
         return vpa;
     }

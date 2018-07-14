@@ -33,9 +33,9 @@
                     "</div>" +
                     "</div>";
         }
-        function formatButtonGPX(index,name,time,img,description) {
+        function formatButtonGPX(index,name,time,img,description,color) {
             //console.log(img);
-            return  "<div data-role='collapsible'><h4><span class='timegpx ui-corner-all'>"+time+"</span> "+name+"</h4>" +
+            return  "<div data-role='collapsible'><h4><span class='time ui-corner-all' style='background-color:"+color+"'>"+time+"</span> "+name+"</h4>" +
                     "<div style='font-size: 10pt; text-align: justify;'>"+
                     (img ? "<img style='margin-right:5px; float: left' width='200px' src=\""+img+"\">" : "")+
                     "<h4>"+name+"</h4>"+
@@ -66,12 +66,6 @@
             color:white;
             padding: 90px 5px 90px 5px;
         }
-        .timegpx {
-            background-color: #a8c;
-            color:white;
-            padding: 90px 5px 90px 5px;
-        }
-
     </style>
 
 

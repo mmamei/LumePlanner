@@ -27,10 +27,14 @@ public class CrowdDataManager {
     public static void main(String[] args) {
         long starttime = System.currentTimeMillis();
         CrowdDataManager cdm = new CrowdDataManager();
+        double v = CrowdDataManager.getCrowdings(44.629352, 10.871189);
+        System.out.println(v);
+        /*
         cdm.processCrowdInfo(true);
         cdm.processCrowdInfo(true);
         long endtime = System.currentTimeMillis();
         System.out.println("Completed in: "+(endtime - starttime) / 1000);
+        */
     }
 
     public CrowdDataManager() {
@@ -159,8 +163,26 @@ public class CrowdDataManager {
     }
 
 
+    public static double getCrowdings (double lat, double lon) {
+        File file = lastFileModified("D:/LUME-ER");
+        HeaderBil hb = BILReader.read(file.getAbsolutePath());
 
-    private File lastFileModified(String dir) {
+        double ulxmap = Double.parseDouble(hb.header.get("ulxmap"));
+        double ulymap = Double.parseDouble(hb.header.get("ulymap"));
+        double xdim = Double.parseDouble(hb.header.get("xdim"));
+        double ydim = Double.parseDouble(hb.header.get("ydim"));
+
+
+        int xi = (int)Math.floor((ulymap - lat + ydim/2)/ydim);
+        int xj = (int)Math.floor((lon - ulxmap + xdim/2)/xdim);
+        int v = hb.bil[xi][xj];
+        v = (v == NO_DATA) ? -1 : 3 * v / 10; // 3 per considerare TIM, Vodsfone e Wind
+        return v;
+    }
+
+
+
+    private static File lastFileModified(String dir) {
         File fl = new File(dir);
         File[] files = fl.listFiles(new FileFilter() {
             public boolean accept(File file) {

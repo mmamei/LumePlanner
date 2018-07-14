@@ -24,6 +24,7 @@ var city = window.sessionStorage.getItem("city");
 var gpx = window.sessionStorage.getItem("gpx");
 var cityLonLatBbox = JSON.parse(window.sessionStorage.getItem("citybbox"));
 var pois = JSON.parse(window.sessionStorage.getItem("pois"));
+console.log(pois);
 
 var notified = JSON.parse(window.sessionStorage.getItem("notified"));
 if(notified == null) notified = [];
@@ -275,13 +276,15 @@ function poiMarkers() {
                 window.sessionStorage.setItem("notified",JSON.stringify(notified));
                 if(navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
 
+                    navigator.vibrate(1500);
+                    alert(visiblePois[i].display_name);
                     cordova.plugins.notification.local.schedule({
                         title: "Lume Planner: Interessante!",
                         message: format_name(visiblePois[i].display_name),
                         icon: "res://ic_action_next_item"
                     });
 
-                    navigator.vibrate(1500);
+
                 }
                 else alert(format_name(visiblePois[i].display_name)+" => "+getPersImportance(visiblePois[i]))
             }

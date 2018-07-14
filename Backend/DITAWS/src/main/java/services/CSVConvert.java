@@ -23,10 +23,14 @@ public class CSVConvert {
 
 
     public static void main(String[] args) throws Exception {
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_1_TAPPE.txt",",from:LUME",false,2);
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_2_TAPPE.txt",",from:LUME",false,2);
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_3_TAPPE.txt",",from:LUME",false,2);
-        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_4_TAPPE.txt",",from:LUME",false,2);
+
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Reggio_Emilia_Mercoledi_Rosa\\pois\\itiner_re_18l_tappe.txt",",from:LUME",false,3);
+        convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Reggio_Emilia_Mercoledi_Rosa\\pois\\itiner_re_25l_tappe.txt",",from:LUME",false,3);
+
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_1_TAPPE.txt",",from:LUME",false,2);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_2_TAPPE.txt",",from:LUME",false,2);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_3_TAPPE.txt",",from:LUME",false,2);
+        //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\BolognaMappePlurali\\pois\\ITINER_BO_4_TAPPE.txt",",from:LUME",false,2);
 
         //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Maranello\\pois\\pois.csv",",from:Maranello",false,1);
         //convert("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities\\Reggio_nell'Emilia\\pois\\pois19092017.csv",",from:Reggio-Emilia",false,1);
@@ -129,6 +133,38 @@ public class CSVConvert {
         return list;
     }
 
+    public static List<POI> getPOIList3(String file, String source) throws Exception {
+        List<POI> list = new ArrayList<>();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] e = line.trim().split(",");
+
+            String id = e[0].trim();
+
+            String type = e[1].trim();
+            String category = CSV_TO_CAT.get(type);
+            if (category == null) {
+                System.out.println(line);
+                category = "attractions";
+            }
+            String name = e[2].trim();
+
+            double lat = Double.parseDouble(e[3].trim());
+            double lon = Double.parseDouble(e[4].trim());
+            String desc = "";
+            for(int i=5; i<e.length-1;i++)
+                desc += ", "+e[i];
+            if(desc.startsWith(", ")) desc = desc.substring(2);
+
+
+            list.add(new POI(id, lat, lon, name + source, category, type, 1, "", 0, "ok", "ok", 0, "", desc, ""));
+
+        }
+        br.close();
+        return list;
+    }
+
 
 
     public static void convert(String file, String source, boolean divide_by_city, int ctype) throws Exception {
@@ -137,6 +173,7 @@ public class CSVConvert {
         List<POI> list = null;
         if(ctype == 1) list = getPOIList1(file,source);
         if(ctype == 2) list = getPOIList2(file,source);
+        if(ctype == 3) list = getPOIList3(file,source);
 
         System.out.println("TOTAL POIS IN FILE = " + list.size());
         ObjectMapper mapper = new ObjectMapper();

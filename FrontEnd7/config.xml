@@ -92,7 +92,7 @@
         <preference name="SplashScreenHeight" value="850" />
     </platform>
     <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.3.5">
-        <variable name="GOOGLE_PLAY_SERVICES_VERSION" value="11+" />
+        <variable name="GOOGLE_PLAY_SERVICES_VERSION" value="15.0.1" />
         <variable name="ANDROID_SUPPORT_LIBRARY_VERSION" value="23+" />
         <variable name="ICON" value="@mipmap/icon" />
         <variable name="SMALL_ICON" value="@mipmap/icon" />
@@ -102,6 +102,7 @@
         <variable name="CONTENT_AUTHORITY" value="$PACKAGE_NAME" />
     </plugin>
     <plugin name="cordova-plugin-local-notification" spec="cordova-plugin-local-notification" />
+    <plugin name="pikkartcordova" spec="g:\CODE\IJ-IDEA\LumePlanner\EXTRA-PLUGIN\PikkartCordova" />
     <engine name="android" spec="^7.0.0" />
     <engine name="browser" spec="^5.0.0" />
 </widget>
