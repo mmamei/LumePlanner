@@ -1,0 +1,12 @@
+id25, MUSICA, Conad per Reggio con Core Nostro - Piazza Prampolini, 44.697720, 10.630468, artisti reggiani si esibiranno in ricordo di Michael Tundo
+id26, MUSICA, C OFF | Le Lucertole -Via Ariosto 20/A, 44.694077, 10.629995, acoustic band, cover pop, jazz e blues a cura di Ariosto Ristobar
+id27, MUSICA, OFF | Last Round - Piazza XXIV Maggio, 44.694438, 10.630266, punk 70/80 a cura di Republic Pub
+id28, MUSICA, OFF | Marco Sforza & Banana Oil - Via Ariosto 2, 44.695670, 10.629967, cover italiane e straniere a cura di Bar Mascotte
+id29, PERFORMANCE, OFF | Come get your fragrance - Via Farini 1/T, 44.697079, 10.629606, arte su pelle, profumi e polaroid a cura di Upper the Store
+id30, MUSICA, OFF |  YUMA - Via Panciroli 12, 44.695499, 10.626989, Marco (Rufus party) Ulisse (Julie’s haircut) e Alessandro (Johnny La Rosa): a cura di Hortus C.S. Catomes Tôt
+id31, MUSICA, OFF |  Corso Garibaldi 59, 44.698987, 10.627105, Piano bar e karaoke a cura di White Coffee
+id32, MUSICA, OFF | Jazz -  Via Monzermone 2, 44.699658, 10.628608, Live jazz a cura di Osteria Monzermone
+id33, MUSICA, Chaos in the Garden -  Via Emilia Santo Stefano 10, 44.699271, 10.629159, duo acustico chitarra e voce
+id34, MUSICA, Selz & Nets -  Piazza Casotti, 44.697150, 10.630292, concerto delle band giovanili reggiane promosso da Officina Educativa – Ufficio partecipazione giovanile e benessere e Seltz – Sala prove e Studio registrazione
+id35, MUSICA, OFF | Jam Session -  Piazza Duca degli Abruzzi,  44.702381, 10.636202, Jam Session con open quartet Merli, Silvestri, Lateano, Di Cagno a cura di Ghirba Biosteria della Gabella
+id36, EVENTO BIMBI, Mercoledì Rosa per i bambini - Via San Carlo 11/B, 44.695478, 10.631833, L’angolo delle Incisioni su legno a cura di La Giraffa Blu. A partire dalle 21.30, è gradita la prenotazione

@@ -1,0 +1,14 @@
+id31, EDIFICI STORICI, Chiesa della Madonna del Baraccano, 44.48497, 11.35374
+Img:id31img1
+id32, EDIFICI STORICI, Basilica di San Domenico, 44.48951, 11.34461
+Img: id32img1
+id33, VIE STORICHE, Via de' Pepoli, 44.49193, 11.3473
+Img: id33img1
+id34, EDIFICI STORICI, Basilica di Santo Stefano, 44.49211, 11.34862
+Img: id34img1
+id35, MURA-PIAZZE, Piazza della mercanzia, 44.49389, 11.34645
+Img: id35img1
+id36, MURA-PIAZZE, Piazza Maggiore, 44.49375, 11.34309
+Img: id36img1
+id37,EDIFICI STORICI, Basilica di San Francesco, 44.49477, 11.33565
+Img: id37img1

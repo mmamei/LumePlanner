@@ -1,0 +1,26 @@
+[
+  {"itinerary_id": "itiner1",
+    "visits": ["id11","id31","id90","id83","id84","id88","id29","id12","id108","id30"],
+    "display_name": "Modena Romanica Medievale",
+    "approx_time": "25 min",
+    "description": "Numerose calamità naturali , eventi storici travolgenti, come le invasioni barbariche, portarono la fiorente Mutina romana ad un periodo di decadenza durante il quale i suoi monumenti furono sepolti sotto una spessa coltre di depositi alluvionali. Fu soltanto verso l'anno 892 che il Vescovo Leodoino , su concessione dell'Imperatore Guido, iniziò a ricostruire la città. Per prima cosa si mise mano alla riedificazione delle mura, all'interno delle quali la città iniziò a svilupparsi."
+  },
+  {"itinerary_id": "itiner2",
+    "visits": ["id70","id111","id54","id73","id81","id95","id14","id11","id12","id58","id98","id18","id31","id90","id89","id32","id17"],
+    "display_name": "Un circuito di tesori",
+    "approx_time": "35 min",
+    "description": "Itinerario alla scoperta dei gioielli di Modena."
+  },
+  {"itinerary_id": "itiner3",
+    "visits": ["id90","id41","id42","id40","id81","id11","id99","id113","id67"],
+    "display_name": "Graziosi Around",
+    "approx_time": "15 min",
+    "description": "Artista versatile, sperimentatore di tecniche, Giuseppe Graziosi (Savignano sul Panaro 1879 – Firenze 1942) fu attivo come scultore, pittore, grafico e fotografo."
+  },
+  {"itinerary_id": "itiner4",
+    "visits": ["id95","id37","id82","id94","id59","id55","id106","id57","id97"],
+    "display_name": "Itinerari di architettura. Il Novecento a Modena",
+    "approx_time": "20 min",
+    "description": "Le forme urbane rimandano a vicende cha hanno trasformato e segnato nel profondo la Modena di oggi, la sua immagine, la città che cittadini e visitatori vedono e vivono. Dagli interventi di risanamento dei primi del Novecento, attraverso gli anni della dittatura, la guerra e il boom economico, verso una città che riconosce e organizza la fruizione dei diritti di cittadinanza e promuove qualità della vita."
+  }
+]

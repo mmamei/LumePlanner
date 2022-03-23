@@ -1,0 +1,31 @@
+[
+  {"itinerary_id":"reggio_iti_2",
+    "visits":["dismi1","dismi2","dismi3"],
+    "display_name":"Ingegneria Reggio Emilia",
+    "approx_time":"10 min"
+  },
+  {"itinerary_id": "itiner1",
+  "visits": ["id70","id85","id55","id60","id72","id5","id61","id86","id81","id8","id11","id88","id89","id71"],
+  "display_name": "il percorso delle Piazze",
+  "approx_time": "15 min",
+  "description": "L’itinerario parte da piazza Cesare Battisti, fulcro ideale della città, a metà della via Emilia che attraversa il cuore cittadino."
+  },
+  {"itinerary_id": "itiner2",
+  "visits": ["id70","id55","id69","id25","id83","id27","id43","id23","id82","id26","id42","id44","id59","id64","id58","id17"],
+  "display_name": "I luoghi dello spettacolo, dello svago e della cultura",
+  "approx_time": "25 min",
+  "description": "Un percorso guidato nei luoghi dello spettacolo, dello svago e della cultura che parte da Piazza Cesare Battisti/Piazza Del Monte per arrivare a Piazza Martiri 7 luglio con il Teatro Municipale Romolo Valli, Piazza della Vittoria, Corso Cairoli, dove è possibile visitare la Galleria Parmeggiani, e in Via Spallanzani per visitare il Palazzo dei Musei"
+  },
+  {"itinerary_id": "itiner3",
+  "visits": ["id70","id38","id90","id4","id62","id91","id92","id57","id14","id9","id13","id6"],
+  "display_name": "Dalla via Emilia all'antico corso del Crostolo",
+  "approx_time": "20 min",
+  "description": "Un percorso guidato che parte dalla Via Emilia, arteria primaria della città, per arrivare in Corso Garibaldi antico alveo del torrente Crostolo che attraversava la città, ammirare le magnificenze Barocche della Basilica della Ghiara passeggiando fra tipici ristoranti e confortevoli caffè"
+  },
+  {"itinerary_id": "itiner4",
+  "visits": ["id70","id66","id93","id64","id94","id11","id10","id8"],
+  "display_name": "Lungo i portici della via Emilia",
+  "approx_time": "15 min",
+  "description": "Il percorso parte da Piazza Cesare Battisti / Piazza Del Monte entra nella Via Emilia che qui si chiama Via Emilia San Pietro; all'incrocio con Via Roma ci troviamo esattamente nel “locus grome” fra il punto in cui veniva messa la “groma” è il punto di origine della città"
+  }
+]
