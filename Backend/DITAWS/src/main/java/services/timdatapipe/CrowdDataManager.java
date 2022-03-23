@@ -27,14 +27,12 @@ public class CrowdDataManager {
     public static void main(String[] args) {
         long starttime = System.currentTimeMillis();
         CrowdDataManager cdm = new CrowdDataManager();
-        double v = CrowdDataManager.getCrowdings(44.629352, 10.871189);
-        System.out.println(v);
-        /*
-        cdm.processCrowdInfo(true);
+        //double v = CrowdDataManager.getCrowdings(44.629352, 10.871189);
+        //System.out.println(v);
         cdm.processCrowdInfo(true);
         long endtime = System.currentTimeMillis();
         System.out.println("Completed in: "+(endtime - starttime) / 1000);
-        */
+
     }
 
     public CrowdDataManager() {
@@ -60,6 +58,8 @@ public class CrowdDataManager {
             cal.setTime(sdf.parse(time));
             day = cal.get(Calendar.DAY_OF_WEEK) - 1;
             hour = cal.get(Calendar.HOUR_OF_DAY);
+            System.out.println("day "+day+" hour "+hour);
+
         }catch(Exception e) {
             e.printStackTrace();
         }

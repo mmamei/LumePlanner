@@ -22,6 +22,7 @@ public class BILMean {
     }
 
     public static void saveMean() {
+        /*
         Calendar start = new GregorianCalendar();
         start.add(Calendar.WEEK_OF_YEAR,-2);
         start.set(Calendar.HOUR_OF_DAY ,0);
@@ -30,6 +31,21 @@ public class BILMean {
         Calendar end = new GregorianCalendar();
         end.set(Calendar.HOUR_OF_DAY ,23);
         end.set(Calendar.MINUTE ,59);
+        */
+
+        Calendar start = new GregorianCalendar();
+        try {
+            start.setTime(sdf_day.parse("20180513"));
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        Calendar end = new GregorianCalendar();
+        try {
+            end.setTime(sdf_day.parse("20180523"));
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
 
         System.out.println("Compute means from "+sdf.format(start.getTime())+" to "+sdf.format(end.getTime()));
 

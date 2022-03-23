@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Start - Leaflet</title>
+    <meta charset="utf-8" />
+    <script src="js/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="assets/css/jqm-demos.css">
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    <script src="js/global.js"></script>
+
+    <style>
+
+        .legend {
+            line-height: 20px;
+            color: #555;
+            background-color: white;
+            font-size: x-large;
+            padding:10px
+        }
+        .legend i {
+            width: 50px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        #popup {
+            padding:10px;
+            width:220px;
+            margin: 0 auto;
+            text-align: center;
+            position: fixed;
+            left:1670px;
+            background-color: white;
+            top: 650px !important;
+
+            z-index:1000 !important;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div id="mapid" style="width: 1920px; height: 1100px;"></div>
+<div id="popup">ciao</div>
+<script>
+
+    var city = "Modena";
+    var cityLonLatBbox = [10.781954922326886, 44.56348020467304, 11.010950337736737, 44.742292758012056];
+
+    //var city = "Carpi"
+    //var cityLonLatBbox = [10.81499191417427, 44.713404235922724, 11.008088099118645, 44.89040003263751]
+
+    //var city = "Formigine"
+    //var cityLonLatBbox = [10.78442520369511, 44.53817700518761, 10.920756798223191, 44.628375746957744]
+
+    var markers = new L.LayerGroup();
+
+    var CROWD_TYPES = {
+        ABS: 0,
+        REL: 1
+    };
+
+    var cutoff = {
+        ABS : [1000,500,200,100,0],
+        REL : [10,5,2,1,0]
+    };
+
+    var colors = {
+        ABS : ['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026'],
+        REL : ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6']
+    };
+
+
+
+    var crowd_type = CROWD_TYPES.ABS;
+
+    function crowdTime2String(time) {
+        var y = time.substring(0,4);
+        var m = time.substring(4,6);
+        var d = time.substring(6,8);
+        var h = time.substring(9,11);
+        var min = time.substring(11,13);
+        //return d+"/"+m+"/"+y+" "+h+":"+min
+        return '16/06/2020<br><br>11:15 - 11:30'
+    }
+
+    function nlegend(crowd_type) {
+        var grades = crowd_type == CROWD_TYPES.ABS ? cutoff.ABS.slice() : cutoff.REL.slice(); // slice() copy by value
+        grades.reverse();
+        var new_legend = "<h4>"+crowdTime2String(crowd.time)+"</h4>";
+        for (var i = 0; i < grades.length; i++) {
+            //console.log(grades[i]+" ==> "+getColor(grades[i] + 0.01,crowd_type))
+            new_legend += "<i style='background:" + getColor(grades[i] + 0.01,crowd_type) + "'></i>" +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+        $("#leg").html(new_legend);
+        var switch_button = crowd_type == CROWD_TYPES.ABS ? "REL" : "ABS";
+        $("#legend_switch").text("switch to "+switch_button)
+    }
+
+
+
+    var crowd  = null;
+    var mymap;
+    var crowdMarkers_count = 0;
+
+    function crowdMarkers(count) {
+
+        if((crowd == null && count == 1)) {
+
+            $.getJSON(conf.dita_server_files+'data/'+city+"/crowd.json", function (data, status) {
+
+                crowd = data;
+                console.log(count);
+                //alert(count)
+                var legend = L.control({position: 'bottomright'});
+                legend.onAdd = function (map) {
+                    var div = L.DomUtil.create('div', 'info legend');
+                    div.innerHTML = "<div id='leg'></div><br><button id='legend_switch'>switch to REL</button>";
+                    return div;
+                };
+                legend.addTo(mymap);
+                nlegend(crowd_type);
+
+                $("#legend_switch").click(function() {
+                    if(crowd_type == CROWD_TYPES.ABS) {
+                        crowd_type = CROWD_TYPES.REL;
+                        nlegend(crowd_type);
+                        crowdMarkers(++count)
+                    }
+                    else {
+                        crowd_type = CROWD_TYPES.ABS;
+                        nlegend(crowd_type);
+                        crowdMarkers(++count)
+                    }
+                });
+                crowdMarkers(++count)
+            })
+        }
+        else {
+            markers.clearLayers();
+            markers = new L.LayerGroup();
+
+            var z = mymap.getZoom();
+            var size = z > 14 ? 1 :
+                    z > 13 ? 2 : 4;
+
+            var max = -1000;
+
+
+            var bbox = mymap.getBounds();
+
+            for (var i = 0; i < crowd.nrows; i = i + size)
+                for (var j = 0; j < crowd.ncols; j = j + size) {
+
+                    var v = 0;
+                    var num = 0;
+                    var den = 0;
+                    for (var i1 = i; i1 < (i + size); i1++)
+                        for (var j1 = j; j1 < (j + size); j1++) {
+
+                            var x = crowd_type == CROWD_TYPES.ABS ? crowd.avalues[i][j] : crowd.mvalues[i][j];
+                            x = x / 10 * 3;
+
+                            max = Math.max(x,max);
+                            if (x > 0) {
+                                num += x;
+                                den++
+                            }
+                        }
+
+                    v = (crowd_type == CROWD_TYPES.ABS) ? num :  (den > 0) ? num / den  : -1;
+
+
+
+                    if (bbox && v > 0) {
+                        var border = getCellBorder(i, j, crowd.ox, crowd.oy, crowd.xdim, crowd.ydim, size);
+                        var ll = bbox.getSouthWest();
+                        var tr = bbox.getNorthEast();
+                        var visible = false;
+                        for(var k=0; k<border.length;k++) {
+                            var lat = border[k][0];
+                            var lon = border[k][1];
+                            if (ll.lat < lat && lat < tr.lat && ll.lng < lon && lon < tr.lng) {
+                                visible = true;
+                                break;
+                            }
+                        }
+                        if(visible) {
+                            L.polygon(border).setStyle({
+                                persone:v,
+                                fillColor: getColor(v, crowd_type),
+                                weight: 1,
+                                opacity: 1,
+                                color: 'white',
+                                fillOpacity: 0.5
+                            }).on('click',function(e) {
+                                console.log(e.target.options);
+                                var info =
+                                        "<div>In questa zona ci sono circa <strong>"+e.target.options.persone.toFixed(0)+"</strong> persone!" +
+                                        "<div onclick='$(\"#popup\").hide()' style='background-color:black; border-color: black' class='ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-right ui-btn-active ui-state-persist'>Chiudi</div>";
+
+                                $("#popup").html(info);
+                                $("#popup").show()
+                            }).addTo(markers);
+                        }
+                    }
+                }
+
+            console.log("maximum value overall "+max);
+            /*
+             var count= 0;
+             markers.eachLayer(function(marker) {count++});
+             console.log("num visible squares "+count)
+             */
+            markers.addTo(mymap)
+        }
+    }
+
+
+    function getColor(d, crowd_type) {
+        var xcutoff = crowd_type == CROWD_TYPES.ABS ? cutoff.ABS : cutoff.REL;
+        var palette = crowd_type == CROWD_TYPES.ABS ? colors.ABS : colors.REL;
+
+        return  d > xcutoff[0] ? palette[0] :
+                d > xcutoff[1] ? palette[1] :
+                        d > xcutoff[2] ? palette[2] :
+                                d > xcutoff[3] ? palette[3] :
+                                        palette[4];
+    }
+
+    function getCellBorder(i, j, ox, oy, xdim, ydim, size) {
+        var ll = [];
+
+        // bottom left corner
+        var x = ox + (j * xdim) - xdim/2;
+        var y = oy - (i * ydim) - ydim/2;
+
+        ll.push([y,x]);
+        ll.push([y,x+size*xdim]);
+        ll.push([y+size*ydim,x+size*xdim]);
+        ll.push([y+size*ydim,x]);
+
+
+        return ll;
+    }
+
+
+    $("#popup").hide();
+    var mymap = L.map('mapid',{fullscreenControl: true}).setView([44.646893, 10.925355], 18);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mymap);
+
+    mymap.fitBounds([
+        [cityLonLatBbox[1], cityLonLatBbox[0]],
+        [cityLonLatBbox[3], cityLonLatBbox[2]]
+    ]);
+
+    mymap.on('zoomend', function() {
+        crowdMarkers(++crowdMarkers_count)
+    });
+
+    mymap.on('moveend', function() {
+        crowdMarkers(++crowdMarkers_count)
+    });
+
+    //getCrowdedPOIS()
+    crowdMarkers(++crowdMarkers_count)
+</script>
+
+</body>
+</html>

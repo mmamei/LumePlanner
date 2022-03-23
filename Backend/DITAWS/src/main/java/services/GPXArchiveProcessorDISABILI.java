@@ -27,9 +27,17 @@ import java.util.Map;
 public class GPXArchiveProcessorDISABILI {
 
     public static void main(String[] args) throws Exception {
-        process("D:\\LUME-GPX\\DISABILI\\BOLOGNA OK","BOLOGNA itinerari con schede.xls");
-        process("D:\\LUME-GPX\\DISABILI\\RAVENNA OK","RAVENNA itinerari con schede.xls");
-        process("D:\\LUME-GPX\\DISABILI\\RIMINI OK","RIMINI itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\BOLOGNA OK","BOLOGNA itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\RAVENNA OK","RAVENNA itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\RIMINI OK","RIMINI itinerari con schede.xls");
+
+        //process("D:\\LUME-GPX\\DISABILI\\FERRARA OK","FERRARA itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\PARMA OK","PARMA itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\PIACENZA OK","PIACENZA itinerari con schede.xls");
+        //process("D:\\LUME-GPX\\DISABILI\\FORLI CESENA OK","FORLI CESENA itinerari con schede.xls");
+        process("D:\\LUME-GPX\\DISABILI\\REGGIO EMILIA OK","REGGIO EMILIA itinerari con schede.xls");
+
+
         System.out.println("Done");
     }
 
@@ -72,25 +80,25 @@ public class GPXArchiveProcessorDISABILI {
                 int c = 0;
                 for (Cell cell : row) {
                     String v = dataFormatter.formatCellValue(cell);
-                    if(c == 1) comune = v;
-                    if(c == 2) file = v;
-                    if(c == 3) cartella = v;
-                    if(c == 4) da = v;
-                    if(c == 5) a = v;
-                    if(c == 6) pinteresse = v;
-                    if(c == 7) mt = v;
-                    if(c == 8) durata = v+"min";
-                    if(c == 9) diff = v;
+                    if(c == 1) comune = v.trim();
+                    if(c == 2) file = v.trim();
+                    if(c == 3) cartella = v.trim();
+                    if(c == 4) da = v.trim();
+                    if(c == 5) a = v.trim();
+                    if(c == 6) pinteresse = v.trim();
+                    if(c == 7) mt = v.trim();
+                    if(c == 8) durata = v.trim()+"min";
+                    if(c == 9) diff = v.trim();
                     if(c == 10) manuale = v.equalsIgnoreCase("x");
                     if(c == 11) accompagnatore = v.equalsIgnoreCase("x");
                     if(c == 12) triride = v.equalsIgnoreCase("x");
                     if(c == 13) elettrica = v.equalsIgnoreCase("x");
                     if(c == 14) bagniH = v.equalsIgnoreCase("x");
-                    if(c == 15) itinerario = v;
-                    if(c == 16) pendenze = v;
-                    if(c == 17) pavimentazione = v;
-                    if(c == 18) monumenti = v;
-                    if(c == 19) note = v;
+                    if(c == 15) itinerario = v.trim();
+                    if(c == 16) pendenze = v.trim();
+                    if(c == 17) pavimentazione = v.trim();
+                    if(c == 18) monumenti = v.trim();
+                    if(c == 19) note = v.trim();
                     c++;
                 }
                 System.out.println(file);
