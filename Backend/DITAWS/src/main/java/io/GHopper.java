@@ -29,10 +29,13 @@ public class GHopper {
 
     private GraphHopper gh;
     public GHopper() {
+        Config config = new Config();
         gh = new GraphHopper().forServer();
         gh.setInMemory();
-        gh.setOSMFile("C:/DATASET/osm/er/emilia-romagna.osm");
-        gh.setGraphHopperLocation("C:/DATASET/osm/er/FOOT/");
+        //gh.setOSMFile("C:/DATASET/osm/er/emilia-romagna.osm");
+        //gh.setGraphHopperLocation("C:/DATASET/osm/er/FOOT/");
+        gh.setOSMFile(config.get("OSM_FILE"));
+        gh.setGraphHopperLocation(config.get("GRAPHHOPPER_LOC"));
         gh.setEncodingManager(new EncodingManager(EncodingManager.FOOT));
         gh.importOrLoad();
     }

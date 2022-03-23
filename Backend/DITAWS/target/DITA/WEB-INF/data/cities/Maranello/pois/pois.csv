@@ -1,0 +1,135 @@
+mrnlp1_1,parking,0,Parcheggio Museo Ferrari,10.861943,44.530079
+mrnlp1_2,parking,0,Parcheggio Galleria del Vento,10.872484,44.529892
+mrnlp1_3,parking,0,Parcheggio Scuole Medie,10.862035,44.527683
+mrnlp1_4,parking,0,Parcheggio Via Adriatico,10.873281,44.527897
+mrnlp1_5,parking,0,Parcheggio P.zza Libertà,10.867069,44.525314
+mrnlp2_5,parking,0,Parcheggio Piazza Amendola,10.872546,44.525379
+mrnlp3_2,parking,0,Parcheggio Tiepido,10.894519,44.523834
+mrnlp3_3,parking,0,Parcheggio Area Interscambio,10.873305,44.499924
+mrnlp3_4,parking,0,Parcheggio Gorzano,10.880123,44.513046
+mrnlp3_5,parking,0,Parcheggio Piazza Gorzano,10.879464,44.513935
+mrnlp3_6,parking,0,Parcheggio Parco Ferrari,10.865752,44.523445
+mrnlp4_3,parking,0,Parcheggio Castello Spezzano,10.845673,44.523773
+mrnlp2_6,parking,0,Parcheggio Fattoria del Parco,10.873022,44.511730
+mrnlp2_7,parking,0,Parcheggio Cimitero Fogliano,10.856810,44.500622
+mrnlp5_1,parking,0,Parcheggio Piazza Bologna,10.888098,44.524410
+mrnlp6_2,parking,0,Parcheggio Maranello Village,10.897716,44.531101
+mrnlp7_2,parking,0,Parcheggio Cimitero,10.860275,44.517902
+mrnlp9_4,parking,0,Parcheggio Torre Maina,10.873622,44.497330
+
+
+mrnl1_1,attractions,0.1,Fontana,10.867791,44.524776
+mrnl1_2,attractions,0.1,Fontana,10.873783,44.529793
+mrnl1_3,attractions,1,Museo Ferrari,10.861428,44.529739,http://museo.ferrari.com/it/
+mrnl1_4,attractions,1,MABIC,10.865216,44.525467,E' stata inaugurata sabato 19 novembre 2011 il MABIC - Maranello Biblioteca Cultura, il nuovo spazio che ospita la Biblioteca Comunale di Maranello, un luogo pensato anche per accogliere eventi e iniziative culturali. Progettato dallo studio Arata Isozaki &amp; Andrea Maffei Associati, co-finanziato dal Comune di Maranello e dalla Fondazione Cassa di Risparmio di Modena e collocato nell'area di via Vittorio Veneto adiacente alla vecchia biblioteca e agli uffici del Comune, il MABIC si sviluppa su due piani. Al primo piano la biblioteca vera e propria, con spazi pensati per accogliere varie utenze ed esigenze, dai bambini ai ragazzi, dall'emeroteca alle postazioni Internet, oltre naturalmente ai libri, disponibili a vista sugli scaffali e a richiesta nell'archivio. Al piano terra, un'ampia sala per ospitare incontri, mostre e presentazioni di libri, oltre a spazi destinati in futuro a fonoteca e videoteca. Particolare attenzione è stata riposta al risparmio energetico, con l'utilizzo di un impianto geotermico per il riscaldamento invernale e il raffrescamento estivo, e l'illuminazione a led.
+mrnl1_5,attractions,0.1,Fontana,10.871677,44.525593
+mrnl1_6,attractions,0.5,Galleria del vento,10.871535,44.530991,Opera di altissimo valore architettonico e tecnologico, la Galleria del Vento è stata progettata dall'architetto Renzo Piano e inaugurata nel 1997. È la struttura in cui vengono eseguiti i test aerodinamici sulle vetture del Cavallino: all'interno di un tunnel dotato di un sistema di climatizzazione per il controllo della temperatura, i modelli, posti su un tappeto mobile sincronizzato con la velocità del vento, vengono testati e studiati con ogni tipo di assetto. Non è consentito l'accesso al pubblico.
+
+
+mrnl1_5,attractions,0.1,Fontana,10.871677,44.525593
+mrnl2_2,attractions,0.1,Punto Panoramico,10.868456,44.510014
+mrnl2_3,attractions,0.1,Punto Panoramico,10.867125,44.518513
+mrnl2_4,attractions,0.1,Punto Panoramico,10.856574,44.500614
+
+
+mrnl3_1,attractions,0.5,Antica Ghiacciaia,10.879238,44.525703
+mrnl3_2,attractions,0.5,Acetaia Clara,10.884222,44.501942
+mrnl3_3,attractions,0.1,Fontana,10.873852,44.500031
+mrnl3_4,eating,0.1,Trattoria Zanichelli,10.873670,44.497627
+mrnl3_5,eating,0.1,Azienda Agricola Casone di Sotto,10.907739,44.515896
+mrnl3_6,attractions,0.5,Villa Rangoni Machiavelli,10.901356,44.516186,Villa Rangoni Machiavelli ed il suo parco secolare, sono di proprietà privata, sede di cerimonie esclusive e matrimoni. I documenti relativi alla storia della Villa Rangoni Machiavelli sono scarsi. Le prime carte topografiche della zona riportano la presenza di un torrione medievale le cui mura perimetrali furono utilizzate probabilmente per la realizzazione della primitiva villa, nota come Villa Sant'Antonio. Il restauro del monumento venne realizzato nel 1930 ad opera dell'architetto Gatti Casazza. Durante il secondo conflitto mondiale la villa è stata utilizzata come un presidio militare tedesco, ospitando fino a 100 soldati. il tunnel sotterraneo a collegamento dell'edificio con il bosco, per consentire la fuga, è stato realizzato nell'ambito del secondo conflitto mondiale. Il parco è sede di importanti manifestazioni.
+mrnl3_7,attractions,0.1,Casa della Pasta,10.873128,44.500256
+mrnl3_8,attractions,0.1,Punto panoramico,10.868129,44.510281
+mrnl3_9,attractions,0.1,Salumificio Guerzoni,10.879726,44.512856
+mrnl3_10,attractions,0.1,Punto panoramico,10.899768,44.511826
+mrnl3_11,attractions,0.1,Fontana,10.879281,44.513924
+mrnl3_12,attractions,0.1,Punto panoramico,10.867034,44.518585
+mrnl3_13,attractions,0.1,Fontana,10.862206,44.522556
+mrnl3_14,attractions,0.1,Fontana,10.865328,44.522968
+mrnl3_15,attractions,0.1,Caseificio Val Tiepido,10.889103,44.511112
+
+
+mrnl4_1,attractions,0.5,Torre della Strega,10.844478,44.506004,Antica torre di avvistamento, di vedetta e di rifugio risalente al X secolo. Apparteneva a un sistema di fortificazione che comprendeva i castelli di Maranello, Spezzano e Montegibbio.
+mrnl4_2,religious_sites,0.5,Chiesa di Fogliano,10.846113,44.503124,Chiesa dedicata al SS. Redentore, che nei secoli ha subito modifiche ed è stata restaurata varie volte. All'interno sono conservati tre altari in scagliola risalenti al 1700.
+mrnl4_3,attractions,0.1,Fontana,10.860772,44.526890
+mrnl4_4,attractions,0.1,Punto panoramico,10.846011,44.503036
+mrnl4_5,attractions,0.1,Fontana,10.860903,44.522861
+mrnl4_6,attractions,0.1,Punto panoramico,10.844343,44.511196
+mrnl4_7,attractions,0.5,Castello di Spezzano,10.846623,44.521523,http://www.comune.fiorano-modenese.mo.it/aree-tematiche/cultura-sport-e-tempo-libero/castello-di-spezzano/il-castello
+mrnl4_8,attractions,0.1,Fontana,10.867522,44.524925
+mrnl3_14,attractions,0.1,Fontana,10.865328,44.522968
+mrnl3_13,attractions,0.1,Fontana,10.862206,44.522556
+mrnl4_11,attractions,0.1,Punto panoramico,10.844300,44.505878
+mrnl1_4,attractions,1,MABIC,10.865216,44.525467,E' stata inaugurata sabato 19 novembre 2011 il MABIC - Maranello Biblioteca Cultura, il nuovo spazio che ospita la Biblioteca Comunale di Maranello, un luogo pensato anche per accogliere eventi e iniziative culturali. Progettato dallo studio Arata Isozaki &amp; Andrea Maffei Associati, co-finanziato dal Comune di Maranello e dalla Fondazione Cassa di Risparmio di Modena e collocato nell'area di via Vittorio Veneto adiacente alla vecchia biblioteca e agli uffici del Comune, il MABIC si sviluppa su due piani. Al primo piano la biblioteca vera e propria, con spazi pensati per accogliere varie utenze ed esigenze, dai bambini ai ragazzi, dall'emeroteca alle postazioni Internet, oltre naturalmente ai libri, disponibili a vista sugli scaffali e a richiesta nell'archivio. Al piano terra, un'ampia sala per ospitare incontri, mostre e presentazioni di libri, oltre a spazi destinati in futuro a fonoteca e videoteca. Particolare attenzione è stata riposta al risparmio energetico, con l'utilizzo di un impianto geotermico per il riscaldamento invernale e il raffrescamento estivo, e l'illuminazione a led.
+
+
+mrnl1_5,attractions,0.1,Fontana,10.871677,44.525593
+mrnl5_2,attractions,0.1,Inizio percorso Vigneti,10.872492,44.525440
+mrnl5_3,attractions,0.1,Metà percorso Vigneti,10.888596,44.525490
+mrnl5_4,attractions,0.1,Fine percorso Vigneti,10.872589,44.525379
+mrnl5_5,attractions,0.1,Fontana,10.889050,44.525570
+mrnl3_1,attractions,0.1,Antica Ghiacciaia,10.879238,44.525703
+
+
+mrnl1_4,attractions,1,MABIC,10.865216,44.525467,E' stata inaugurata sabato 19 novembre 2011 il MABIC - Maranello Biblioteca Cultura, il nuovo spazio che ospita la Biblioteca Comunale di Maranello, un luogo pensato anche per accogliere eventi e iniziative culturali. Progettato dallo studio Arata Isozaki &amp; Andrea Maffei Associati, co-finanziato dal Comune di Maranello e dalla Fondazione Cassa di Risparmio di Modena e collocato nell'area di via Vittorio Veneto adiacente alla vecchia biblioteca e agli uffici del Comune, il MABIC si sviluppa su due piani. Al primo piano la biblioteca vera e propria, con spazi pensati per accogliere varie utenze ed esigenze, dai bambini ai ragazzi, dall'emeroteca alle postazioni Internet, oltre naturalmente ai libri, disponibili a vista sugli scaffali e a richiesta nell'archivio. Al piano terra, un'ampia sala per ospitare incontri, mostre e presentazioni di libri, oltre a spazi destinati in futuro a fonoteca e videoteca. Particolare attenzione è stata riposta al risparmio energetico, con l'utilizzo di un impianto geotermico per il riscaldamento invernale e il raffrescamento estivo, e l'illuminazione a led.
+mrnl1_6,attractions,0.5,Galleria del vento,10.871535,44.530991,Opera di altissimo valore architettonico e tecnologico, la Galleria del Vento è stata progettata dall'architetto Renzo Piano e inaugurata nel 1997. È la struttura in cui vengono eseguiti i test aerodinamici sulle vetture del Cavallino: all'interno di un tunnel dotato di un sistema di climatizzazione per il controllo della temperatura, i modelli, posti su un tappeto mobile sincronizzato con la velocità del vento, vengono testati e studiati con ogni tipo di assetto. Non è consentito l'accesso al pubblico.
+mrnl6_3,attractions,0.1,Fontana,10.878493,44.536713
+mrnl6_4,attractions,0.1,Continua Percorso,10.875880,44.534950
+mrnl1_3,attractions,1,Museo Ferrari,10.861428,44.529739,http://museo.ferrari.com/it/
+mrnl1_5,attractions,0.1,Fontana,10.871677,44.525593
+
+
+
+mrnl3_13,attractions,0.1,Fontana,10.862206,44.522556
+mrnl7_2,attractions,0.1,Fontana,10.860728,44.522892
+mrnl3_14,attractions,0.1,Fontana,10.865328,44.522968
+mrnl7_4,attractions,1,Castello di Maranello,10.858926,44.520599,Situato in una posizione strategica, come sentinella all'accesso nel Frignano, il castello, ancora esistente, fu costruito verso l'anno Mille da una nobile famiglia di Marano, gli Arardini o Araldini. Si sospettava che fosse di origine "matildica": infatti Matilde di Canossa fu signora di Modena durante il Sacro Romano Impero e fece costruire numerose chiese e castelli nell'Appennino reggiano e modenese. <br>Dopo alterne vicende, il maniero fu acquistato nel 1936 dal professor Giuseppe Graziosi, pittore e scultore di fama, che vi abitò e vi lavorò. Oggi il castello appartiene a privati e non è visitabile.
+    
+
+
+mrnl4_1,attractions,0.5,Torre della Strega,10.844478,44.506004,Antica torre di avvistamento, di vedetta e di rifugio risalente al X secolo. Apparteneva a un sistema di fortificazione che comprendeva i castelli di Maranello, Spezzano e Montegibbio.
+mrnl4_2,religious_sites,0.5,Chiesa di Fogliano,10.846113,44.503124,Chiesa dedicata al SS. Redentore, che nei secoli ha subito modifiche ed è stata restaurata varie volte. All'interno sono conservati tre altari in scagliola risalenti al 1700.
+mrnl8_3,attractions,0.1,Fontana,10.853831,44.503708
+mrnl8_4,attractions,0.5,Spazio Culturale Madonna del Corso,10.860026,44.527992,Lo Spazio culturale "Madonna del Corso" è il luogo che ospita a Maranello, lungo tutto l'arco dell'anno, mostre ed esposizioni di interesse artistico e culturale. È stato inaugurato nell'autunno del 2005 con una mostra sullo scultore Giuseppe Graziosi (1879-1942).<br>Un tempo ospizio-convento di frati Francescani, poi soppresso nel 1653, mantenne le sue funzioni di Chiesa-Oratorio fino al 1920, per poi essere adibito ad officina artigianale. <br>La chiesa subì gravi danni a causa dell'occupazione di varie truppe militari durante la seconda guerra mondiale.
+mrnl1_3,attractions,1,Museo Ferrari,10.861428,44.529739,http://museo.ferrari.com/it/
+mrnl8_6,attractions,0.1,Punto panoramico,10.847728,44.503311
+mrnl8_7,attractions,0.1,Punto panoramico,10.844539,44.511200
+mrnl8_8,attractions,0.1,Punto panoramico,10.844418,44.505756
+
+
+
+mrnl3_11,attractions,0.1,Fontana,10.879281,44.513924
+mrnl9_2,attractions,0.1,Fontana,10.873964,44.500103
+mrnl9_3,attractions,0.1,Via Vandelli Storica,10.875942,44.502750
+
+
+
+mrnl9_2,attractions,0.1,Fontana,10.873964,44.500103
+mrnl10_2,attractions,0.1,Punto Panoramico,10.869149,44.488243
+mrnl10_3,attractions,0.1,Punto Panoramico,10.870663,44.485039
+mrnl3_11,attractions,0.1,Fontana,10.879281,44.513924
+mrnl10_5,attractions,0.5,Torre della Montina,10.871015,44.495674,Torre della Montina o "Turri de Amaglinis", interessante per le sue dimensioni e il suo stato di conservazione. Una porta di ridotte dimensioni posta a diversi metri da terra indica chiaramente la vocazione di casa-torre con funzione di granaio, abitazione e difesa. Sembra abbia ospitato S. Bernardino da Siena venuto a predicare nella località di Torre Maina.
+
+
+
+mrnl1_1,attractions,0.1,Fontana,10.867791,44.524776
+mrnl3_13,attractions,0.1,Fontana,10.862206,44.522556
+mrnl1_5,attractions,0.1,Fontana,10.871677,44.525593
+mrnl2_2,attractions,0.1,Punto Panoramico,10.868456,44.510014
+mrnl2_3,attractions,0.1,Punto Panoramico,10.867125,44.518513
+mrnl3_14,attractions,0.1,Fontana,10.865328,44.522968
+
+
+
+mrnl3_11,attractions,0.1,Fontana,10.879281,44.513924
+mrnl3_6,attractions,0.5,Villa Rangoni Machiavelli,10.901356,44.516186,Villa Rangoni Machiavelli ed il suo parco secolare, sono di proprietà privata, sede di cerimonie esclusive e matrimoni. I documenti relativi alla storia della Villa Rangoni Machiavelli sono scarsi. Le prime carte topografiche della zona riportano la presenza di un torrione medievale le cui mura perimetrali furono utilizzate probabilmente per la realizzazione della primitiva villa, nota come Villa Sant'Antonio. Il restauro del monumento venne realizzato nel 1930 ad opera dell'architetto Gatti Casazza. Durante il secondo conflitto mondiale la villa è stata utilizzata come un presidio militare tedesco, ospitando fino a 100 soldati. il tunnel sotterraneo a collegamento dell'edificio con il bosco, per consentire la fuga, è stato realizzato nell'ambito del secondo conflitto mondiale. Il parco è sede di importanti manifestazioni.
+mrnl12_3,attractions,0.1,Punto Panoramico,10.893770,44.509628
+
+
+
+
+mrnl4_1,attractions,0.5,Torre della Strega,10.844478,44.506004,Antica torre di avvistamento, di vedetta e di rifugio risalente al X secolo. Apparteneva a un sistema di fortificazione che comprendeva i castelli di Maranello, Spezzano e Montegibbio.
+mrnl4_2,religious_sites,0.5,Chiesa di Fogliano,10.846069,44.503002,Chiesa dedicata al SS. Redentore, che nei secoli ha subito modifiche ed è stata restaurata varie volte. <br>All'interno sono conservati tre altari in scagliola risalenti al 1700.
+mrnl4_11,attractions,0.1,Punto panoramico,10.844300,44.505878
+mrnl4_4,attractions,0.1,Punto panoramico,10.846011,44.503036
+mrnl13_5,attractions,0.1,Punto panoramico,10.837122,44.5013968

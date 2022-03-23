@@ -1,0 +1,24 @@
+id1, MUSICA,  Hakuna Matata - Piazza Prampolini, 44.697735, 10.630457, musica reggae, rumba congolose e sonorità africane. Gruppo di apertura: Gabba duo, ore 22.00
+id2, MUSICA, OFF | I Bidelli - Via Ariosto 20/A, 44.694058, 10.630001, musica dal vivo a cura di Ariosto Ristobar
+id3, MUSICA, OFF | Elizangela Torreggiani - Piazza XXIV Maggio, 44.694438, 10.630308, jazz quartet a cura di Vinoteca Della Legna
+id4, MUSICA, OFF | I Bizzarro - Via Ariosto 2, 44.695708, 10.629934, cover rock Italia e estero a cura di Bar Mascotte
+id5, PERFORMANCE, OFF | Come get your fragrance -  Via Farini 1/T, 44.697170, 10.629564, arte su pelle, profumi e polaroid a cura di Upper the Store
+id6, MOSTRE/GALLERIE, Biblioteca Panizzi - Via Farini 3, 44.696669, 10.629291, Stanislao Farri - L’archivio dell'Utopia e La Divina Commedia nelle illustrazioni di Matteo Berton a cura di Biblioteca Panizzi
+id7, MUSICA, OFF |  Gospel Book Revisited - Via Panciroli 12, 44.695507, 10.626978, blues rock soul funk da Torino a cura di Hortus C.S. Catomes Tôt
+id8, MUSICA, OFF | Musica live - Via Guasco, 44.699499, 10.625399, Musica live a cura di Chiostro della Ghiara - Sudent's Hostel della Ghiara
+id9, MUSICA, Slide Acoustic Blues - Via Emilia Santo Stefano 19, 44.700101, 10.627429, duo blues dai Creedence ai Rolling Stones, fino ad Eric Clapton
+id10, ACCONCIATURE, OFF | Blow-dry - Via Emilia Santo Stefano 5, 44.699330, 10.629789, Blow-dry e consulenza gratuita a cura di Shamperia Store
+id11, MUSICA,  Latin Soul Trio - Piazza Casotti, 44.697149, 10.630307, trio latin jazz, bossa nova, soul
+id12, GASTRONOMIA, OFF | L'angolo delle grattachecche - Via Franzoni, 44.697382, 10.632857, un assaggio di Roma a cura di Cacio & Pepe, la trattoria romana
+id13, MUSICA,  Teddy Beer - Piazza Martiri 7 Luglio, 44.699692, 10.631133, rock’n roll anni '60 - '70 | Ore 21-23 Consulenza a cura dello staff Virgin Active
+id14, EVENTO BIMBI,  Mercoledì Rosa per i bambini - Piazza della Vittoria, 44.700571, 10.630143, Città Asinabile, Scuderie in città, Grillo Triciclo (dalle 21.00)
+id15, MUSICA,  Tango - Isolato San Rocco, 44.700093, 10.629429, Note e Magia di Tango a cura di associazione Barrio de Tango | dalle 21 - Lezione gratuita di primi passi aperta ed esibizione maestri | dalle 22 - Milonga
+id16, MUSICA,  OFF | Jhonny La Rosa & Chicco Bedogni in arte Lupo - Via Roma 43,  44.700828, 10.635498, rock, blues e funk a cura di Dal Mascetti – osteria degli amici
+id17, MUSICA,  OFF | Rassegna Mìa soul dal blues - Piazza Scapinelli, 44.698523, 10.634132, Angela Esmeralda & Sebastiano Lillo e i Poorboys: giovani musicisti blues con brani originali a cura de La Gargotta del Popol Giost, Natural Beauty by Queer Parrucchieri e Noname Bar
+id18, RADIO,  Posto Zero Radio - Piazza San Prospero, 44.697582, 10.631684, la web radio di Reggio Emilia presenta i suoi migliori programmi in diretta da Piazza San Prospero (Seguici su www.postozero.it)
+id19, TEATRO, OFF | Via Guidelli 1, 44.697173, 10.633018, Interventi recitativi a cura di Nuovo Teatro San Prospero
+id20, MUSICA, Via San Carlo 2, 44.696515, 10.632555, Manuel Setti Live: live acustico chitarra e voce
+id21, MUSICA, OFF | Djset Via San Carlo 11/a, 44.695501, 10.631710, Djset a cura di Cartoleria Minerva
+id22, EVENTO BIMBI, OFF | Mercoledì Rosa per i bambini - Via San Carlo 11/b,  44.695501, 10.631710, Lezione di fumetto-acquerellato per ragazzi dagli 8 ai 12 anni a cura di La Giraffa Blu. Due turni: 21.30 e 22.30 (costo 5€)
+id23, MUSICA, Roberta&SO2SPEAK - Piazza Fontanesi, 44.694687, 10.631521, quartetto musica pop, soul, R&B
+id24, GASTRONOMIA, OFF | Miercoles de Paella - Viale Monte Grappa 3, 44.695315, 10.639627, paella alla valenciana & Sangria a cura del ristorante “A Mangiare”

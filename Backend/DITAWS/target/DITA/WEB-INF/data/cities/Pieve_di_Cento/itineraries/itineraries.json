@@ -1,0 +1,49 @@
+[{"itinerary_id": "itiner1",
+  "visits": ["pon6", "pon7", "pon8", "pon9"],
+  "display_name": "Le 4 Porte",
+  "approx_time": "35 min",
+  "description": "LE 4 PORTE\nPORTA CENTO\nAlmeno a partire dal XIII secolo, Pieve fu circondata da un fossato e da un terrapieno fortificato con palizzata, con quattro porte in legno ad uso di torri armate. Il fossato e il terrapieno furono smantellati alla fine del secolo scorso, mentre le porte, modificate nel corso del tempo, sorvegliano ancora oggi gli ingressi alla città. Ad ovest, in fondo a via Garibaldi, è visibile la settecentesca Porta Cento, la prima ad essere costruita in muratura (1337) a sostituire la precedente struttura lignea. Andata in gran parte distrutta in seguito ad un incendio, fu ricostruita nel Settecento nella forma attuale. Dopo il restauro, resosi necessario a seguito del sisma del 2012 che l'ha resa inagibile, Porta Cento è stata inaugurata domenica 2 aprile 2017. Il locale al primo piano e l'originale scala a chiocciola sono stati ripristinati e resi nuovamente utilizzabili.\nPORTA ASIA\nAd est, in fondo a via Gramsci, appare la restaurata Porta Asìa (dal nome della vicina borgata Asilia), la piu' popolare delle quattro porte pievesi, ispiratrice di numerosi canti folkloristici. La sostituzione della struttura lignea con quella in muratura risale al 1342. Porta Asia non è una semplice struttura di difesa, ma consiste in due corpi distinti: un avancorpo con ponte levatoio e portella pedonale e un retrocorpo di difesa, un piccolo castelletto fortificato a cui le macchine offensive, le merlature, le strutture a sporgere conferivano un deciso aspetto guerresco. Purtroppo la caduta delle merlature, il deperimento delle strutture in legno, l'ottocentesca mimetizzazione con le case retrostanti ne hanno in parte modificato l'aspetto. Restaurata nel 1981, Porta Asia ospita oggi il Centro di documentazione sulla lavorazione della canapa. Vi sono conservate fotografie, documenti, attrezzi di lavoro, tutti donati dai cittadini, che testimoniano l'importanza della lavorazione della canapa nell'economia locale fino a pochi anni fa.\nPORTA BOLOGNA\nA sud, alla fine di via Matteotti, la porta accoglie il visitatore che proviene da Bologna. Originariamente in legno, fu ricostruita in mattoni verso la fine del XIV secolo, quando tutte le porte furono adeguate nei mezzi difensivi e nei criteri di costruzione alla Rocca, il che conferì a Pieve l'aspetto di un castello fortificato. Porta Bologna fu trasformata alla fine del '700 in abitazione; dopo vari interventi, nel 2004, con importanti lavori di recupero conservativo, Porta Bologna ha ritrovato l'antico splendore. Porta Bologna è, da novembre 2015, sede dell'Archivio fotografico digitale G. Melloni, parte del Museo delle Storie di Pieve. \nPORTA FERRARA\nA nord, al termine di via G. B. Melloni (storico ed ecclesiastico pievese vissuto nel '700), si staglia Porta Ferrara, del 1342. Recentemente sono stati rimessi in luce i merli bentivoglieschi. Assieme al contiguo ex-macello, è oggi sede della Scuola di Liuteria e della Scuola di Artigianato Artistico pievese. A fianco della Scuola è presente la sezione espositiva del Museo Civico dedicata alla liuteria."
+},
+{"itinerary_id": "itiner2",
+"visits": ["pon3", "pon10", "pon2", "pon5"],
+"display_name": "Pieve di Cento - La piazza e la Rocca",
+"approx_time": "25 min"
+},
+{"itinerary_id": "itiner3",
+"visits": ["pon11", "pon12"],
+"display_name": "Pieve di Cento - Stazione ferroviaria di San Pietro in Casale",
+"approx_time": "15 min",
+"description": "Il percorso è da effettuarsi in autobus, dopo aver visionato gli orari."
+},
+{"itinerary_id": "itiner4",
+"visits": ["pon13", "pon14","pon15"],
+"display_name": "Pieve di Cento - Stazione ferroviaria di Bologna",
+"approx_time": "70 min",
+"description": "Il percorso tra le prime due tappe (Pieve di Cento – Autostazione di Bologna) è da effettuarsi in autobus, dopo aver visionato gli orari. La terza tappa (la stazione ferroviaria di Bologna) può essere raggiunta a piedi"
+},
+{"itinerary_id": "itiner5",
+"visits": ["pon13", "pon14","pon15", "pon16"],
+"display_name": "Pieve di Cento - aeroporto di Bologna in autobus",
+"approx_time": "90 min",
+"description": "Il percorso tra le prime due tappe (Pieve di Cento – Autostazione di Bologna) è da effettuarsi in autobus, dopo aver visionato gli orari, così come il tratto che unisce la terza e la quarta tappa (Stazione ferroviaria di Bologna – Aeroporto di Bologna). Il passaggio dalla seconda alla terza tappa (quindi, il tratto che unisce Autostazione e Stazione ferroviaria di Bologna) può essere effettuato a piedi"
+},
+{"itinerary_id": "itiner6",
+"visits": ["pon13", "pon16"],
+"display_name": "Pieve di Cento - aeroporto di Bologna in auto",
+"approx_time": "30 min"
+},
+{"itinerary_id": "itiner7",
+"visits": ["pon13", "pon17", "pon18", "pon19", "pon20", "pon21", "pon13"],
+"display_name": "Pieve di Cento nel CUORE della Motor Valley",
+"approx_time": "600 min"
+},
+{"itinerary_id": "itiner8",
+"visits": ["pon22", "pon23"],
+"display_name": "Gita in bicicletta alla Bisana",
+"approx_time": "60 min"
+},
+{"itinerary_id": "itiner8",
+"visits": ["pon24","pon25","pon26"],
+"display_name": "I parchi",
+"approx_time": "40 min"
+}]
