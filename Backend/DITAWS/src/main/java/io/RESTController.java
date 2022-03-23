@@ -252,7 +252,7 @@ public class RESTController {
 		tracelog.info("user "+user+" completed his visiting plan");
 		return dao.deletePlan(user);
 	}
-
+	/*
 	@Scheduled(fixedRate = 5*60*1000) // every five minutes
 	public void downloadData() {
 
@@ -266,7 +266,7 @@ public class RESTController {
 		new DataPipeDownload().download();
 		cdm.processCrowdInfo(false);
 	}
-
+	*/
 	/*
 	@Scheduled(fixedRate = 2*7*24*60*1000) // every 2 weeks
 	public void comppute2WeeksMeanCrowdValues() {

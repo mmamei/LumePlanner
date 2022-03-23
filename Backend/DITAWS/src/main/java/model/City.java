@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.Config;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -43,9 +44,10 @@ public class City {
         List<City> cities = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Config config = new Config();
         try {
-            cities.addAll((List<City>)mapper.readValue(new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\citiesExtra.json"),new TypeReference<List<City>>(){}));
-            cities.addAll((List<City>)mapper.readValue(new File("G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\cities.json"),new TypeReference<List<City>>(){}));
+            cities.addAll((List<City>)mapper.readValue(new File(config.get("CITIES_EXTRA")),new TypeReference<List<City>>(){}));
+            cities.addAll((List<City>)mapper.readValue(new File(config.get("CITIES")),new TypeReference<List<City>>(){}));
         } catch (IOException e) {
             e.printStackTrace();
         }
