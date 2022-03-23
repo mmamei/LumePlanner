@@ -39,12 +39,10 @@ public class RESTController {
 		cities = City.getInstance();
 		app_version = AppVersion.getVersion();
 
-		System.out.println("**********************************************************************************");
-		System.out.println("Cities");
-		System.err.println("**********************************************************************************");
-		System.err.println("Cities");
+
 		for(City c: cities) {
 			String city = c.getName();
+			logger.info(city);
 			//cities.add(city+","+lonlatBB[0][0]+","+lonlatBB[0][1]+","+lonlatBB[1][0]+","+lonlatBB[1][1]);
 			if (!dao.checkActivities(city)) {
 				//String dir = "G:\\CODE\\IJ-IDEA\\LumePlanner\\Backend\\DITAWS\\src\\main\\webapp\\WEB-INF\\data\\"+city+"\\pois";
@@ -269,9 +267,11 @@ public class RESTController {
 		cdm.processCrowdInfo(false);
 	}
 
+	/*
 	@Scheduled(fixedRate = 2*7*24*60*1000) // every 2 weeks
 	public void comppute2WeeksMeanCrowdValues() {
 		BILMean.saveMean();
 	}
+	*/
 
 }
