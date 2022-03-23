@@ -11,6 +11,8 @@ public class Config {
     public Config() {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         try {
+
+            //BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Marco\\IdeaProjects\\LumePlanner\\Backend\\DITAWS\\lumeplannerconfig.txt"));
             BufferedReader br = new BufferedReader(new FileReader("/home/mamei/lumeplannerconfig.txt"));
             String line;
             while((line = br.readLine())!=null) {
