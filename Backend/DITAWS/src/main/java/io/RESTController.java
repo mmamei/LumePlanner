@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import services.pathfinder.FindPath;
 import util.StringUtils;
 
+import javax.crypto.spec.PSource;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +39,10 @@ public class RESTController {
 		cities = City.getInstance();
 		app_version = AppVersion.getVersion();
 
-
+		System.out.println("**********************************************************************************");
+		System.out.println("Cities");
+		System.err.println("**********************************************************************************");
+		System.err.println("Cities");
 		for(City c: cities) {
 			String city = c.getName();
 			//cities.add(city+","+lonlatBB[0][0]+","+lonlatBB[0][1]+","+lonlatBB[1][0]+","+lonlatBB[1][1]);
