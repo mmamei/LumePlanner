@@ -1,6 +1,16 @@
 
+
+Follow this:
+https://linuxhint.com/install_apache_tomcat_server_ubuntu/
+
+Install mongo:
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
+
+# Download OSM data
+https://www.geodati.fmach.it/italia_osm.html
+
 use lume
-db.createUser({user:"dita",pwd:"mames1976",roles:[{role:"dbAdmin",db:"lume"}]})
+db.createUser({user:"[USER]",pwd:"[PASSWORD]",roles:[{role:"dbAdmin",db:"lume"}]})
 
 
 /*
@@ -20,6 +30,5 @@ for(var i = 0, len = collectionNames.length; i < len ; i++){
         db[collectionName].drop()
     }
 }
-
 
 
