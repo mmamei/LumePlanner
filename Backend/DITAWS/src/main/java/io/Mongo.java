@@ -22,9 +22,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 
-import static io.LoginInfo.MONGO_DB;
-import static io.LoginInfo.MONGO_PASSWORD;
-import static io.LoginInfo.MONGO_USER;
 import static services.CategoriesDictionary.CAT;
 
 
@@ -59,13 +56,18 @@ public class Mongo {
 						CodecRegistries.fromCodecs(new PointCodec()),
 						MongoClient.getDefaultCodecRegistry());
 
+		Config config = new Config();
+		String MONGO_URL = config.get("MONGO_URL");
+		String MONGO_USER = config.get("MONGO_USER");
+		String MONGO_DB = config.get("MONGO_DB");
+		String MONGO_PASSWORD = config.get("MONGO_PASSWORD");
+
 
 		mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
 		mongoLogger = java.util.logging.Logger.getLogger( "org.mongodb.driver" );
 		mongoLogger.setLevel(Level.SEVERE);
-        mongoClient = new MongoClient(new ServerAddress(LoginInfo.MONGO_URL), Arrays.asList(
+        mongoClient = new MongoClient(new ServerAddress(MONGO_URL), Arrays.asList(
 							MongoCredential.createCredential(
                                     MONGO_USER,
 									MONGO_DB,

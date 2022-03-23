@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import static io.LoginInfo.GEOCODER_KEY;
 
 /**
  * Created by marco on 27/09/2017.
